@@ -15,19 +15,24 @@
 "%"             { return MOD; }
 "^"             { return EXP; }
 "="             { return ASSIGN;}
+"/="            { return DIV_EQ; }
+"+="             { return PLUS_EQ; }
+"-="             { return MINUS_EQ; }
+"*="             { return MULT_EQ; }
+"++"            { return INC; }
+"--"            { return DEC; }
 
-[0-9]+          { yylval.ival = atoi(yytext);return INT_LIT;}
-[-+]?[0-9]+.[0-9]+  {yylval.fval = atof(yytext);return FLOAT_LIT;}
-/* true|false          {yylval.bval = atoi(yytext);return BOOLEAN} */
-'.'                 {yylval.cval = yytext[0];return CHAR_LIT;}
+[0-9]+          { yylval.lexeme.intVal = atoi(yytext) ;yylval.type = INT;return INT_VAL;}
+[-+]?[0-9]+.[0-9]+  {yylval.lexeme.floatVal = atof(yytext) ; yylval.type = FLOAT ;return FLOAT_VAL;}
+'.'                 {yylval.lexeme.charVal = yytext[0]; yylval.type = CHAR ;return CHAR_VAL;}
 
 
-"true"          { yylval.bval = true ; return BOOL_LIT; }
-"false"         { yylval.bval = false; return BOOL_LIT; }
+"true"          { yylval.lexeme.boolVal = true ; yylval.type = BOOL ; return TRUE_VAL; }
+"false"         { yylval.bval = false; yylval.type = BOOL ;return FALSE_VAL; }
 
 
 
-"int"           {return INT;  } 
+"int"           {return INT;} 
 "float"         { return FLOAT;}
 "char"          { return CHAR;}
 "bool"          { return BOOL;}
@@ -35,7 +40,6 @@
 
 
 "while"         { return WHILE; }
-"do"            { return DO; }
 "break"         { return BREAK; }
 "continue"      { return CONTINUE; }
 "for"           { return FOR; }
@@ -44,8 +48,8 @@
 "default"       { return DEFAULT; }
 
 "if"            { return IF; }
-"else"          { return ELSE; }
-"elseif"         { return ELSEIF;}
+"else"          { return ELSE;}
+/* "elseif"        { return ELSEIF; } */
 
 "=="            { return EQUAL; }
 "!="            { return NE; }
@@ -55,25 +59,24 @@
 "||"            { return OR; }
 ">"             { return GREATER; }
 "<"             { return LESS; }
+"!"             { return NOT; }
 
 
 
-/* 
-
-IF ANY SYMBOL HAS LOGIC hANDLE IT SEPARATELY
-
-"{"             { printf("LBRACE\n"); }
-"}"             { printf("RBRACE\n"); }
-"("             { printf("LPAREN\n"); }
-")"             { printf("RPAREN\n"); }
-";"             { printf("SEMICOLON\n"); }
-","             { printf("COLON\n"); } 
 
 
-*/
+
+"{"             { return LBRACE; }
+"}"             { return RBRACE; }
+"("             { return LPAREN; }
+")"             { return RPAREN; }
+";"             { return SEMICOLON; }
+","             { return COMMA; } 
+":"             { return COLON; }
 
 
-[{}(),;]          { return ytext[0];}
+
+
 
 
 
@@ -86,7 +89,7 @@ IF ANY SYMBOL HAS LOGIC hANDLE IT SEPARATELY
 
 
 
-[a-zA-Z][a-zA-Z0-9_]*  { yylval.sval = yytext; return IDENTIFIER; } 
+[a-zA-Z][a-zA-Z0-9_]*  { yylval.stringValue = strdup(yytext); return IDENTIFIER; } 
 
 
 [ \t\n]               {  }
