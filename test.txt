@@ -1,0 +1,67 @@
+10 + 5;
+3 * 4 - 2;
+
+
+int isdsads_RWDS = 5;
+float y = 10.3;
+string strr = "asdasdasd";
+char ch = 'f';
+
+const int j = 5;
+
+
+if (i == 5) {
+    y = 10;
+}
+
+while (i < 5) {
+    y = 10;
+}
+
+int i = 10;
+
+bool b = b<10;
+
+i=i+1;
+i<10;
+
+
+repeat {
+    y = 10;
+} until (i == 10);
+
+switch(x)
+{
+    case 1:
+        y = 10;
+        break;
+    case 2:
+        y = 15;
+    default:
+        y = 20;
+    case 3:
+        y = 25;
+        break;
+}
+// comment
+{
+
+    int y = 10;
+    float z =15.5;
+    char c = 'a';
+    string s = "asdasd";
+}
+
+
+
+for (i = 0; i < 10; i++) {
+    y = 10;
+}
+
+int getxdd(){
+    return 10;}
+
+
+
+
+
