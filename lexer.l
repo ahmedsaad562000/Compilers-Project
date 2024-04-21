@@ -31,7 +31,7 @@ int lineno = 1;  /* Line Number */
                         return INT_VAL;
                     }
 
-[0-9]+.[0-9]+  {
+[0-9]+\.[0-9]+  {
                         // yylval.lexeme.floatVal = atof(yytext);
                         // yylval.lexeme.type = varType::FLOAT_TYPE;
                         // yylval.lexeme.stringRep = strdup(yytext);

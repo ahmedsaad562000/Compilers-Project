@@ -76,7 +76,8 @@
 %left PLUS MINUS
 %left MULT DIV MOD 
 %left EXP
-%nonassoc AND OR NOT 
+%left AND OR
+%nonassoc NOT 
 
 /* assignment */
 %left ASSIGN
@@ -135,6 +136,7 @@ value: expr | STRING_VAL | CHAR_VAL | INT_VAL | FLOAT_VAL | TRUE_VAL | FALSE_VAL
 expr: LPAREN expr RPAREN 
         |bool_expr
         | arithmetic_expr
+        /* | MINUS expr {printf("--------------negation------------------------\n");} */
         ;
 
 bool_expr: expr EQUAL arithmetic_expr           /* == */
@@ -143,8 +145,8 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
     | expr LESS arithmetic_expr                 /* < */
     | expr GE arithmetic_expr                   /* >= */
     | expr LE arithmetic_expr                   /* <= */
-    | expr AND expr                  /* && */
-    | expr OR arithmetic_expr                   /* || */
+    | expr AND expr                             /* && */
+    | expr OR expr                              /* || */
     | NOT expr                                  /* ! */         
     |TRUE_VAL                                   /* true */
     |FALSE_VAL                                  /* false */
@@ -165,11 +167,17 @@ binary_expr: term
     ;
 
 
-term: factor
+term: negat
     | term MULT factor          {printf("MULT\n");}
     | term DIV factor           {printf("DIV\n");}
     | term MOD factor           {printf("MOD\n");}
     ;
+negat: para
+     | MINUS para           {printf("--------------negation------------------------\n");}
+
+para: factor
+        | LPAREN binary_expr RPAREN
+        ;
 
 factor: 
         INT_VAL                 {printf("INT_VAL\n")}
