@@ -68,10 +68,30 @@ for (i = 0; i < 10; i++) {
     y = 10;
 }
 
-int getxdd(){
+int getxdd(int z){
     return 10;}
 
-
+// int r = if;   Syntax Error (Can't use "if" as an identifier) 
+// k = 8         Syntax Error (No ; at the end)
+const int i = 23 ; 
+string k = rr ;
+k++ ;
+int myfunc(bool k){
+    if (k == True){
+        return 0;
+    }
+    else{
+        while (k != True){
+            for (int i = 1; i < 5 ; i++){
+                j++;
+           }
+           if (j < 10){
+            print("Just for Test");
+            return 1 ;
+           }
+        }
+    }
+}
 
 
 

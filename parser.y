@@ -276,7 +276,7 @@ params:
         ;
 param:
         type IDENTIFIER   {printf("Param without default\n");}    /* param without default value */
-        type IDENTIFIER ASSIGN constant    {printf("Param with default\n");} /* param with default value */
+        |type IDENTIFIER ASSIGN constant    {printf("Param with default\n");} /* param with default value */
         ;
 %%
 
