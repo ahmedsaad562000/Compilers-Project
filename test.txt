@@ -76,7 +76,7 @@ int getxdd(int z){
 const int i = 23 ; 
 string k = rr ;
 k++ ;
-int myfunc(bool k){
+int myfunc(int k){
     if (k == True){
         return 0;
     }
@@ -92,8 +92,28 @@ int myfunc(bool k){
         }
     }
 }
+for (int i =0; i < 9 ; i++){
+    if (d == 12)
+    {
+        x = d;
+        d= x+2;
+        print('Twelveeee');
+    }
+}
+// bool k = a&b; Syntax Error (& not &&)
+int x  = getxdd();   // Correct Syntax
+int x  = getxdd(x,r);// Correct Syntax
+int x  = getxdd(r);   // Correct Syntax 
+//int x  = getxdd(int r); // Wrong syntax
 
+els = fi; // Correct
+//else = if ; Not correct
+if (x == 2){x++;}
+if (x == 2){x++;} // Wrong '=' instead of '=='
+if (x != z)
+{k++;}
+int h = 12 ; 
+while(h >= 2){
+    h--;
+}
 myfunc(True);
-
-
-
