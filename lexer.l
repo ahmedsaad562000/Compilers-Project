@@ -124,6 +124,7 @@ int lineno = 1;  /* Line Number */
 "void"          { return VOID;  }
 "return"        { return RETURN; }
 
+"print"         { return PRINT; }
 
 
 [a-zA-Z][a-zA-Z0-9_]*  { 

@@ -127,7 +127,7 @@ stmt:
         | RETURN ret_val SEMICOLON                   /* return */
         | BREAK SEMICOLON  /* break */
         | CONTINUE SEMICOLON  /* continue */
-        | PRINT LPAREN STRING RPAREN SEMICOLON  /* print */
+        | PRINT LPAREN value RPAREN SEMICOLON {printf("-----------PRINT Statement------------\n");}  /* print */
         ;
 
 ret_val: value | ;

@@ -93,5 +93,7 @@ int myfunc(bool k){
     }
 }
 
+myfunc(True);
+
 
 
