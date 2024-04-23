@@ -1,12 +1,12 @@
-//int xx = -9-8*7;
-//int f = -9-8-7;
-//int x = -(6+5+(y-8));
+int xx = -9-8*7;
+int f = -9-8-7;
+int x = -(6+5+(y-8));
  -9;
 
 
 bool f = a && b;
 
-bool s = !a && b || c;
+bool s = (!a && b) || c;
 
 10 + 5;
 3 * 4 - 2;
@@ -14,7 +14,7 @@ bool s = !a && b || c;
 
 int isdsads_RWDS = 5;
 float y = 10.3;
-string strr = "asdasdasd";
+string strr = 'asdasdas%^#$#werwer()&^&^#d';
 char ch = 'f';
 
 const int j = 5;

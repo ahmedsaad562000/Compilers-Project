@@ -88,6 +88,8 @@
 %left INC
 %left DEC
 
+%nonassoc UMINUS
+
 
 
 
@@ -130,14 +132,11 @@ stmt:
 
 ret_val: value | ;
 
-value: expr | STRING_VAL | CHAR_VAL | INT_VAL | FLOAT_VAL | TRUE_VAL | FALSE_VAL;
+value: expr | STRING_VAL | CHAR_VAL;
 
 /* expressions */
-expr: LPAREN expr RPAREN 
-        |bool_expr
-        | arithmetic_expr
-        /* | MINUS expr {printf("--------------negation------------------------\n");} */
-        ;
+expr:   bool_expr
+        | arithmetic_expr        ;
 
 bool_expr: expr EQUAL arithmetic_expr           /* == */
     | expr NE arithmetic_expr                   /* != */
@@ -147,15 +146,16 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
     | expr LE arithmetic_expr                   /* <= */
     | expr AND expr                             /* && */
     | expr OR expr                              /* || */
-    | NOT expr                                  /* ! */         
+    | NOT expr
+    |LPAREN bool_expr RPAREN                                  /* ! */         
     |TRUE_VAL                                   /* true */
     |FALSE_VAL                                  /* false */
     ;
 
 
-arithmetic_expr: binary_expr
-    | unary_expr
-    ;
+arithmetic_expr:binary_expr
+                | unary_expr
+                ;
 
 unary_expr: IDENTIFIER INC
         | IDENTIFIER DEC
@@ -166,21 +166,20 @@ binary_expr: term
     | binary_expr MINUS term     {printf("MINUS\n");}
     ;
 
-
 term: negat
     | term MULT factor          {printf("MULT\n");}
     | term DIV factor           {printf("DIV\n");}
     | term MOD factor           {printf("MOD\n");}
     ;
 negat: para
-     | MINUS para           {printf("--------------negation------------------------\n");}
+     | MINUS para %prec UMINUS           {printf("--------------negation------------------------\n");}
 
 para: factor
         | LPAREN binary_expr RPAREN
         ;
 
 factor: 
-        INT_VAL                 {printf("INT_VAL\n")}
+        INT_VAL                 {printf("INT_VAL\n");}
         | FLOAT_VAL             {printf("FLOAT_VAL\n");}        
         | factor EXP factor     {printf("EXP\n");}
         | function_call         {printf("FUNCTION_CALL\n");}
@@ -227,17 +226,17 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
         ;
 /* while statement */        
 while_stmt:
-        WHILE expr LBRACE stmts RBRACE  {printf("WHILE\n");}
+        WHILE LPAREN expr RPAREN LBRACE stmts RBRACE  {printf("WHILE\n");}
         ;
 
 /* if statement */
 if_stmt:
-        IF expr LBRACE stmts RBRACE     {printf("IF\n");}      /* if-then */
-        | IF expr LBRACE stmts RBRACE ELSE LBRACE stmts RBRACE  {printf("IF ELSE\n");}   /* if-then-else */
+        IF LPAREN expr RPAREN LBRACE stmts RBRACE     {printf("IF\n");}      /* if-then */
+        | IF LPAREN expr RPAREN LBRACE stmts RBRACE ELSE LBRACE stmts RBRACE  {printf("IF ELSE\n");}   /* if-then-else */
         ;
 /* repeat until */
 repeat_until_stmt:
-        REPEAT LBRACE stmts RBRACE UNTIL expr SEMICOLON   {printf("REPEAT UNTIL\n");}
+        REPEAT LBRACE stmts RBRACE UNTIL LPAREN expr RPAREN SEMICOLON   {printf("REPEAT UNTIL\n");}
         ;
 /* for loop */
 for_stmt:
@@ -246,7 +245,7 @@ for_stmt:
         ;
 /* switch case */
 switch_stmt:
-        SWITCH expr LBRACE case_stmts RBRACE   {printf("SWITCH\n");}
+        SWITCH LPAREN expr RPAREN LBRACE case_stmts RBRACE   {printf("SWITCH\n");}
         ;
 
 case_stmts:
@@ -276,8 +275,8 @@ params:
         | params COMMA param     {printf("Multiple PARAMS\n");}  /* multiple params */
         ;
 param:
-        type IDENTIFIER   {printf("Param without default\n")}    /* param without default value */
-        type IDENTIFIER ASSIGN constant    {printf("Param with default\n")} /* param with default value */
+        type IDENTIFIER   {printf("Param without default\n");}    /* param without default value */
+        type IDENTIFIER ASSIGN constant    {printf("Param with default\n");} /* param with default value */
         ;
 %%
 
@@ -289,7 +288,7 @@ param:
 
 void yyerror(char* s)
 {
-    fprintf(stderr, "\n ERROR LINE %d :\n %s \n", lineno, s);
+    fprintf(stderr, "\n ERROR AT LINE %d :\n %s \n", lineno, s);
     exit(1);
 }
 

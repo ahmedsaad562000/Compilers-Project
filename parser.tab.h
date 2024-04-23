@@ -92,9 +92,10 @@
      MULT_EQ = 308,
      INC = 309,
      DEC = 310,
-     VOID = 311,
-     RETURN = 312,
-     PRINT = 313
+     UMINUS = 311,
+     VOID = 312,
+     RETURN = 313,
+     PRINT = 314
    };
 #endif
 

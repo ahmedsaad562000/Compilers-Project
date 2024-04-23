@@ -46,7 +46,7 @@ int lineno = 1;  /* Line Number */
                     }
 
 
-["][a-zA-Z0-9]*["]   {
+(["][^"\\]*(\\.[^"\\]*)*["])|(['][^'\\]*(\\.[^'\\]*)*['])   {
                         // yylval.lexeme.stringVal = strdup(yytext);
                         // yylval.lexeme.type = varType::STRING_TYPE;
                         // yylval.lexeme.stringRep = strdup(yytext);
@@ -135,7 +135,7 @@ int lineno = 1;  /* Line Number */
 
 "\n"                 { lineno++; }
 [//].*                 { ; }
-.               { yyerror("Unknown character"); }
+.               { return *yytext; }
 
 %%
 int yywrap(void) {
