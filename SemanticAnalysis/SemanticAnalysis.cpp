@@ -475,37 +475,37 @@ bool checkLT(LexemeEntry *lex1, LexemeEntry *lex2)
 }
 //----------------------------------------------------------------------//
 
-int main(void)
-{
-    Init();
-    LexemeEntry *entry = convertLexemeToEntry(0, "ta", 3, 0.0, "kk", false, 'k');
-    addEntryToTable("megz_x" , entry, VAR, true, nullptr, VOID_TYPE);
-    SymbolTableEntry* Symbolentry = getIdEntry("megz_x");
-    addEntryToTable("megz_y" , entry, VAR, true, nullptr, VOID_TYPE);
-    createNewTable();
-    addEntryToTable("megz_z" , entry, VAR, true, nullptr, VOID_TYPE);
-    exitCurrentScope();
-    addEntryToTable("megz_w" , entry, VAR, true, nullptr, VOID_TYPE);
+// int main(void)
+// {
+//     Init();
+//     LexemeEntry *entry = convertLexemeToEntry(0, "ta", 3, 0.0, "kk", false, 'k');
+//     addEntryToTable("megz_x" , entry, VAR, true, nullptr, VOID_TYPE);
+//     SymbolTableEntry* Symbolentry = getIdEntry("megz_x");
+//     addEntryToTable("megz_y" , entry, VAR, true, nullptr, VOID_TYPE);
+//     createNewTable();
+//     addEntryToTable("megz_z" , entry, VAR, true, nullptr, VOID_TYPE);
+//     exitCurrentScope();
+//     addEntryToTable("megz_w" , entry, VAR, true, nullptr, VOID_TYPE);
 
-    LexemeEntry* enumEntry = convertLexemeToEntry(6 , "ka", 2 , 0.0, "ka" , false, 't');
-    addEntryToTable("megz_enum" , enumEntry, ENUM, true, nullptr, VOID_TYPE);
-    SymbolTableEntry* entry_enum = getIdEntry("megz_enum");
-    vector<char*> entries = {"RED" , "YELLOW" , "GREEN"};
-    entry_enum->setEnumValues(entries);
+//     LexemeEntry* enumEntry = convertLexemeToEntry(6 , "ka", 2 , 0.0, "ka" , false, 't');
+//     addEntryToTable("megz_enum" , enumEntry, ENUM, true, nullptr, VOID_TYPE);
+//     SymbolTableEntry* entry_enum = getIdEntry("megz_enum");
+//     vector<char*> entries = {"RED" , "YELLOW" , "GREEN"};
+//     entry_enum->setEnumValues(entries);
 
-    bool isExist = idExistsInAnEnum(rootSymbolTable, "BLUE");
-    if(isExist) {cout << "Variable exist in enum" << endl;}
-    else {cout << "Variable doesn't exist in enum" << endl;}
+//     bool isExist = idExistsInAnEnum(rootSymbolTable, "BLUE");
+//     if(isExist) {cout << "Variable exist in enum" << endl;}
+//     else {cout << "Variable doesn't exist in enum" << endl;}
 
-    LexemeEntry* veriableEnum = convertLexemeToEntry(6 , "ka", 2 , 0.0, "RED" , false, 't');
-    addEntryToTable("megz_enum_variable", veriableEnum, VAR, true, entry_enum, VOID_TYPE);
+//     LexemeEntry* veriableEnum = convertLexemeToEntry(6 , "ka", 2 , 0.0, "RED" , false, 't');
+//     addEntryToTable("megz_enum_variable", veriableEnum, VAR, true, entry_enum, VOID_TYPE);
 
-    printSymbolTables();
+//     printSymbolTables();
 
-    SymbolTableEntry* checkScope = checkIfIdExistsInCurrentScope("megz_z");
-    if(checkScope) {cout << "Variable exist in current scope" << endl;}
-    else {cout << "Variable doesn't exist in current scope" << endl;}    
-    cout << Symbolentry->getLexemeEntry()->type << endl;
-    cout << "hello" << endl;
-    return 0;
-}
+//     SymbolTableEntry* checkScope = checkIfIdExistsInCurrentScope("megz_z");
+//     if(checkScope) {cout << "Variable exist in current scope" << endl;}
+//     else {cout << "Variable doesn't exist in current scope" << endl;}    
+//     cout << Symbolentry->getLexemeEntry()->type << endl;
+//     cout << "hello" << endl;
+//     return 0;
+// }
