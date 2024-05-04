@@ -1,7 +1,8 @@
 %{
     #include <stdio.h>
     #include <stdlib.h>
-
+    #include <stdarg.h>
+    #include "./SemanticAnalysis/SemanticAnalysis.cpp"
     extern FILE *yyin;
     extern int lineno; /* Line Number tacker from lexer */
     int yylex();
@@ -323,6 +324,8 @@ int main (void)
         }
     }
     fclose(yyin);
+    Init();
+    printSymbolTables();
     return 0;
 }
 
