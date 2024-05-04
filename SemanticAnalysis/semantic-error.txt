@@ -1,0 +1,6 @@
+Warning: megz_x is declared but not used
+Warning: megz_enum is declared but not used
+Warning: megz_y is declared but not used
+Warning: megz_enum_variable is declared but not used
+Warning: megz_w is declared but not used
+Warning: megz_z is declared but not used
