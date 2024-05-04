@@ -1,4 +1,4 @@
 flex lexer.l
 bison -d -v parser.y
-gcc lex.yy.c parser.tab.c
+g++ lex.yy.c parser.tab.c ./SymbolTable/SymbolTable.cpp ./SymbolTable/SymbolTableEntry.cpp
 a.exe
