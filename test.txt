@@ -1,9 +1,6 @@
 int xx=5;
 int yy;
-int zzzz;
+if(yy<10)
 {
-    {
-       int yy; 
-       int ww;
-    }
+    int z = 7;
 }

@@ -230,18 +230,95 @@ factor:
         | FLOAT_VAL             {printf("FLOAT_VAL\n");}        
         | factor EXP factor     {printf("EXP\n");}
         | function_call         {printf("FUNCTION_CALL\n");}
-        | IDENTIFIER            {printf("IDENTIFIER\n");}
+        | IDENTIFIER            {
+                SymbolTableEntry* entry = getIdEntry($1);
+                if(idExistsInAnEnum(rootSymbolTable,$1))
+                        return 0;
+                        
+                if(entry == NULL){
+                        printSemanticError("Variable not declared",lineno);
+                        return 0;
+                }
+                if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                entry->setIsUsed(true);
+                $$.type = (int)entry->getLexemeEntry()->type;
+                $$.stringRep = $1;
+                $$.intVal = entry->getLexemeEntry()->intVal;
+                $$.floatVal = entry->getLexemeEntry()->floatVal;
+                $$.stringVal = entry->getLexemeEntry()->stringVal;
+                $$.boolVal = entry->getLexemeEntry()->boolVal;
+                $$.charVal = entry->getLexemeEntry()->charVal;
+        }
 
 
 /* function call */
 function_call:
         IDENTIFIER LPAREN RPAREN   // no params
-        | IDENTIFIER LPAREN call_params RPAREN // with params
+        | IDENTIFIER LPAREN {
+                SymbolTableEntry* entry = getIdEntry($1);
+                if(entry == NULL){
+                        printSemanticError("Function not declared",lineno);
+                        return 0;
+                }
+                if(*entry->getKind() != FUNC)
+                {
+                        printSemanticError("Cannot call a non function type",lineno);
+                        return 0;
+                }
+                entry->setIsUsed(true);
+                convertFunctionParamsToStack(entry);
+        } call_params RPAREN {
+                if(functionParameters.size() != 0)
+                {
+                        printSemanticError("Function call parameters do not match function definition",lineno);
+                        return 0;
+                }
+                SymbolTableEntry* entry = getIdEntry($1);
+                $$.type = (int)entry->getFunctionOutputType();
+                $$.stringRep = $1;
+                $$.intVal = entry->getLexemeEntry()->intVal;
+                $$.floatVal = entry->getLexemeEntry()->floatVal;
+                $$.stringVal = entry->getLexemeEntry()->stringVal;
+                $$.boolVal = entry->getLexemeEntry()->boolVal;
+                $$.charVal = entry->getLexemeEntry()->charVal;
+        } // with params
         ;
 
 call_params:
-        call_params COMMA value
-        | value
+        call_params COMMA value {
+                if(functionParameters.size() == 0)
+                {
+                        printSemanticError("Function call parameters do not match function definition",lineno);
+                        return 0;
+                }
+                int type1 = (int)functionParameters.top();
+                int type2 = $3.type;
+                if(!isTypeMatching(type1,type2))
+                {
+                        printSemanticError("Type mismatch in function call",lineno);
+                }else{
+                        functionParameters.pop();
+                }
+        }
+        | value {
+                if(functionParameters.size() == 0)
+                {
+                        printSemanticError("Function call parameters do not match function definition",lineno);
+                        return 0;
+                }
+                int type1 = (int)functionParameters.top();
+                int type2 = $1.type;
+                if(!isTypeMatching(type1,type2))
+                {
+                        printSemanticError("Type mismatch in function call",lineno);
+                }else{
+                        functionParameters.pop();
+                }
+        }
         ;
 
 
@@ -257,6 +334,37 @@ constant:
 
 const_dec_stmt:
         CONST type IDENTIFIER ASSIGN constant SEMICOLON
+        {
+                SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($3);
+                if(entry){
+                        printSemanticError("Variable already declared",lineno);
+                        return 0;
+                }
+                int type1 = $2;
+                int type2 = $5.type;
+                if(!isTypeMatching(type1,type2))
+                {
+                        printSemanticError("Type mismatch in variable declaration",lineno);
+                }else{
+                        LexemeEntry* lexeme = new LexemeEntry;
+                        lexeme->type = static_cast<VariableType>(type1);
+                        lexeme->stringRep = getCurrentCount();
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
+                                lexeme->intVal = (int)$5.floatVal;
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
+                                lexeme->floatVal = (float)$5.intVal;
+                        }else{
+                                lexeme->intVal = $5.intVal;
+                                lexeme->floatVal = $5.floatVal;
+                                lexeme->stringVal = $5.stringVal;
+                                lexeme->boolVal = $5.boolVal;
+                                lexeme->charVal = $5.charVal;
+                        }
+                        addEntryToTable($3,lexeme,CONSTANT,true);
+                }    
+        }
         ;
 var_dec_stmt:
         type IDENTIFIER SEMICOLON {
@@ -312,7 +420,6 @@ var_dec_stmt:
 /* Assignment statements */
 assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
         {
-
         }
         | IDENTIFIER DIV_EQ value SEMICOLON
         | IDENTIFIER MULT_EQ value SEMICOLON
@@ -321,26 +428,30 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
         ;
 /* while statement */        
 while_stmt:
-        WHILE LPAREN expr RPAREN LBRACE stmts RBRACE  {printf("WHILE\n");}
+        WHILE LPAREN expr { checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);} RPAREN LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();}
         ;
 
 /* if statement */
 if_stmt:
-        IF LPAREN expr RPAREN LBRACE stmts RBRACE     {printf("IF\n");}      /* if-then */
-        | IF LPAREN expr RPAREN LBRACE stmts RBRACE ELSE LBRACE stmts RBRACE  {printf("IF ELSE\n");}   /* if-then-else */
+        IF LPAREN expr {
+                checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);
+        } RPAREN LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();}    /* if-then */
+        | IF LPAREN expr {
+                checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);
+        } RPAREN LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();} ELSE LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();} /* if-then-else */
         ;
 /* repeat until */
 repeat_until_stmt:
-        REPEAT LBRACE stmts RBRACE UNTIL LPAREN expr RPAREN SEMICOLON   {printf("REPEAT UNTIL\n");}
+        REPEAT LBRACE stmts RBRACE UNTIL LPAREN expr RPAREN SEMICOLON  {printf("REPEAT UNTIL\n");}
         ;
 /* for loop */
 for_stmt:
-        FOR LPAREN var_dec_stmt expr SEMICOLON expr RPAREN LBRACE stmts RBRACE    {printf("FOR\n");}
-        | FOR LPAREN assign_stmt expr SEMICOLON expr RPAREN LBRACE stmts RBRACE   {printf("FOR ELSE\n");}
+        FOR {createNewTable();} LPAREN var_dec_stmt expr {checkIfLexemIsBool($5.type != BOOL_TYPE,lineno); } SEMICOLON expr RPAREN LBRACE stmts RBRACE {exitCurrentScope();}
+        | FOR {createNewTable();} LPAREN assign_stmt expr {checkIfLexemIsBool($5.type != BOOL_TYPE,lineno);} SEMICOLON expr RPAREN LBRACE stmts RBRACE {exitCurrentScope();}
         ;
 /* switch case */
 switch_stmt:
-        SWITCH LPAREN expr RPAREN LBRACE case_stmts RBRACE   {printf("SWITCH\n");}
+        SWITCH LPAREN expr RPAREN LBRACE {createNewTable();} case_stmts RBRACE {exitCurrentScope();}
         ;
 
 case_stmts:
