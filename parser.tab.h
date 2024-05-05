@@ -117,6 +117,7 @@ typedef union YYSTYPE
                 char* stringVal;
                 bool boolVal;
                 char charVal;
+                bool isIdentifier;
         }lexeme;
 
         char* stringValue;
@@ -124,7 +125,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 128 "parser.tab.h"
+#line 129 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -1,6 +1,11 @@
 int xx=5;
 int yy;
+<<<<<<< HEAD
 if(yy<10)
+=======
+int zzzz;
+while(5==55)
+>>>>>>> 0aedea97a8a68a3062b86570a95e17f0aa9ddcad
 {
     int z = 7;
 }
