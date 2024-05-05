@@ -1,13 +1,14 @@
 Identifier       Level        Kind        Type             Value
 ----------       -----        ----        ----              ----
-zzzz                 0           VAR        INT_TYPE       40386648
-yy                 0           VAR        INT_TYPE       40386648
-xx                 0           VAR        INT_TYPE       40386648
+zzzz                 0           VAR        INT_TYPE        8985704
+yy                 0           VAR        INT_TYPE        8985704
+xx                 0           VAR        INT_TYPE              5
 
     Identifier       Level        Kind        Type             Value
     ----------       -----        ----        ----              ----
 
         Identifier       Level        Kind        Type             Value
         ----------       -----        ----        ----              ----
-        yy                 2           VAR        INT_TYPE       40386648
+        ww                 2           VAR        INT_TYPE        8985704
+        yy                 2           VAR        INT_TYPE        8985704
 

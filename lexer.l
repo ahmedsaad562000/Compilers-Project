@@ -1,6 +1,7 @@
 %{
 #include <stdio.h> // Include stdio.h for printf
 #include <stdlib.h>
+#include <string.h>
 #include "./SymbolTable/utils/enums.h"
 #include "parser.tab.h" // Include the y.tab.h file for the token definitions
 

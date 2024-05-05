@@ -1,8 +1,9 @@
-int xx;
+int xx=5;
 int yy;
 int zzzz;
 {
     {
        int yy; 
+       int ww;
     }
 }

@@ -272,7 +272,40 @@ var_dec_stmt:
                 addEntryToTable($2,lexeme,VAR,false);
               
          }
-        | type IDENTIFIER ASSIGN value SEMICOLON
+        | type IDENTIFIER ASSIGN value SEMICOLON {
+                SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
+                if(entry){
+                    printSemanticError("Variable already declared",lineno);
+                    return 0;
+                }
+                int type1 = $1;
+                int type2 = $4.type;
+                 if(!isTypeMatching(type1,type2))
+                {
+                        printSemanticError("Type mismatch in variable declaration",lineno);
+                }
+                
+                else
+                {
+                        LexemeEntry* lexeme = new LexemeEntry;
+                        lexeme->type = static_cast<VariableType>(type1);
+                        lexeme->stringRep = getCurrentCount();
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
+                                lexeme->intVal = (int)$4.floatVal;
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
+                                lexeme->floatVal = (float)$4.intVal;
+                        }else{
+                                lexeme->intVal = $4.intVal;
+                                lexeme->floatVal = $4.floatVal;
+                                lexeme->stringVal = $4.stringVal;
+                                lexeme->boolVal = $4.boolVal;
+                                lexeme->charVal = $4.charVal;
+                        }
+                        addEntryToTable($2,lexeme,VAR,true);
+                }
+        }
         ;
 
 

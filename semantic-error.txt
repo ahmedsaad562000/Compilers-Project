@@ -1,4 +1,5 @@
 Warning: zzzz is declared but not used
 Warning: yy is declared but not used
 Warning: xx is declared but not used
+Warning: ww is declared but not used
 Warning: yy is declared but not used
