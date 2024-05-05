@@ -1,9 +1,11 @@
 %{
 #include <stdio.h> // Include stdio.h for printf
 #include <stdlib.h>
+#include "./SymbolTable/utils/enums.h"
 #include "parser.tab.h" // Include the y.tab.h file for the token definitions
 
 int lineno = 1;  /* Line Number */
+ int yylex();
 %}
 
 
@@ -25,55 +27,62 @@ int lineno = 1;  /* Line Number */
 "--"            { return DEC; }
 
 [0-9]+              { 
-                        // yylval.lexeme.intVal = atoi(yytext);
-                        // yylval.lexeme.type = varType::INT_TYPE;
-                        // yylval.lexeme.stringRep = strdup(yytext);
+                         yylval.lexeme.intVal = atoi(yytext);
+                         yylval.lexeme.type = INT_TYPE;
+                         yylval.lexeme.stringRep = strdup(yytext);
                         return INT_VAL;
                     }
 
 [0-9]+\.[0-9]+  {
-                        // yylval.lexeme.floatVal = atof(yytext);
-                        // yylval.lexeme.type = varType::FLOAT_TYPE;
-                        // yylval.lexeme.stringRep = strdup(yytext);
+                         yylval.lexeme.floatVal = atof(yytext);
+                         yylval.lexeme.type = FLOAT_TYPE;
+                         yylval.lexeme.stringRep = strdup(yytext);
                         return FLOAT_VAL;
                     }
 
 ['][a-zA-Z0-9][']   {
-                        // yylval.lexeme.charVal = yytext[0];
-                        // yylval.lexeme.type = varType::CHAR_TYPE;
-                        // yylval.lexeme.stringRep = strdup(yytext);
+                         yylval.lexeme.charVal = yytext[0];
+                         yylval.lexeme.type = CHAR_TYPE;
+                         yylval.lexeme.stringRep = strdup(yytext);
                         return CHAR_VAL;
                     }
 
 
 (["][^"\\]*(\\.[^"\\]*)*["])|(['][^'\\]*(\\.[^'\\]*)*['])   {
-                        // yylval.lexeme.stringVal = strdup(yytext);
-                        // yylval.lexeme.type = varType::STRING_TYPE;
-                        // yylval.lexeme.stringRep = strdup(yytext);
+                         yylval.lexeme.stringVal = strdup(yytext);
+                         yylval.lexeme.type = STRING_TYPE;
+                         yylval.lexeme.stringRep = strdup(yytext);
                         return STRING_VAL;
                     }
 
 
 "true"              { 
-                        // yylval.lexeme.boolVal = true;
-                        // yylval.lexeme.type = varType::BOOL_TYPE;
-                        // yylval.lexeme.stringRep = strdup(yytext);
+                         yylval.lexeme.boolVal = true;
+                         yylval.lexeme.type = BOOL_TYPE;
+                         yylval.lexeme.stringRep = strdup(yytext);
                         return TRUE_VAL; }
 "false"             { 
-                        // yylval.lexeme.boolVal = false;
-                        // yylval.lexeme.type = varType::BOOL_TYPE;
-                        // yylval.lexeme.stringRep = strdup(yytext);
+                         yylval.lexeme.boolVal = false;
+                         yylval.lexeme.type = BOOL_TYPE;
+                         yylval.lexeme.stringRep = strdup(yytext);
                         return FALSE_VAL;
                     }
 
 
 
-"int"           {return INT;} 
-"float"         { return FLOAT;}
-"char"          { return CHAR;}
-"bool"          { return BOOL;}
-"string"        { return STRING;}
-"const"         { return CONST; }
+"int"           { yylval.varType = INT_TYPE;          
+                  return INT;} 
+"float"         { yylval.varType = FLOAT_TYPE;
+                  return FLOAT;}
+"char"          { yylval.varType = CHAR_TYPE;
+                  return CHAR;}
+"bool"          { yylval.varType = BOOL_TYPE;
+                  return BOOL;}
+
+"string"        { yylval.varType = STRING_TYPE;
+                  return STRING;}
+
+"const"         {  return CONST; }
 
 
 "while"         { return WHILE; }
@@ -128,7 +137,7 @@ int lineno = 1;  /* Line Number */
 
 
 [a-zA-Z][a-zA-Z0-9_]*  { 
-    //yylval.stringValue = strdup(yytext);
+    yylval.stringValue = strdup(yytext);
      return IDENTIFIER; } 
 
 

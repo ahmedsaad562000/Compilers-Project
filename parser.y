@@ -5,10 +5,43 @@
     #include "./SemanticAnalysis/SemanticAnalysis.cpp"
     extern FILE *yyin;
     extern int lineno; /* Line Number tacker from lexer */
-    int yylex();
+    extern int yylex();
     int yywrap();
     void yyerror(char*);
     %}
+        /* Union */
+%union {
+        int varType;
+        struct Lexeme{
+                int type;
+                char *stringRep;
+                int intVal;
+                float floatVal;
+                char* stringVal;
+                bool boolVal;
+                char charVal;
+        }lexeme;
+
+        char* stringValue;
+};
+
+%type<varType> type
+%type<lexeme> value
+%type<lexeme> constant
+%type<lexeme> expr
+%type<lexeme> bool_expr
+%type<lexeme> arithmetic_expr
+%type<lexeme> unary_expr
+%type<lexeme> binary_expr
+%type<lexeme> term
+%type<lexeme> factor
+%type<lexeme> function_call
+
+
+
+
+
+
 
 %token INT
 %token FLOAT
@@ -16,10 +49,16 @@
 %token BOOL
 %token STRING
 
+%type<varType> INT  
+%type<varType> FLOAT
+%type<varType> CHAR
+%type<varType> BOOL
+%type<varType> STRING
 
 
 
 /* Values */
+%token IDENTIFIER
 %token  INT_VAL
 %token  FLOAT_VAL
 %token  CHAR_VAL
@@ -27,13 +66,20 @@
 %token  TRUE_VAL
 %token  FALSE_VAL
 
-
+%type<lexeme> INT_VAL
+%type<lexeme> FLOAT_VAL
+%type<lexeme> CHAR_VAL
+%type<lexeme> STRING_VAL
+%type<lexeme> TRUE_VAL
+%type<lexeme> FALSE_VAL
+%type<stringValue> IDENTIFIER
 
 
 
 
 /* Identifier */
-%token IDENTIFIER
+
+
 
 
 
@@ -115,7 +161,7 @@ stmts:
         ;
 stmt:
         expr SEMICOLON
-        | LBRACE stmts RBRACE /* block */
+        | LBRACE{createNewTable();} stmts RBRACE{exitCurrentScope();} /* block */
         | const_dec_stmt        /* const dec */
         | var_dec_stmt        /* var dec */
         | assign_stmt        /* assign */
@@ -213,13 +259,28 @@ const_dec_stmt:
         CONST type IDENTIFIER ASSIGN constant SEMICOLON
         ;
 var_dec_stmt:
-        type IDENTIFIER SEMICOLON
+        type IDENTIFIER SEMICOLON {
+                
+                SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
+                if(entry != NULL){
+                        printSemanticError("Variable already declared",lineno);
+                        return 0;
+                }
+                 LexemeEntry* lexeme = new LexemeEntry;
+                lexeme->type = static_cast<VariableType>($1);
+                lexeme->stringRep = getCurrentCount();
+                addEntryToTable($2,lexeme,VAR,false);
+              
+         }
         | type IDENTIFIER ASSIGN value SEMICOLON
         ;
 
 
 /* Assignment statements */
 assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
+        {
+
+        }
         | IDENTIFIER DIV_EQ value SEMICOLON
         | IDENTIFIER MULT_EQ value SEMICOLON
         | IDENTIFIER PLUS_EQ value SEMICOLON
@@ -296,6 +357,8 @@ void yyerror(char* s)
 
 int main (void)
 {
+    Init();
+
     yyin = fopen("test.txt", "r+");
     if (yyin == NULL)
     {
@@ -315,17 +378,17 @@ int main (void)
         int result = yyparse();
 
         printf("\n=================\n");
-
+        
         if (result == 0) {
             printf("Parsing Successful\n");
         }
         else {
             printf("Parsing Failed\n");
         }
+        printSymbolTables();
     }
     fclose(yyin);
-    Init();
-    printSymbolTables();
+   
     return 0;
 }
 

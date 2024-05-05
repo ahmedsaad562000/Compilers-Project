@@ -44,13 +44,13 @@
      CHAR = 260,
      BOOL = 261,
      STRING = 262,
-     INT_VAL = 263,
-     FLOAT_VAL = 264,
-     CHAR_VAL = 265,
-     STRING_VAL = 266,
-     TRUE_VAL = 267,
-     FALSE_VAL = 268,
-     IDENTIFIER = 269,
+     IDENTIFIER = 263,
+     INT_VAL = 264,
+     FLOAT_VAL = 265,
+     CHAR_VAL = 266,
+     STRING_VAL = 267,
+     TRUE_VAL = 268,
+     FALSE_VAL = 269,
      CONST = 270,
      SEMICOLON = 271,
      COMMA = 272,
@@ -102,7 +102,30 @@
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+
+/* Line 1676 of yacc.c  */
+#line 13 "parser.y"
+
+        int varType;
+        struct Lexeme{
+                int type;
+                char *stringRep;
+                int intVal;
+                float floatVal;
+                char* stringVal;
+                bool boolVal;
+                char charVal;
+        }lexeme;
+
+        char* stringValue;
+
+
+
+/* Line 1676 of yacc.c  */
+#line 128 "parser.tab.h"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
