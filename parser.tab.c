@@ -187,6 +187,7 @@ typedef union YYSTYPE
                 char* stringVal;
                 bool boolVal;
                 char charVal;
+                bool isIdentifier;
         }lexeme;
 
         char* stringValue;
@@ -194,7 +195,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 198 "parser.tab.c"
+#line 199 "parser.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -206,7 +207,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 210 "parser.tab.c"
+#line 211 "parser.tab.c"
 
 #ifdef short
 # undef short
@@ -539,17 +540,17 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   159,   159,   160,   163,   164,   164,   165,   166,   167,
-     168,   169,   170,   171,   172,   173,   174,   175,   176,   177,
-     180,   180,   182,   182,   182,   185,   186,   188,   189,   190,
-     191,   192,   193,   194,   195,   196,   197,   198,   199,   203,
-     204,   207,   208,   211,   212,   213,   216,   217,   218,   219,
-     221,   222,   224,   225,   229,   230,   231,   232,   233,   238,
-     239,   243,   244,   250,   251,   252,   253,   254,   255,   259,
-     262,   275,   313,   317,   318,   319,   320,   324,   329,   330,
-     334,   338,   339,   343,   347,   348,   351,   352,   358,   358,
-     358,   358,   358,   360,   363,   364,   365,   366,   369,   370,
-     373,   374
+       0,   160,   160,   161,   164,   165,   165,   166,   167,   168,
+     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
+     181,   181,   183,   183,   183,   186,   187,   189,   215,   216,
+     217,   218,   219,   220,   221,   222,   223,   224,   225,   229,
+     230,   233,   234,   237,   238,   239,   242,   243,   244,   245,
+     247,   248,   250,   251,   255,   256,   257,   258,   259,   264,
+     265,   269,   270,   276,   277,   278,   279,   280,   281,   285,
+     288,   301,   339,   343,   344,   345,   346,   350,   355,   356,
+     360,   364,   365,   369,   373,   374,   377,   378,   384,   384,
+     384,   384,   384,   386,   389,   390,   391,   392,   395,   396,
+     399,   400
 };
 #endif
 
@@ -1712,105 +1713,136 @@ yyreduce:
         case 5:
 
 /* Line 1455 of yacc.c  */
-#line 164 "parser.y"
+#line 165 "parser.y"
     {createNewTable();;}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 164 "parser.y"
+#line 165 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 177 "parser.y"
+#line 178 "parser.y"
     {printf("-----------PRINT Statement------------\n");;}
+    break;
+
+  case 27:
+
+/* Line 1455 of yacc.c  */
+#line 190 "parser.y"
+    {
+                int type1 = (yyvsp[(1) - (3)].lexeme).type;
+                int type2 = (yyvsp[(3) - (3)].lexeme).type;
+                printf("%s\n", (yyvsp[(1) - (3)].lexeme).isIdentifier ? "true" : "false");
+
+                printf("%s\n", (yyvsp[(1) - (3)].lexeme).isIdentifier ? "true" : "false");
+
+                
+                if(!isTypeMatching(type1,type2))
+                {
+                        printSemanticError("Type mismatch in boolean expression",lineno);
+                }
+                else
+                {
+                        (yyval.lexeme).type = BOOL_TYPE;
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        printf((yyval.lexeme).stringRep);
+                LexemeEntry* lex1 = convertLexemeToEntry((yyvsp[(1) - (3)].lexeme).type, (yyvsp[(1) - (3)].lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).intVal, (yyvsp[(1) - (3)].lexeme).floatVal, (yyvsp[(1) - (3)].lexeme).stringVal, (yyvsp[(1) - (3)].lexeme).boolVal, (yyvsp[(1) - (3)].lexeme).charVal);
+                LexemeEntry* lex2 = convertLexemeToEntry((yyvsp[(3) - (3)].lexeme).type, (yyvsp[(3) - (3)].lexeme).stringRep, (yyvsp[(3) - (3)].lexeme).intVal, (yyvsp[(3) - (3)].lexeme).floatVal, (yyvsp[(3) - (3)].lexeme).stringVal, (yyvsp[(3) - (3)].lexeme).boolVal, (yyvsp[(3) - (3)].lexeme).charVal);
+                (yyval.lexeme).boolVal = checkEQ_EQ(lex1,lex2);
+
+    
+                }
+    
+    ;}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 212 "parser.y"
+#line 238 "parser.y"
     {printf("PLUS\n");;}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 213 "parser.y"
+#line 239 "parser.y"
     {printf("MINUS\n");;}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 217 "parser.y"
+#line 243 "parser.y"
     {printf("MULT\n");;}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 218 "parser.y"
+#line 244 "parser.y"
     {printf("DIV\n");;}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 219 "parser.y"
+#line 245 "parser.y"
     {printf("MOD\n");;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 222 "parser.y"
+#line 248 "parser.y"
     {printf("--------------negation------------------------\n");;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 229 "parser.y"
+#line 255 "parser.y"
     {printf("INT_VAL\n");;}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 230 "parser.y"
+#line 256 "parser.y"
     {printf("FLOAT_VAL\n");;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 231 "parser.y"
+#line 257 "parser.y"
     {printf("EXP\n");;}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 232 "parser.y"
+#line 258 "parser.y"
     {printf("FUNCTION_CALL\n");;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 233 "parser.y"
+#line 259 "parser.y"
     {printf("IDENTIFIER\n");;}
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 262 "parser.y"
+#line 288 "parser.y"
     {
                 
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
@@ -1829,7 +1861,7 @@ yyreduce:
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 275 "parser.y"
+#line 301 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (5)].stringValue));
                 if(entry){
@@ -1869,7 +1901,7 @@ yyreduce:
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 314 "parser.y"
+#line 340 "parser.y"
     {
 
         ;}
@@ -1878,126 +1910,126 @@ yyreduce:
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 324 "parser.y"
+#line 350 "parser.y"
     {printf("WHILE\n");;}
     break;
 
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 329 "parser.y"
+#line 355 "parser.y"
     {printf("IF\n");;}
     break;
 
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 330 "parser.y"
+#line 356 "parser.y"
     {printf("IF ELSE\n");;}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 334 "parser.y"
+#line 360 "parser.y"
     {printf("REPEAT UNTIL\n");;}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 338 "parser.y"
+#line 364 "parser.y"
     {printf("FOR\n");;}
     break;
 
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 339 "parser.y"
+#line 365 "parser.y"
     {printf("FOR ELSE\n");;}
     break;
 
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 343 "parser.y"
+#line 369 "parser.y"
     {printf("SWITCH\n");;}
     break;
 
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 351 "parser.y"
+#line 377 "parser.y"
     {printf("CASE\n");;}
     break;
 
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 352 "parser.y"
+#line 378 "parser.y"
     {printf("DEFAULT\n");;}
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 360 "parser.y"
+#line 386 "parser.y"
     {printf("FUNCTION\n");;}
     break;
 
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 363 "parser.y"
+#line 389 "parser.y"
     {printf("VOID FUNCTION WITH PARAMS\n");;}
     break;
 
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 364 "parser.y"
+#line 390 "parser.y"
     {printf("VOID FUNCTION WITHOUT PARAMS\n");;}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 365 "parser.y"
+#line 391 "parser.y"
     {printf("TYPE FUNCTION WITH PARAMS\n");;}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
-#line 366 "parser.y"
+#line 392 "parser.y"
     {printf("TYPE FUNCTION WITHOUT PARAMS\n");;}
     break;
 
   case 99:
 
 /* Line 1455 of yacc.c  */
-#line 370 "parser.y"
+#line 396 "parser.y"
     {printf("Multiple PARAMS\n");;}
     break;
 
   case 100:
 
 /* Line 1455 of yacc.c  */
-#line 373 "parser.y"
+#line 399 "parser.y"
     {printf("Param without default\n");;}
     break;
 
   case 101:
 
 /* Line 1455 of yacc.c  */
-#line 374 "parser.y"
+#line 400 "parser.y"
     {printf("Param with default\n");;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2001 "parser.tab.c"
+#line 2033 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2209,7 +2241,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 376 "parser.y"
+#line 402 "parser.y"
 
 
 

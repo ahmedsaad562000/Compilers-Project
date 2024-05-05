@@ -20,6 +20,7 @@
                 char* stringVal;
                 bool boolVal;
                 char charVal;
+                bool isIdentifier;
         }lexeme;
 
         char* stringValue;
@@ -186,11 +187,98 @@ expr:   bool_expr
         | arithmetic_expr        ;
 
 bool_expr: expr EQUAL arithmetic_expr           /* == */
-    | expr NE arithmetic_expr                   /* != */
+    {
+                int type1 = $1.type;
+                int type2 = $3.type;
+                if(!isTypeMatching(type1,type2))
+                {
+                        printSemanticError("Type mismatch in boolean expression",lineno);
+                }
+                else
+                {
+                $$.type = BOOL_TYPE;
+                $$.stringRep = getCurrentCount();
+                LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
+                LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
+                $$.boolVal = checkEQ_EQ(lex1,lex2);     
+    
+                }
+    
+    }
+    | expr NE arithmetic_expr  {               /* != */
+                int type1 = $1.type;
+                int type2 = $3.type;
+                if(!isTypeMatching(type1,type2))
+                {
+                        printSemanticError("Type mismatch in boolean expression",lineno);
+                }else{
+                        $$.type = BOOL_TYPE;
+                        $$.stringRep = getCurrentCount();
+                        LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
+                        LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
+                        $$.boolVal = checkNE(lex1,lex2);
+                }
+        }                   
     | expr GREATER arithmetic_expr              /* > */
+        {
+                int type1 = $1.type;
+                int type2 = $3.type;
+                if(!isTypeMatching(type1,type2))
+                {
+                        printSemanticError("Type mismatch in boolean expression",lineno);
+                }else{
+                        $$.type = BOOL_TYPE;
+                        $$.stringRep = getCurrentCount();
+                        LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
+                        LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
+                        $$.boolVal = checkGT(lex1,lex2);
+                }
+        }
     | expr LESS arithmetic_expr                 /* < */
+          {
+                int type1 = $1.type;
+                int type2 = $3.type;
+                if(!isTypeMatching(type1,type2))
+                {
+                        printSemanticError("Type mismatch in boolean expression",lineno);
+                }else{
+                        $$.type = BOOL_TYPE;
+                        $$.stringRep = getCurrentCount();
+                        LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
+                        LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
+                        $$.boolVal = checkLT(lex1,lex2);
+                }
+        }
     | expr GE arithmetic_expr                   /* >= */
+      {
+                int type1 = $1.type;
+                int type2 = $3.type;
+                if(!isTypeMatching(type1,type2))
+                {
+                        printSemanticError("Type mismatch in boolean expression",lineno);
+                }else{
+                        $$.type = BOOL_TYPE;
+                        $$.stringRep = getCurrentCount();
+                        LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
+                        LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
+                        $$.boolVal = checkGE(lex1,lex2);
+                }
+        }
     | expr LE arithmetic_expr                   /* <= */
+      {
+                int type1 = $1.type;
+                int type2 = $3.type;
+                if(!isTypeMatching(type1,type2))
+                {
+                        printSemanticError("Type mismatch in boolean expression",lineno);
+                }else{
+                        $$.type = BOOL_TYPE;
+                        $$.stringRep = getCurrentCount();
+                        LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
+                        LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
+                        $$.boolVal = checkLE(lex1,lex2);
+                }
+        }
     | expr AND expr                             /* && */
     | expr OR expr                              /* || */
     | NOT expr
