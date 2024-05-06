@@ -402,14 +402,114 @@ unary_expr: IDENTIFIER INC
     ;
 
 binary_expr: term
-    | binary_expr PLUS term      {printf("PLUS\n");}
-    | binary_expr MINUS term     {printf("MINUS\n");}
+    | binary_expr PLUS term        
+     {
+                int type1 = $1.type;
+                int type2 = $3.type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Addition operation must be between 2 numbers",lineno);
+                }
+                else
+                {
+                        $$.stringRep = getCurrentCount();
+                        if(type1 == FLOAT_TYPE || type2 == FLOAT_TYPE)
+                        {
+                                $$.type = FLOAT_TYPE;
+                                $$.floatVal = $1.floatVal + $3.floatVal;
+                        }
+                        else{
+                                $$.type = INT_TYPE;
+                                $$.intVal = $1.intVal + $3.intVal;
+                        }
+                
+                }
+        } 
+    | binary_expr MINUS term 
+      {
+                int type1 = $1.type;
+                int type2 = $3.type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Minus operation must be between 2 numbers",lineno);
+                }
+                else
+                {
+                        $$.stringRep = getCurrentCount();
+                        if(type1 == FLOAT_TYPE || type2 == FLOAT_TYPE)
+                        {
+                                $$.type = FLOAT_TYPE;
+                                $$.floatVal = $1.floatVal - $3.floatVal;
+                        }
+                        else
+                        {
+                                $$.type = INT_TYPE;
+                                $$.intVal = $1.intVal - $3.intVal;
+                        }
+                
+                }
+        } 
     ;
 
 term: negat
-    | term MULT factor          {printf("MULT\n");}
-    | term DIV factor           {printf("DIV\n");}
-    | term MOD factor           {printf("MOD\n");}
+    | term MULT factor          
+     {
+                int type1 = $1.type;
+                int type2 = $3.type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Multiplication operation must be between 2 numbers",lineno);
+                }else{
+                        $$.stringRep = getCurrentCount();
+                        if(type1 == FLOAT_TYPE || type2 == FLOAT_TYPE)
+                        {
+                                $$.type = FLOAT_TYPE;
+                                $$.floatVal = $1.floatVal * $3.floatVal;
+                        }
+                        else{
+                                $$.type = INT_TYPE;
+                                $$.intVal = $1.intVal * $3.intVal;
+                        }
+                }
+        } 
+    | term DIV factor           
+       {
+               
+                int type1 = $1.type;
+                int type2 = $3.type;
+                
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Division operation must be between 2 numbers",lineno);
+                }else{
+                        $$.stringRep = getCurrentCount();
+                        if(type1 == FLOAT_TYPE || type2 == FLOAT_TYPE)
+                        {
+                                $$.type = FLOAT_TYPE;
+                                $$.floatVal = $1.floatVal / $3.floatVal;
+                        }
+                        else{
+                                $$.type = INT_TYPE;
+                                $$.intVal = $1.intVal / $3.intVal;
+                        }
+                }
+        } 
+    | term MOD factor      
+     {
+               
+                int type1 = $1.type;
+                int type2 = $3.type;
+                
+                if((type1 != INT_TYPE ) || (type2 != INT_TYPE))
+                {
+                        printSemanticError("Mod operation must be between 2 Integers",lineno);
+                }else{
+                        $$.stringRep = getCurrentCount();
+                                $$.type = INT_TYPE;
+                                $$.intVal = $1.intVal % $3.intVal;
+                        
+                }
+        }      
     ;
 negat: para
      | MINUS para %prec UMINUS           {printf("--------------negation------------------------\n");}

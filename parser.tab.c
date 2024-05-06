@@ -550,15 +550,15 @@ static const yytype_uint16 yyrline[] =
      169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
      181,   181,   183,   183,   183,   186,   187,   189,   208,   222,
      237,   252,   267,   282,   295,   308,   321,   325,   326,   330,
-     331,   334,   368,   404,   405,   406,   409,   410,   411,   412,
-     414,   415,   417,   418,   422,   423,   424,   425,   426,   453,
-     454,   454,   485,   501,   521,   522,   523,   524,   525,   526,
-     530,   564,   577,   615,   618,   619,   620,   621,   625,   625,
-     625,   630,   632,   630,   633,   635,   635,   635,   633,   639,
-     639,   639,   639,   643,   643,   643,   644,   644,   644,   648,
-     648,   652,   653,   656,   657,   663,   663,   663,   663,   663,
-     665,   668,   668,   681,   681,   693,   693,   706,   706,   721,
-     722,   725,   738
+     331,   334,   368,   404,   405,   428,   454,   455,   475,   497,
+     514,   515,   517,   518,   522,   523,   524,   525,   526,   553,
+     554,   554,   585,   601,   621,   622,   623,   624,   625,   626,
+     630,   664,   677,   715,   718,   719,   720,   721,   725,   725,
+     725,   730,   732,   730,   733,   735,   735,   735,   733,   739,
+     739,   739,   739,   743,   743,   743,   744,   744,   744,   748,
+     748,   752,   753,   756,   757,   763,   763,   763,   763,   763,
+     765,   768,   768,   781,   781,   793,   793,   806,   806,   821,
+     822,   825,   838
 };
 #endif
 
@@ -2034,77 +2034,172 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 405 "parser.y"
-    {printf("PLUS\n");;}
+#line 406 "parser.y"
+    {
+                int type1 = (yyvsp[(1) - (3)].lexeme).type;
+                int type2 = (yyvsp[(3) - (3)].lexeme).type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Addition operation must be between 2 numbers",lineno);
+                }
+                else
+                {
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        if(type1 == FLOAT_TYPE || type2 == FLOAT_TYPE)
+                        {
+                                (yyval.lexeme).type = FLOAT_TYPE;
+                                (yyval.lexeme).floatVal = (yyvsp[(1) - (3)].lexeme).floatVal + (yyvsp[(3) - (3)].lexeme).floatVal;
+                        }
+                        else{
+                                (yyval.lexeme).type = INT_TYPE;
+                                (yyval.lexeme).intVal = (yyvsp[(1) - (3)].lexeme).intVal + (yyvsp[(3) - (3)].lexeme).intVal;
+                        }
+                
+                }
+        ;}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 406 "parser.y"
-    {printf("MINUS\n");;}
+#line 429 "parser.y"
+    {
+                int type1 = (yyvsp[(1) - (3)].lexeme).type;
+                int type2 = (yyvsp[(3) - (3)].lexeme).type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Minus operation must be between 2 numbers",lineno);
+                }
+                else
+                {
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        if(type1 == FLOAT_TYPE || type2 == FLOAT_TYPE)
+                        {
+                                (yyval.lexeme).type = FLOAT_TYPE;
+                                (yyval.lexeme).floatVal = (yyvsp[(1) - (3)].lexeme).floatVal - (yyvsp[(3) - (3)].lexeme).floatVal;
+                        }
+                        else
+                        {
+                                (yyval.lexeme).type = INT_TYPE;
+                                (yyval.lexeme).intVal = (yyvsp[(1) - (3)].lexeme).intVal - (yyvsp[(3) - (3)].lexeme).intVal;
+                        }
+                
+                }
+        ;}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 410 "parser.y"
-    {printf("MULT\n");;}
+#line 456 "parser.y"
+    {
+                int type1 = (yyvsp[(1) - (3)].lexeme).type;
+                int type2 = (yyvsp[(3) - (3)].lexeme).type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Multiplication operation must be between 2 numbers",lineno);
+                }else{
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        if(type1 == FLOAT_TYPE || type2 == FLOAT_TYPE)
+                        {
+                                (yyval.lexeme).type = FLOAT_TYPE;
+                                (yyval.lexeme).floatVal = (yyvsp[(1) - (3)].lexeme).floatVal * (yyvsp[(3) - (3)].lexeme).floatVal;
+                        }
+                        else{
+                                (yyval.lexeme).type = INT_TYPE;
+                                (yyval.lexeme).intVal = (yyvsp[(1) - (3)].lexeme).intVal * (yyvsp[(3) - (3)].lexeme).intVal;
+                        }
+                }
+        ;}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 411 "parser.y"
-    {printf("DIV\n");;}
+#line 476 "parser.y"
+    {
+               
+                int type1 = (yyvsp[(1) - (3)].lexeme).type;
+                int type2 = (yyvsp[(3) - (3)].lexeme).type;
+                
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Division operation must be between 2 numbers",lineno);
+                }else{
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        if(type1 == FLOAT_TYPE || type2 == FLOAT_TYPE)
+                        {
+                                (yyval.lexeme).type = FLOAT_TYPE;
+                                (yyval.lexeme).floatVal = (yyvsp[(1) - (3)].lexeme).floatVal / (yyvsp[(3) - (3)].lexeme).floatVal;
+                        }
+                        else{
+                                (yyval.lexeme).type = INT_TYPE;
+                                (yyval.lexeme).intVal = (yyvsp[(1) - (3)].lexeme).intVal / (yyvsp[(3) - (3)].lexeme).intVal;
+                        }
+                }
+        ;}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 412 "parser.y"
-    {printf("MOD\n");;}
+#line 498 "parser.y"
+    {
+               
+                int type1 = (yyvsp[(1) - (3)].lexeme).type;
+                int type2 = (yyvsp[(3) - (3)].lexeme).type;
+                
+                if((type1 != INT_TYPE ) || (type2 != INT_TYPE))
+                {
+                        printSemanticError("Mod operation must be between 2 Integers",lineno);
+                }else{
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                                (yyval.lexeme).type = INT_TYPE;
+                                (yyval.lexeme).intVal = (yyvsp[(1) - (3)].lexeme).intVal % (yyvsp[(3) - (3)].lexeme).intVal;
+                        
+                }
+        ;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 415 "parser.y"
+#line 515 "parser.y"
     {printf("--------------negation------------------------\n");;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 422 "parser.y"
+#line 522 "parser.y"
     {printf("INT_VAL\n");;}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 423 "parser.y"
+#line 523 "parser.y"
     {printf("FLOAT_VAL\n");;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 424 "parser.y"
+#line 524 "parser.y"
     {printf("EXP\n");;}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 425 "parser.y"
+#line 525 "parser.y"
     {printf("FUNCTION_CALL\n");;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 426 "parser.y"
+#line 526 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (1)].stringValue));
                 if(idExistsInAnEnum(rootSymbolTable,(yyvsp[(1) - (1)].stringValue)))
@@ -2133,7 +2228,7 @@ yyreduce:
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 454 "parser.y"
+#line 554 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (2)].stringValue));
                 if(entry == NULL){
@@ -2153,7 +2248,7 @@ yyreduce:
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 467 "parser.y"
+#line 567 "parser.y"
     {
                 if(functionParameters.size() != 0)
                 {
@@ -2174,7 +2269,7 @@ yyreduce:
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 485 "parser.y"
+#line 585 "parser.y"
     {
                 if(functionParameters.size() == 0)
                 {
@@ -2196,7 +2291,7 @@ yyreduce:
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 501 "parser.y"
+#line 601 "parser.y"
     {
                 if(functionParameters.size() == 0)
                 {
@@ -2217,7 +2312,7 @@ yyreduce:
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 531 "parser.y"
+#line 631 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(3) - (6)].stringValue));
                 if(entry){
@@ -2254,7 +2349,7 @@ yyreduce:
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 564 "parser.y"
+#line 664 "parser.y"
     {
                 
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
@@ -2273,7 +2368,7 @@ yyreduce:
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 577 "parser.y"
+#line 677 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (5)].stringValue));
                 if(entry){
@@ -2313,7 +2408,7 @@ yyreduce:
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 616 "parser.y"
+#line 716 "parser.y"
     {
         ;}
     break;
@@ -2321,28 +2416,28 @@ yyreduce:
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 625 "parser.y"
+#line 725 "parser.y"
     { checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 625 "parser.y"
+#line 725 "parser.y"
     {createNewTable();;}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 625 "parser.y"
+#line 725 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 630 "parser.y"
+#line 730 "parser.y"
     {
                 checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);
         ;}
@@ -2351,21 +2446,21 @@ yyreduce:
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 632 "parser.y"
+#line 732 "parser.y"
     {createNewTable();;}
     break;
 
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 632 "parser.y"
+#line 732 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 633 "parser.y"
+#line 733 "parser.y"
     {
                 checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);
         ;}
@@ -2374,140 +2469,140 @@ yyreduce:
   case 85:
 
 /* Line 1455 of yacc.c  */
-#line 635 "parser.y"
+#line 735 "parser.y"
     {createNewTable();;}
     break;
 
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 635 "parser.y"
+#line 735 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 635 "parser.y"
+#line 735 "parser.y"
     {createNewTable();;}
     break;
 
   case 88:
 
 /* Line 1455 of yacc.c  */
-#line 635 "parser.y"
+#line 735 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 89:
 
 /* Line 1455 of yacc.c  */
-#line 639 "parser.y"
+#line 739 "parser.y"
     {createNewTable();;}
     break;
 
   case 90:
 
 /* Line 1455 of yacc.c  */
-#line 639 "parser.y"
+#line 739 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 91:
 
 /* Line 1455 of yacc.c  */
-#line 639 "parser.y"
+#line 739 "parser.y"
     { checkIfLexemIsBool((yyvsp[(9) - (9)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 92:
 
 /* Line 1455 of yacc.c  */
-#line 639 "parser.y"
+#line 739 "parser.y"
     {printf("REPEAT UNTIL\n");;}
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 643 "parser.y"
+#line 743 "parser.y"
     {createNewTable();;}
     break;
 
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 643 "parser.y"
+#line 743 "parser.y"
     {checkIfLexemIsBool((yyvsp[(5) - (5)].lexeme).type != BOOL_TYPE,lineno); ;}
     break;
 
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 643 "parser.y"
+#line 743 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 644 "parser.y"
+#line 744 "parser.y"
     {createNewTable();;}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
-#line 644 "parser.y"
+#line 744 "parser.y"
     {checkIfLexemIsBool((yyvsp[(5) - (5)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 98:
 
 /* Line 1455 of yacc.c  */
-#line 644 "parser.y"
+#line 744 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 99:
 
 /* Line 1455 of yacc.c  */
-#line 648 "parser.y"
+#line 748 "parser.y"
     {createNewTable();;}
     break;
 
   case 100:
 
 /* Line 1455 of yacc.c  */
-#line 648 "parser.y"
+#line 748 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 103:
 
 /* Line 1455 of yacc.c  */
-#line 656 "parser.y"
+#line 756 "parser.y"
     {printf("CASE\n");;}
     break;
 
   case 104:
 
 /* Line 1455 of yacc.c  */
-#line 657 "parser.y"
+#line 757 "parser.y"
     {printf("DEFAULT\n");;}
     break;
 
   case 110:
 
 /* Line 1455 of yacc.c  */
-#line 665 "parser.y"
+#line 765 "parser.y"
     {exitCurrentScope(); currentFunction = nullptr;;}
     break;
 
   case 111:
 
 /* Line 1455 of yacc.c  */
-#line 668 "parser.y"
+#line 768 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2525,14 +2620,14 @@ yyreduce:
   case 112:
 
 /* Line 1455 of yacc.c  */
-#line 680 "parser.y"
+#line 780 "parser.y"
     {printf("Void function with parameters \n");;}
     break;
 
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 681 "parser.y"
+#line 781 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2550,14 +2645,14 @@ yyreduce:
   case 114:
 
 /* Line 1455 of yacc.c  */
-#line 692 "parser.y"
+#line 792 "parser.y"
     {printf("Void function without parameters \n");;}
     break;
 
   case 115:
 
 /* Line 1455 of yacc.c  */
-#line 693 "parser.y"
+#line 793 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2576,14 +2671,14 @@ yyreduce:
   case 116:
 
 /* Line 1455 of yacc.c  */
-#line 705 "parser.y"
+#line 805 "parser.y"
     {printf("Typed function with parameters \n");;}
     break;
 
   case 117:
 
 /* Line 1455 of yacc.c  */
-#line 706 "parser.y"
+#line 806 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2602,21 +2697,21 @@ yyreduce:
   case 118:
 
 /* Line 1455 of yacc.c  */
-#line 718 "parser.y"
+#line 818 "parser.y"
     {printf("Typed function without parameters \n");}
     break;
 
   case 120:
 
 /* Line 1455 of yacc.c  */
-#line 722 "parser.y"
+#line 822 "parser.y"
     {printf("Multiple PARAMS\n");;}
     break;
 
   case 121:
 
 /* Line 1455 of yacc.c  */
-#line 725 "parser.y"
+#line 825 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (2)].stringValue));
                 if(entry != NULL){
@@ -2635,7 +2730,7 @@ yyreduce:
   case 122:
 
 /* Line 1455 of yacc.c  */
-#line 738 "parser.y"
+#line 838 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (4)].stringValue));
                 if(entry != NULL){
@@ -2676,7 +2771,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2680 "parser.tab.c"
+#line 2775 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2888,7 +2983,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 774 "parser.y"
+#line 874 "parser.y"
 
 
 

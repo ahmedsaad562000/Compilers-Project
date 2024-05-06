@@ -1,24 +1,6 @@
 Identifier       Level        Kind        Type             Value
 ----------       -----        ----        ----              ----
-x                 0           VAR        INT_TYPE              9
-xx                 0           VAR        INT_TYPE              5
-zz                 0           VAR        INT_TYPE             15
-yy                 0           VAR        INT_TYPE             10
-megz_functions                 0          FUNC        INT_TYPE
-
-    Identifier       Level        Kind        Type             Value
-    ----------       -----        ----        ----              ----
-    z                 1           VAR        INT_TYPE             10
-    x                 1           VAR        INT_TYPE              1
-
-    Identifier       Level        Kind        Type             Value
-    ----------       -----        ----        ----              ----
-    x                 1           VAR        INT_TYPE              0
-
-    Identifier       Level        Kind        Type             Value
-    ----------       -----        ----        ----              ----
-    z                 1         PARAM        INT_TYPE
-    y                 1         PARAM        INT_TYPE
-    count                 1           VAR        INT_TYPE              0
-    x                 1         PARAM        INT_TYPE
+f                 0           VAR        INT_TYPE              1
+y                 0           VAR        INT_TYPE              3
+x                 0           VAR        INT_TYPE             10
 
