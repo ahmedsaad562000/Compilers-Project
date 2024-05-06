@@ -550,15 +550,15 @@ static const yytype_uint16 yyrline[] =
      170,   171,   172,   173,   174,   175,   176,   177,   178,   179,
      182,   182,   184,   184,   184,   187,   188,   190,   209,   223,
      238,   253,   268,   283,   296,   309,   322,   326,   327,   331,
-     332,   335,   369,   405,   406,   429,   455,   456,   476,   498,
-     515,   516,   518,   519,   524,   525,   526,   527,   528,   554,
-     555,   555,   586,   602,   622,   623,   624,   625,   626,   627,
-     631,   665,   678,   716,   796,   797,   798,   799,   803,   803,
-     803,   808,   810,   808,   811,   813,   813,   813,   811,   817,
-     817,   817,   817,   821,   821,   821,   822,   822,   822,   826,
-     826,   830,   831,   834,   835,   841,   841,   841,   841,   841,
-     843,   846,   846,   859,   859,   871,   871,   884,   884,   899,
-     900,   903,   916
+     332,   335,   369,   405,   406,   429,   455,   456,   476,   503,
+     520,   521,   523,   524,   529,   530,   531,   532,   533,   559,
+     560,   560,   591,   607,   627,   628,   629,   630,   631,   632,
+     636,   670,   683,   721,   801,   845,   883,   922,   963,   963,
+     963,   968,   970,   968,   971,   973,   973,   973,   971,   977,
+     977,   977,   977,   981,   981,   981,   982,   982,   982,   986,
+     986,   990,   991,   994,   995,  1001,  1001,  1001,  1001,  1001,
+    1003,  1006,  1006,  1019,  1019,  1031,  1031,  1044,  1044,  1059,
+    1060,  1063,  1076
 };
 #endif
 
@@ -2129,10 +2129,15 @@ yyreduce:
                         (yyval.lexeme).stringRep = getCurrentCount();
                         if(type1 == FLOAT_TYPE || type2 == FLOAT_TYPE)
                         {
+                        
+                        if ((yyvsp[(3) - (3)].lexeme).floatVal == 0.0) printSemanticError("Division by zero", lineno), 0;
                                 (yyval.lexeme).type = FLOAT_TYPE;
                                 (yyval.lexeme).floatVal = (yyvsp[(1) - (3)].lexeme).floatVal / (yyvsp[(3) - (3)].lexeme).floatVal;
                         }
                         else{
+                        
+                        if ((yyvsp[(3) - (3)].lexeme).intVal == 0) printSemanticError("Division by zero", lineno), 0;
+        
                                 (yyval.lexeme).type = INT_TYPE;
                                 (yyval.lexeme).intVal = (yyvsp[(1) - (3)].lexeme).intVal / (yyvsp[(3) - (3)].lexeme).intVal;
                         }
@@ -2143,7 +2148,7 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 499 "parser.y"
+#line 504 "parser.y"
     {
                
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
@@ -2164,49 +2169,49 @@ yyreduce:
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 516 "parser.y"
+#line 521 "parser.y"
     {printf("--------------negation------------------------\n wait in semantic");;}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 519 "parser.y"
+#line 524 "parser.y"
     {(yyval.lexeme) = (yyvsp[(2) - (3)].lexeme);;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 524 "parser.y"
+#line 529 "parser.y"
     {printf("INT_VAL\n");;}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 525 "parser.y"
+#line 530 "parser.y"
     {printf("FLOAT_VAL\n");;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 526 "parser.y"
+#line 531 "parser.y"
     {printf("EXP\n");;}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 527 "parser.y"
+#line 532 "parser.y"
     {printf("FUNCTION_CALL\n");;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 528 "parser.y"
+#line 533 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (1)].stringValue));
                 if(idExistsInAnEnum(rootSymbolTable,(yyvsp[(1) - (1)].stringValue)))
@@ -2235,7 +2240,7 @@ yyreduce:
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 555 "parser.y"
+#line 560 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (2)].stringValue));
                 if(entry == NULL){
@@ -2255,7 +2260,7 @@ yyreduce:
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 568 "parser.y"
+#line 573 "parser.y"
     {
                 if(functionParameters.size() != 0)
                 {
@@ -2276,7 +2281,7 @@ yyreduce:
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 586 "parser.y"
+#line 591 "parser.y"
     {
                 if(functionParameters.size() == 0)
                 {
@@ -2298,7 +2303,7 @@ yyreduce:
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 602 "parser.y"
+#line 607 "parser.y"
     {
                 if(functionParameters.size() == 0)
                 {
@@ -2319,7 +2324,7 @@ yyreduce:
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 632 "parser.y"
+#line 637 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(3) - (6)].stringValue));
                 if(entry){
@@ -2356,7 +2361,7 @@ yyreduce:
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 665 "parser.y"
+#line 670 "parser.y"
     {
                 
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
@@ -2375,7 +2380,7 @@ yyreduce:
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 678 "parser.y"
+#line 683 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (5)].stringValue));
                 if(entry){
@@ -2415,7 +2420,7 @@ yyreduce:
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 717 "parser.y"
+#line 722 "parser.y"
     {  
                 
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
@@ -2497,31 +2502,209 @@ yyreduce:
         ;}
     break;
 
+  case 74:
+
+/* Line 1455 of yacc.c  */
+#line 802 "parser.y"
+    {
+                SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
+                if(entry == NULL){
+                        printSemanticError("Undeclared Variable",lineno);
+                        return 0;
+                }
+                if(*entry->getKind()!= VAR)
+                {
+                        printSemanticError("Cannot assign value to a non variable type",lineno);
+                        return 0;
+                }
+                if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                if ((yyvsp[(3) - (4)].lexeme).floatVal == 0.0) printSemanticError("Division by zero", lineno), 0;
+                int type1 = (int)entry->getLexemeEntry()->type;
+                int type2 = (yyvsp[(3) - (4)].lexeme).type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Division operation must be between 2 numbers",lineno);
+                }else{
+                        
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {       
+                                if ((int)(yyvsp[(3) - (4)].lexeme).floatVal == 0) printSemanticError("Division by zero", lineno), 0;
+
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal / (int)(yyvsp[(3) - (4)].lexeme).floatVal ;
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {       
+                                if ((float)(yyvsp[(3) - (4)].lexeme).intVal == 0.0) printSemanticError("Division by zero", lineno), 0;
+                                
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal / (float)(yyvsp[(3) - (4)].lexeme).intVal ;
+                        
+                        }else if (type1 == INT_TYPE && type2 == INT_TYPE)
+                        {       if ((yyvsp[(3) - (4)].lexeme).intVal == 0) printSemanticError("Division by zero", lineno), 0;
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal / (yyvsp[(3) - (4)].lexeme).intVal ;
+                        }else{
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal / (yyvsp[(3) - (4)].lexeme).floatVal ;
+                        }
+                }
+        ;}
+    break;
+
+  case 75:
+
+/* Line 1455 of yacc.c  */
+#line 846 "parser.y"
+    {
+                SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
+                if(entry == NULL){
+                        printSemanticError("Undeclared Variable",lineno);
+                        return 0;
+                }
+                if(*entry->getKind()!= VAR)
+                {
+                        printSemanticError("Cannot assign value to a non variable type",lineno);
+                        return 0;
+                }
+                if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                int type1 = (int)entry->getLexemeEntry()->type;
+                int type2 = (yyvsp[(3) - (4)].lexeme).type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Multiplication operation must be between 2 numbers",lineno);
+                }else{
+                        
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal * (int)(yyvsp[(3) - (4)].lexeme).floatVal ;
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal * (float)(yyvsp[(3) - (4)].lexeme).intVal ;
+                        }else if (type1 == INT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal * (yyvsp[(3) - (4)].lexeme).intVal ;
+                        }else{
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal * (yyvsp[(3) - (4)].lexeme).floatVal ;
+                        }
+                }
+        ;}
+    break;
+
+  case 76:
+
+/* Line 1455 of yacc.c  */
+#line 884 "parser.y"
+    {
+                SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
+                if(entry == NULL){
+                        printSemanticError("Undeclared Variable",lineno);
+                        return 0;
+                }
+                if(*entry->getKind()!= VAR)
+                {
+                        printSemanticError("Cannot assign value to a non variable type",lineno);
+                        return 0;
+                }
+                if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                int type1 = (int)entry->getLexemeEntry()->type;
+                int type2 = (yyvsp[(3) - (4)].lexeme).type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Addition operation must be between 2 numbers",lineno);
+                }else{
+                        
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal + (int)(yyvsp[(3) - (4)].lexeme).floatVal ;
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal + (float)(yyvsp[(3) - (4)].lexeme).intVal ;
+                        }else if (type1 == INT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal + (yyvsp[(3) - (4)].lexeme).intVal ;
+                        }else{
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal + (yyvsp[(3) - (4)].lexeme).floatVal ;
+                        }
+                }
+        ;}
+    break;
+
+  case 77:
+
+/* Line 1455 of yacc.c  */
+#line 923 "parser.y"
+    {
+                SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
+                if(entry == NULL){
+                        printSemanticError("Undeclared Variable",lineno);
+                        return 0;
+                }
+                if(*entry->getKind()!= VAR)
+                {
+                        printSemanticError("Cannot assign value to a non variable type",lineno);
+                        return 0;
+                }
+                if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                int type1 = (int)entry->getLexemeEntry()->type;
+                int type2 = (yyvsp[(3) - (4)].lexeme).type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Minus operation must be between 2 numbers",lineno);
+                }else{
+                        
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal - (int)(yyvsp[(3) - (4)].lexeme).floatVal ;
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal - (float)(yyvsp[(3) - (4)].lexeme).intVal ;
+                        }else if (type1 == INT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal - (yyvsp[(3) - (4)].lexeme).intVal ;
+                        }else{
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal - (yyvsp[(3) - (4)].lexeme).floatVal ;
+                        }
+                }
+        ;}
+    break;
+
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 803 "parser.y"
+#line 963 "parser.y"
     { checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 803 "parser.y"
+#line 963 "parser.y"
     {createNewTable();;}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 803 "parser.y"
+#line 963 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 808 "parser.y"
+#line 968 "parser.y"
     {
                 checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);
         ;}
@@ -2530,21 +2713,21 @@ yyreduce:
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 810 "parser.y"
+#line 970 "parser.y"
     {createNewTable();;}
     break;
 
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 810 "parser.y"
+#line 970 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 811 "parser.y"
+#line 971 "parser.y"
     {
                 checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);
         ;}
@@ -2553,140 +2736,140 @@ yyreduce:
   case 85:
 
 /* Line 1455 of yacc.c  */
-#line 813 "parser.y"
+#line 973 "parser.y"
     {createNewTable();;}
     break;
 
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 813 "parser.y"
+#line 973 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 813 "parser.y"
+#line 973 "parser.y"
     {createNewTable();;}
     break;
 
   case 88:
 
 /* Line 1455 of yacc.c  */
-#line 813 "parser.y"
+#line 973 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 89:
 
 /* Line 1455 of yacc.c  */
-#line 817 "parser.y"
+#line 977 "parser.y"
     {createNewTable();;}
     break;
 
   case 90:
 
 /* Line 1455 of yacc.c  */
-#line 817 "parser.y"
+#line 977 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 91:
 
 /* Line 1455 of yacc.c  */
-#line 817 "parser.y"
+#line 977 "parser.y"
     { checkIfLexemIsBool((yyvsp[(9) - (9)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 92:
 
 /* Line 1455 of yacc.c  */
-#line 817 "parser.y"
+#line 977 "parser.y"
     {printf("REPEAT UNTIL\n");;}
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 821 "parser.y"
+#line 981 "parser.y"
     {createNewTable();;}
     break;
 
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 821 "parser.y"
+#line 981 "parser.y"
     {checkIfLexemIsBool((yyvsp[(5) - (5)].lexeme).type != BOOL_TYPE,lineno); ;}
     break;
 
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 821 "parser.y"
+#line 981 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 822 "parser.y"
+#line 982 "parser.y"
     {createNewTable();;}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
-#line 822 "parser.y"
+#line 982 "parser.y"
     {checkIfLexemIsBool((yyvsp[(5) - (5)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 98:
 
 /* Line 1455 of yacc.c  */
-#line 822 "parser.y"
+#line 982 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 99:
 
 /* Line 1455 of yacc.c  */
-#line 826 "parser.y"
+#line 986 "parser.y"
     {createNewTable();;}
     break;
 
   case 100:
 
 /* Line 1455 of yacc.c  */
-#line 826 "parser.y"
+#line 986 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 103:
 
 /* Line 1455 of yacc.c  */
-#line 834 "parser.y"
+#line 994 "parser.y"
     {printf("CASE\n");;}
     break;
 
   case 104:
 
 /* Line 1455 of yacc.c  */
-#line 835 "parser.y"
+#line 995 "parser.y"
     {printf("DEFAULT\n");;}
     break;
 
   case 110:
 
 /* Line 1455 of yacc.c  */
-#line 843 "parser.y"
+#line 1003 "parser.y"
     {exitCurrentScope(); currentFunction = nullptr;;}
     break;
 
   case 111:
 
 /* Line 1455 of yacc.c  */
-#line 846 "parser.y"
+#line 1006 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2704,14 +2887,14 @@ yyreduce:
   case 112:
 
 /* Line 1455 of yacc.c  */
-#line 858 "parser.y"
+#line 1018 "parser.y"
     {printf("Void function with parameters \n");;}
     break;
 
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 859 "parser.y"
+#line 1019 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2729,14 +2912,14 @@ yyreduce:
   case 114:
 
 /* Line 1455 of yacc.c  */
-#line 870 "parser.y"
+#line 1030 "parser.y"
     {printf("Void function without parameters \n");;}
     break;
 
   case 115:
 
 /* Line 1455 of yacc.c  */
-#line 871 "parser.y"
+#line 1031 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2755,14 +2938,14 @@ yyreduce:
   case 116:
 
 /* Line 1455 of yacc.c  */
-#line 883 "parser.y"
+#line 1043 "parser.y"
     {printf("Typed function with parameters \n");;}
     break;
 
   case 117:
 
 /* Line 1455 of yacc.c  */
-#line 884 "parser.y"
+#line 1044 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2781,21 +2964,21 @@ yyreduce:
   case 118:
 
 /* Line 1455 of yacc.c  */
-#line 896 "parser.y"
+#line 1056 "parser.y"
     {printf("Typed function without parameters \n");}
     break;
 
   case 120:
 
 /* Line 1455 of yacc.c  */
-#line 900 "parser.y"
+#line 1060 "parser.y"
     {printf("Multiple PARAMS\n");;}
     break;
 
   case 121:
 
 /* Line 1455 of yacc.c  */
-#line 903 "parser.y"
+#line 1063 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (2)].stringValue));
                 if(entry != NULL){
@@ -2814,7 +2997,7 @@ yyreduce:
   case 122:
 
 /* Line 1455 of yacc.c  */
-#line 916 "parser.y"
+#line 1076 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (4)].stringValue));
                 if(entry != NULL){
@@ -2855,7 +3038,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2859 "parser.tab.c"
+#line 3042 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -3067,7 +3250,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 952 "parser.y"
+#line 1112 "parser.y"
 
 
 

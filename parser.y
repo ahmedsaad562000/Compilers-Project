@@ -486,10 +486,15 @@ term: negat
                         $$.stringRep = getCurrentCount();
                         if(type1 == FLOAT_TYPE || type2 == FLOAT_TYPE)
                         {
+                        
+                        if ($3.floatVal == 0.0) printSemanticError("Division by zero", lineno), 0;
                                 $$.type = FLOAT_TYPE;
                                 $$.floatVal = $1.floatVal / $3.floatVal;
                         }
                         else{
+                        
+                        if ($3.intVal == 0) printSemanticError("Division by zero", lineno), 0;
+        
                                 $$.type = INT_TYPE;
                                 $$.intVal = $1.intVal / $3.intVal;
                         }
@@ -794,10 +799,164 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                 }
         } 
         | IDENTIFIER DIV_EQ value SEMICOLON
+        {
+                SymbolTableEntry* entry = getIdEntry($1);
+                if(entry == NULL){
+                        printSemanticError("Undeclared Variable",lineno);
+                        return 0;
+                }
+                if(*entry->getKind()!= VAR)
+                {
+                        printSemanticError("Cannot assign value to a non variable type",lineno);
+                        return 0;
+                }
+                if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                if ($3.floatVal == 0.0) printSemanticError("Division by zero", lineno), 0;
+                int type1 = (int)entry->getLexemeEntry()->type;
+                int type2 = $3.type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Division operation must be between 2 numbers",lineno);
+                }else{
+                        
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {       
+                                if ((int)$3.floatVal == 0) printSemanticError("Division by zero", lineno), 0;
+
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal / (int)$3.floatVal ;
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {       
+                                if ((float)$3.intVal == 0.0) printSemanticError("Division by zero", lineno), 0;
+                                
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal / (float)$3.intVal ;
+                        
+                        }else if (type1 == INT_TYPE && type2 == INT_TYPE)
+                        {       if ($3.intVal == 0) printSemanticError("Division by zero", lineno), 0;
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal / $3.intVal ;
+                        }else{
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal / $3.floatVal ;
+                        }
+                }
+        } 
         | IDENTIFIER MULT_EQ value SEMICOLON
+        {
+                SymbolTableEntry* entry = getIdEntry($1);
+                if(entry == NULL){
+                        printSemanticError("Undeclared Variable",lineno);
+                        return 0;
+                }
+                if(*entry->getKind()!= VAR)
+                {
+                        printSemanticError("Cannot assign value to a non variable type",lineno);
+                        return 0;
+                }
+                if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                int type1 = (int)entry->getLexemeEntry()->type;
+                int type2 = $3.type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Multiplication operation must be between 2 numbers",lineno);
+                }else{
+                        
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal * (int)$3.floatVal ;
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal * (float)$3.intVal ;
+                        }else if (type1 == INT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal * $3.intVal ;
+                        }else{
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal * $3.floatVal ;
+                        }
+                }
+        } 
         | IDENTIFIER PLUS_EQ value SEMICOLON
+        {
+                SymbolTableEntry* entry = getIdEntry($1);
+                if(entry == NULL){
+                        printSemanticError("Undeclared Variable",lineno);
+                        return 0;
+                }
+                if(*entry->getKind()!= VAR)
+                {
+                        printSemanticError("Cannot assign value to a non variable type",lineno);
+                        return 0;
+                }
+                if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                int type1 = (int)entry->getLexemeEntry()->type;
+                int type2 = $3.type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Addition operation must be between 2 numbers",lineno);
+                }else{
+                        
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal + (int)$3.floatVal ;
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal + (float)$3.intVal ;
+                        }else if (type1 == INT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal + $3.intVal ;
+                        }else{
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal + $3.floatVal ;
+                        }
+                }
+        } 
         
         | IDENTIFIER MINUS_EQ value SEMICOLON
+        {
+                SymbolTableEntry* entry = getIdEntry($1);
+                if(entry == NULL){
+                        printSemanticError("Undeclared Variable",lineno);
+                        return 0;
+                }
+                if(*entry->getKind()!= VAR)
+                {
+                        printSemanticError("Cannot assign value to a non variable type",lineno);
+                        return 0;
+                }
+                if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                int type1 = (int)entry->getLexemeEntry()->type;
+                int type2 = $3.type;
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Minus operation must be between 2 numbers",lineno);
+                }else{
+                        
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal - (int)$3.floatVal ;
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal - (float)$3.intVal ;
+                        }else if (type1 == INT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal - $3.intVal ;
+                        }else{
+                                entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal - $3.floatVal ;
+                        }
+                }
+        } 
         ;
 /* while statement */        
 while_stmt:

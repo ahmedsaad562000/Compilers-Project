@@ -1,5 +1,11 @@
 int x=10;
 int y=3;
 int f = (x+y)+(x-y)+(x%y);
+float k=0;
+int v=5;
+char cc='c';
 const int iam= 5;
 x=99;
+x+=1;
+v=v/k;
+
