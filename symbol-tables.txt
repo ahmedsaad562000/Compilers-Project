@@ -1,5 +1,6 @@
 Identifier       Level        Kind        Type             Value
 ----------       -----        ----        ----              ----
+<<<<<<< HEAD
 megz_functions                 0          FUNC        INT_TYPE
 yy                 0           VAR        INT_TYPE             10
 zz                 0           VAR        INT_TYPE             15
@@ -20,4 +21,7 @@ xx                 0           VAR        INT_TYPE              5
     y                 1         PARAM        INT_TYPE
     count                 1           VAR        INT_TYPE              0
     x                 1         PARAM        INT_TYPE
+=======
+x                 0           VAR        INT_TYPE              9
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
 

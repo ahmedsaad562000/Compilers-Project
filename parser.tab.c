@@ -549,6 +549,7 @@ static const yytype_uint16 yyrline[] =
        0,   160,   160,   161,   164,   165,   165,   166,   167,   168,
      169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
      181,   181,   183,   183,   183,   186,   187,   189,   208,   222,
+<<<<<<< HEAD
      237,   252,   267,   282,   283,   284,   285,   286,   287,   291,
      292,   295,   296,   299,   300,   301,   304,   305,   306,   307,
      309,   310,   312,   313,   317,   318,   319,   320,   321,   348,
@@ -559,6 +560,17 @@ static const yytype_uint16 yyrline[] =
      543,   547,   548,   551,   552,   558,   558,   558,   558,   558,
      560,   563,   563,   576,   576,   588,   588,   601,   601,   616,
      617,   620,   633
+=======
+     237,   252,   267,   282,   295,   308,   321,   325,   326,   330,
+     331,   334,   368,   404,   405,   406,   409,   410,   411,   412,
+     414,   415,   417,   418,   422,   423,   424,   425,   426,   453,
+     454,   454,   485,   500,   520,   521,   522,   523,   524,   525,
+     529,   563,   576,   614,   617,   618,   619,   620,   624,   624,
+     624,   629,   631,   629,   632,   634,   634,   634,   632,   638,
+     642,   642,   642,   643,   643,   643,   647,   647,   651,   652,
+     655,   656,   662,   662,   662,   662,   662,   664,   667,   668,
+     669,   670,   673,   674,   677,   678
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
 };
 #endif
 
@@ -1890,80 +1902,268 @@ yyreduce:
         ;}
     break;
 
+<<<<<<< HEAD
   case 44:
 
 /* Line 1455 of yacc.c  */
 #line 300 "parser.y"
+=======
+  case 33:
+
+/* Line 1455 of yacc.c  */
+#line 283 "parser.y"
+    {
+                int type1 = (yyvsp[(1) - (3)].lexeme).type;
+                int type2 = (yyvsp[(3) - (3)].lexeme).type;
+                if(type1 != BOOL_TYPE || type2 != BOOL_TYPE)
+                {
+                        printSemanticError("AND Operation should be between boolean types",lineno);
+                }else{
+                        (yyval.lexeme).type = BOOL_TYPE;
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        (yyval.lexeme).boolVal = (yyvsp[(1) - (3)].lexeme).boolVal && (yyvsp[(3) - (3)].lexeme).boolVal;
+                }
+    ;}
+    break;
+
+  case 34:
+
+/* Line 1455 of yacc.c  */
+#line 296 "parser.y"
+    {
+                int type1 = (yyvsp[(1) - (3)].lexeme).type;
+                int type2 = (yyvsp[(3) - (3)].lexeme).type;
+                if(type1 != BOOL_TYPE || type2 != BOOL_TYPE)
+                {
+                        printSemanticError("OR Operation should be between boolean types",lineno);
+                }else{
+                        (yyval.lexeme).type = BOOL_TYPE;
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        (yyval.lexeme).boolVal = (yyvsp[(1) - (3)].lexeme).boolVal || (yyvsp[(3) - (3)].lexeme).boolVal;
+                }
+        ;}
+    break;
+
+  case 35:
+
+/* Line 1455 of yacc.c  */
+#line 309 "parser.y"
+    {                                       /* ! */ 
+                int type = (yyvsp[(2) - (2)].lexeme).type;
+                if(type != BOOL_TYPE)
+                {
+                        printSemanticError("NOT Operation should be on boolean type",lineno);
+                }else{
+                        (yyval.lexeme).type = BOOL_TYPE;
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        (yyval.lexeme).boolVal = !(yyvsp[(2) - (2)].lexeme).boolVal;
+                  
+                }
+        ;}
+    break;
+
+  case 36:
+
+/* Line 1455 of yacc.c  */
+#line 322 "parser.y"
+    {
+                (yyval.lexeme) = (yyvsp[(2) - (3)].lexeme);
+     ;}
+    break;
+
+  case 41:
+
+/* Line 1455 of yacc.c  */
+#line 335 "parser.y"
+    {
+                SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (2)].stringValue));
+                if(entry == NULL){
+                        printSemanticError("Variable not declared",lineno);
+                        return 0;
+                }
+                 if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                VariableType type=entry->getLexemeEntry()->type;
+                if(type != INT_TYPE && type != FLOAT_TYPE)
+                {
+                        printSemanticError("Unary Operation should be on integer or float type",lineno);
+                }
+                else
+                {
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        if(type == INT_TYPE)
+                        {
+                                (yyval.lexeme).type = INT_TYPE;
+                                (yyval.lexeme).intVal = entry->getLexemeEntry()->intVal + 1;
+                                entry->getLexemeEntry()->intVal = (yyval.lexeme).intVal;
+                        }else
+                        {
+                                (yyval.lexeme).type = FLOAT_TYPE;
+                                (yyval.lexeme).floatVal = entry->getLexemeEntry()->floatVal + 1;
+                                entry->getLexemeEntry()->floatVal = (yyval.lexeme).floatVal;
+                        }
+                    
+                }
+        ;}
+    break;
+
+  case 42:
+
+/* Line 1455 of yacc.c  */
+#line 369 "parser.y"
+    {
+                SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (2)].stringValue));
+                if(entry == NULL){
+                        printSemanticError("Variable not declared",lineno);
+                        return 0;
+                }
+                 if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                VariableType type=entry->getLexemeEntry()->type;
+                if(type != INT_TYPE && type != FLOAT_TYPE)
+                {
+                        printSemanticError("Unary Operation should be on integer or float type",lineno);
+                }
+                else
+                {
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        if(type == INT_TYPE)
+                        {
+                                (yyval.lexeme).type = INT_TYPE;
+                                (yyval.lexeme).intVal = entry->getLexemeEntry()->intVal - 1;
+                                entry->getLexemeEntry()->intVal = (yyval.lexeme).intVal;
+                        }else
+                        {
+                                (yyval.lexeme).type = FLOAT_TYPE;
+                                (yyval.lexeme).floatVal = entry->getLexemeEntry()->floatVal - 1;
+                                entry->getLexemeEntry()->floatVal = (yyval.lexeme).floatVal;
+                        }
+                    
+                }
+        ;}
+    break;
+
+  case 44:
+
+/* Line 1455 of yacc.c  */
+#line 405 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {printf("PLUS\n");;}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 301 "parser.y"
+=======
+#line 406 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {printf("MINUS\n");;}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 305 "parser.y"
+=======
+#line 410 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {printf("MULT\n");;}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 306 "parser.y"
+=======
+#line 411 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {printf("DIV\n");;}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 307 "parser.y"
+=======
+#line 412 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {printf("MOD\n");;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 310 "parser.y"
+=======
+#line 415 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {printf("--------------negation------------------------\n");;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 317 "parser.y"
+=======
+#line 422 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {printf("INT_VAL\n");;}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 318 "parser.y"
+=======
+#line 423 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {printf("FLOAT_VAL\n");;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 319 "parser.y"
+=======
+#line 424 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {printf("EXP\n");;}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 320 "parser.y"
+=======
+#line 425 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {printf("FUNCTION_CALL\n");;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 321 "parser.y"
+=======
+#line 426 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (1)].stringValue));
                 if(idExistsInAnEnum(rootSymbolTable,(yyvsp[(1) - (1)].stringValue)))
@@ -1992,7 +2192,11 @@ yyreduce:
   case 60:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 349 "parser.y"
+=======
+#line 454 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (2)].stringValue));
                 if(entry == NULL){
@@ -2012,7 +2216,11 @@ yyreduce:
   case 61:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 362 "parser.y"
+=======
+#line 467 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {
                 if(functionParameters.size() != 0)
                 {
@@ -2033,7 +2241,11 @@ yyreduce:
   case 62:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 380 "parser.y"
+=======
+#line 485 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {
                 if(functionParameters.size() == 0)
                 {
@@ -2055,7 +2267,11 @@ yyreduce:
   case 63:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 396 "parser.y"
+=======
+#line 500 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {
                 if(functionParameters.size() == 0)
                 {
@@ -2076,7 +2292,11 @@ yyreduce:
   case 70:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 426 "parser.y"
+=======
+#line 530 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(3) - (6)].stringValue));
                 if(entry){
@@ -2113,7 +2333,11 @@ yyreduce:
   case 71:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 459 "parser.y"
+=======
+#line 563 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {
                 
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
@@ -2132,7 +2356,11 @@ yyreduce:
   case 72:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 472 "parser.y"
+=======
+#line 576 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (5)].stringValue));
                 if(entry){
@@ -2172,7 +2400,11 @@ yyreduce:
   case 73:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 511 "parser.y"
+=======
+#line 615 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {
         ;}
     break;
@@ -2180,28 +2412,44 @@ yyreduce:
   case 78:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 520 "parser.y"
+=======
+#line 624 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     { checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 79:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 520 "parser.y"
+=======
+#line 624 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {createNewTable();;}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 520 "parser.y"
+=======
+#line 624 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {exitCurrentScope();;}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 525 "parser.y"
+=======
+#line 629 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {
                 checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);
         ;}
@@ -2210,21 +2458,33 @@ yyreduce:
   case 82:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 527 "parser.y"
+=======
+#line 631 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {createNewTable();;}
     break;
 
   case 83:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 527 "parser.y"
+=======
+#line 631 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {exitCurrentScope();;}
     break;
 
   case 84:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 528 "parser.y"
+=======
+#line 632 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {
                 checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);
         ;}
@@ -2233,90 +2493,144 @@ yyreduce:
   case 85:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 530 "parser.y"
+=======
+#line 634 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {createNewTable();;}
     break;
 
   case 86:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 530 "parser.y"
+=======
+#line 634 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {exitCurrentScope();;}
     break;
 
   case 87:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 530 "parser.y"
+=======
+#line 634 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {createNewTable();;}
     break;
 
   case 88:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 530 "parser.y"
+=======
+#line 634 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {exitCurrentScope();;}
     break;
 
   case 89:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 534 "parser.y"
     {createNewTable();;}
+=======
+#line 638 "parser.y"
+    {printf("REPEAT UNTIL\n");;}
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     break;
 
   case 90:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 534 "parser.y"
     {exitCurrentScope();;}
+=======
+#line 642 "parser.y"
+    {createNewTable();;}
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     break;
 
   case 91:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 534 "parser.y"
     { checkIfLexemIsBool((yyvsp[(9) - (9)].lexeme).type != BOOL_TYPE,lineno);;}
+=======
+#line 642 "parser.y"
+    {checkIfLexemIsBool((yyvsp[(5) - (5)].lexeme).type != BOOL_TYPE,lineno); ;}
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     break;
 
   case 92:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 534 "parser.y"
     {printf("REPEAT UNTIL\n");;}
+=======
+#line 642 "parser.y"
+    {exitCurrentScope();;}
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 538 "parser.y"
+=======
+#line 643 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {createNewTable();;}
     break;
 
   case 94:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 538 "parser.y"
     {checkIfLexemIsBool((yyvsp[(5) - (5)].lexeme).type != BOOL_TYPE,lineno); ;}
+=======
+#line 643 "parser.y"
+    {checkIfLexemIsBool((yyvsp[(5) - (5)].lexeme).type != BOOL_TYPE,lineno);;}
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     break;
 
   case 95:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 538 "parser.y"
+=======
+#line 643 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {exitCurrentScope();;}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 539 "parser.y"
+=======
+#line 647 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {createNewTable();;}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 539 "parser.y"
     {checkIfLexemIsBool((yyvsp[(5) - (5)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
@@ -2333,11 +2647,16 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 543 "parser.y"
     {createNewTable();;}
+=======
+#line 647 "parser.y"
+    {exitCurrentScope();;}
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     break;
 
   case 100:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 543 "parser.y"
     {exitCurrentScope();;}
     break;
@@ -2346,12 +2665,16 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 551 "parser.y"
+=======
+#line 655 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     {printf("CASE\n");;}
     break;
 
   case 104:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 552 "parser.y"
     {printf("DEFAULT\n");;}
     break;
@@ -2361,11 +2684,44 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 560 "parser.y"
     {exitCurrentScope(); currentFunction = nullptr;;}
+=======
+#line 656 "parser.y"
+    {printf("DEFAULT\n");;}
+    break;
+
+  case 107:
+
+/* Line 1455 of yacc.c  */
+#line 664 "parser.y"
+    {printf("FUNCTION\n");;}
+    break;
+
+  case 108:
+
+/* Line 1455 of yacc.c  */
+#line 667 "parser.y"
+    {printf("VOID FUNCTION WITH PARAMS\n");;}
+    break;
+
+  case 109:
+
+/* Line 1455 of yacc.c  */
+#line 668 "parser.y"
+    {printf("VOID FUNCTION WITHOUT PARAMS\n");;}
+    break;
+
+  case 110:
+
+/* Line 1455 of yacc.c  */
+#line 669 "parser.y"
+    {printf("TYPE FUNCTION WITH PARAMS\n");;}
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     break;
 
   case 111:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 563 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
@@ -2386,11 +2742,16 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 575 "parser.y"
     {printf("Void function with parameters \n");;}
+=======
+#line 670 "parser.y"
+    {printf("TYPE FUNCTION WITHOUT PARAMS\n");;}
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     break;
 
   case 113:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 576 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
@@ -2404,18 +2765,28 @@ yyreduce:
                 addEntryToTable((yyvsp[(2) - (3)].stringValue),lexeme,FUNC,false,NULL, VOID_TYPE);
                 createNewTable();    
         ;}
+=======
+#line 674 "parser.y"
+    {printf("Multiple PARAMS\n");;}
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     break;
 
   case 114:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 587 "parser.y"
     {printf("Void function without parameters \n");;}
+=======
+#line 677 "parser.y"
+    {printf("Param without default\n");;}
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     break;
 
   case 115:
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 588 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
@@ -2530,12 +2901,20 @@ yyreduce:
                         addEntryToTable((yyvsp[(2) - (4)].stringValue),lexeme,PARAMETER,true);
                 }
         ;}
+=======
+#line 678 "parser.y"
+    {printf("Param with default\n");;}
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
     break;
 
 
 
 /* Line 1455 of yacc.c  */
+<<<<<<< HEAD
 #line 2539 "parser.tab.c"
+=======
+#line 2530 "parser.tab.c"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2747,7 +3126,11 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
+<<<<<<< HEAD
 #line 669 "parser.y"
+=======
+#line 680 "parser.y"
+>>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
 
 
 
