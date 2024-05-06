@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 int xx=5;
 int yy=10;
 int zz=15;
@@ -14,7 +13,5 @@ int megz_functions(int x, int y, int z){
     int count = 0;
 }
 megz_functions(xx,yy,zz);
-=======
 int x=10;
 x--;
->>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5

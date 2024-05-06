@@ -1,9 +1,7 @@
-<<<<<<< HEAD
+Warning: x is declared but not used
 Warning: z is declared but not used
 Warning: x is declared but not used
 Warning: z is declared but not used
 Warning: y is declared but not used
 Warning: count is declared but not used
-=======
->>>>>>> 0b44d88976473ca4ab32666620fd6a974a3cbec5
 Warning: x is declared but not used
