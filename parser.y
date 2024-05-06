@@ -513,7 +513,7 @@ term: negat
         }      
     ;
 negat: para
-     | MINUS para %prec UMINUS           {printf("--------------negation------------------------\n");}
+     | MINUS para %prec UMINUS           {printf("--------------negation------------------------\n wait in semantic");}
 
 para: factor
         | LPAREN binary_expr RPAREN   {$$ = $2;}
@@ -714,11 +714,89 @@ var_dec_stmt:
 
 /* Assignment statements */
 assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
-        {
-        }
+       {  
+                
+                SymbolTableEntry* entry = getIdEntry($1);
+                
+                
+                if(entry == NULL)
+                {       
+                        printSemanticError("Undeclared Variable",lineno);
+                        return 0;
+                }
+                
+                
+                if(entry->getLexemeEntry()->type == ENUM_TYPE)
+                {     
+                        SymbolTableEntry* pointerToEnum = entry->getPointerToEnum();
+                        SymbolTableEntry* targetEnum = getIdEntry($3.stringRep);
+
+                if(pointerToEnum  == NULL )
+                {       
+                        printSemanticError("Undeclared ENUM TYPE",lineno);
+                        return 0;
+                }
+                if(targetEnum == NULL)
+                               { printSemanticError("Enumerator cannot be assigned this value",lineno);}
+
+
+                if(idExistsInEnum(pointerToEnum,$3.stringRep) == true || (targetEnum !=NULL && targetEnum->getLexemeEntry()->type == ENUM_TYPE && targetEnum->getIsInitialized() == true))
+                        {
+                                pointerToEnum->setIsUsed(true);
+
+                                entry->setIsInitialized(true);
+
+                                if(targetEnum != NULL)
+                                        entry->getLexemeEntry()->stringVal = targetEnum->getLexemeEntry()->stringVal;
+                                else
+                                        entry->getLexemeEntry()->stringVal = $3.stringRep;
+                        }
+                        else
+                        {
+                         if(targetEnum->getLexemeEntry()->type != ENUM_TYPE)
+                                printSemanticError("Type mismatch",lineno);
+                        else if (targetEnum->getIsInitialized() == false)
+                                printSemanticError("Use of Uninitialized Identifier",lineno);
+                        else if(idExistsInEnum(pointerToEnum,$3.stringRep) == false)
+                                printSemanticError("Enumerator does not contain this value",lineno);
+                        }
+
+                        return 0;
+                }
+             
+                if(*entry->getKind() != VAR)
+                {
+                        printSemanticError("Cannot assign value to a non variable type",lineno);
+                        return 0;
+                }
+                int type1 = (int) entry->getLexemeEntry()->type;
+                int type2 = $3.type;
+                if(!isTypeMatching(type1,type2))
+                {
+
+
+                        printSemanticError("Type mismatch in assignment statement",lineno);
+                }
+                else
+                {
+ 
+                        entry->setIsInitialized(true);
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = (int)$3.floatVal;
+                                 
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->floatVal = (float)$3.intVal;
+                        }else{
+                                entry->setLexemeEntry(convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal));
+                        }
+                }
+        } 
         | IDENTIFIER DIV_EQ value SEMICOLON
         | IDENTIFIER MULT_EQ value SEMICOLON
         | IDENTIFIER PLUS_EQ value SEMICOLON
+        
         | IDENTIFIER MINUS_EQ value SEMICOLON
         ;
 /* while statement */        

@@ -1,6 +1,7 @@
 Identifier       Level        Kind        Type             Value
 ----------       -----        ----        ----              ----
+iam                 0      CONSTANT        INT_TYPE              5
 f                 0           VAR        INT_TYPE             21
 y                 0           VAR        INT_TYPE              3
-x                 0           VAR        INT_TYPE             10
+x                 0           VAR        INT_TYPE             99
 

@@ -553,12 +553,12 @@ static const yytype_uint16 yyrline[] =
      332,   335,   369,   405,   406,   429,   455,   456,   476,   498,
      515,   516,   518,   519,   524,   525,   526,   527,   528,   554,
      555,   555,   586,   602,   622,   623,   624,   625,   626,   627,
-     631,   665,   678,   716,   719,   720,   721,   722,   726,   726,
-     726,   731,   733,   731,   734,   736,   736,   736,   734,   740,
-     740,   740,   740,   744,   744,   744,   745,   745,   745,   749,
-     749,   753,   754,   757,   758,   764,   764,   764,   764,   764,
-     766,   769,   769,   782,   782,   794,   794,   807,   807,   822,
-     823,   826,   839
+     631,   665,   678,   716,   796,   797,   798,   799,   803,   803,
+     803,   808,   810,   808,   811,   813,   813,   813,   811,   817,
+     817,   817,   817,   821,   821,   821,   822,   822,   822,   826,
+     826,   830,   831,   834,   835,   841,   841,   841,   841,   841,
+     843,   846,   846,   859,   859,   871,   871,   884,   884,   899,
+     900,   903,   916
 };
 #endif
 
@@ -2165,7 +2165,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 516 "parser.y"
-    {printf("--------------negation------------------------\n");;}
+    {printf("--------------negation------------------------\n wait in semantic");;}
     break;
 
   case 53:
@@ -2416,35 +2416,112 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 717 "parser.y"
-    {
+    {  
+                
+                SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
+                
+                
+                if(entry == NULL)
+                {       
+                        printSemanticError("Undeclared Variable",lineno);
+                        return 0;
+                }
+                
+                
+                if(entry->getLexemeEntry()->type == ENUM_TYPE)
+                {     
+                        SymbolTableEntry* pointerToEnum = entry->getPointerToEnum();
+                        SymbolTableEntry* targetEnum = getIdEntry((yyvsp[(3) - (4)].lexeme).stringRep);
+
+                if(pointerToEnum  == NULL )
+                {       
+                        printSemanticError("Undeclared ENUM TYPE",lineno);
+                        return 0;
+                }
+                if(targetEnum == NULL)
+                               { printSemanticError("Enumerator cannot be assigned this value",lineno);}
+
+
+                if(idExistsInEnum(pointerToEnum,(yyvsp[(3) - (4)].lexeme).stringRep) == true || (targetEnum !=NULL && targetEnum->getLexemeEntry()->type == ENUM_TYPE && targetEnum->getIsInitialized() == true))
+                        {
+                                pointerToEnum->setIsUsed(true);
+
+                                entry->setIsInitialized(true);
+
+                                if(targetEnum != NULL)
+                                        entry->getLexemeEntry()->stringVal = targetEnum->getLexemeEntry()->stringVal;
+                                else
+                                        entry->getLexemeEntry()->stringVal = (yyvsp[(3) - (4)].lexeme).stringRep;
+                        }
+                        else
+                        {
+                         if(targetEnum->getLexemeEntry()->type != ENUM_TYPE)
+                                printSemanticError("Type mismatch",lineno);
+                        else if (targetEnum->getIsInitialized() == false)
+                                printSemanticError("Use of Uninitialized Identifier",lineno);
+                        else if(idExistsInEnum(pointerToEnum,(yyvsp[(3) - (4)].lexeme).stringRep) == false)
+                                printSemanticError("Enumerator does not contain this value",lineno);
+                        }
+
+                        return 0;
+                }
+             
+                if(*entry->getKind() != VAR)
+                {
+                        printSemanticError("Cannot assign value to a non variable type",lineno);
+                        return 0;
+                }
+                int type1 = (int) entry->getLexemeEntry()->type;
+                int type2 = (yyvsp[(3) - (4)].lexeme).type;
+                if(!isTypeMatching(type1,type2))
+                {
+
+
+                        printSemanticError("Type mismatch in assignment statement",lineno);
+                }
+                else
+                {
+ 
+                        entry->setIsInitialized(true);
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
+                                entry->getLexemeEntry()->intVal = (int)(yyvsp[(3) - (4)].lexeme).floatVal;
+                                 
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
+                                entry->getLexemeEntry()->floatVal = (float)(yyvsp[(3) - (4)].lexeme).intVal;
+                        }else{
+                                entry->setLexemeEntry(convertLexemeToEntry((yyvsp[(3) - (4)].lexeme).type, (yyvsp[(3) - (4)].lexeme).stringRep, (yyvsp[(3) - (4)].lexeme).intVal, (yyvsp[(3) - (4)].lexeme).floatVal, (yyvsp[(3) - (4)].lexeme).stringVal, (yyvsp[(3) - (4)].lexeme).boolVal, (yyvsp[(3) - (4)].lexeme).charVal));
+                        }
+                }
         ;}
     break;
 
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 726 "parser.y"
+#line 803 "parser.y"
     { checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 726 "parser.y"
+#line 803 "parser.y"
     {createNewTable();;}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 726 "parser.y"
+#line 803 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 731 "parser.y"
+#line 808 "parser.y"
     {
                 checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);
         ;}
@@ -2453,21 +2530,21 @@ yyreduce:
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 733 "parser.y"
+#line 810 "parser.y"
     {createNewTable();;}
     break;
 
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 733 "parser.y"
+#line 810 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 734 "parser.y"
+#line 811 "parser.y"
     {
                 checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);
         ;}
@@ -2476,140 +2553,140 @@ yyreduce:
   case 85:
 
 /* Line 1455 of yacc.c  */
-#line 736 "parser.y"
+#line 813 "parser.y"
     {createNewTable();;}
     break;
 
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 736 "parser.y"
+#line 813 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 736 "parser.y"
+#line 813 "parser.y"
     {createNewTable();;}
     break;
 
   case 88:
 
 /* Line 1455 of yacc.c  */
-#line 736 "parser.y"
+#line 813 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 89:
 
 /* Line 1455 of yacc.c  */
-#line 740 "parser.y"
+#line 817 "parser.y"
     {createNewTable();;}
     break;
 
   case 90:
 
 /* Line 1455 of yacc.c  */
-#line 740 "parser.y"
+#line 817 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 91:
 
 /* Line 1455 of yacc.c  */
-#line 740 "parser.y"
+#line 817 "parser.y"
     { checkIfLexemIsBool((yyvsp[(9) - (9)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 92:
 
 /* Line 1455 of yacc.c  */
-#line 740 "parser.y"
+#line 817 "parser.y"
     {printf("REPEAT UNTIL\n");;}
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 744 "parser.y"
+#line 821 "parser.y"
     {createNewTable();;}
     break;
 
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 744 "parser.y"
+#line 821 "parser.y"
     {checkIfLexemIsBool((yyvsp[(5) - (5)].lexeme).type != BOOL_TYPE,lineno); ;}
     break;
 
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 744 "parser.y"
+#line 821 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 745 "parser.y"
+#line 822 "parser.y"
     {createNewTable();;}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
-#line 745 "parser.y"
+#line 822 "parser.y"
     {checkIfLexemIsBool((yyvsp[(5) - (5)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 98:
 
 /* Line 1455 of yacc.c  */
-#line 745 "parser.y"
+#line 822 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 99:
 
 /* Line 1455 of yacc.c  */
-#line 749 "parser.y"
+#line 826 "parser.y"
     {createNewTable();;}
     break;
 
   case 100:
 
 /* Line 1455 of yacc.c  */
-#line 749 "parser.y"
+#line 826 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 103:
 
 /* Line 1455 of yacc.c  */
-#line 757 "parser.y"
+#line 834 "parser.y"
     {printf("CASE\n");;}
     break;
 
   case 104:
 
 /* Line 1455 of yacc.c  */
-#line 758 "parser.y"
+#line 835 "parser.y"
     {printf("DEFAULT\n");;}
     break;
 
   case 110:
 
 /* Line 1455 of yacc.c  */
-#line 766 "parser.y"
+#line 843 "parser.y"
     {exitCurrentScope(); currentFunction = nullptr;;}
     break;
 
   case 111:
 
 /* Line 1455 of yacc.c  */
-#line 769 "parser.y"
+#line 846 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2627,14 +2704,14 @@ yyreduce:
   case 112:
 
 /* Line 1455 of yacc.c  */
-#line 781 "parser.y"
+#line 858 "parser.y"
     {printf("Void function with parameters \n");;}
     break;
 
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 782 "parser.y"
+#line 859 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2652,14 +2729,14 @@ yyreduce:
   case 114:
 
 /* Line 1455 of yacc.c  */
-#line 793 "parser.y"
+#line 870 "parser.y"
     {printf("Void function without parameters \n");;}
     break;
 
   case 115:
 
 /* Line 1455 of yacc.c  */
-#line 794 "parser.y"
+#line 871 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2678,14 +2755,14 @@ yyreduce:
   case 116:
 
 /* Line 1455 of yacc.c  */
-#line 806 "parser.y"
+#line 883 "parser.y"
     {printf("Typed function with parameters \n");;}
     break;
 
   case 117:
 
 /* Line 1455 of yacc.c  */
-#line 807 "parser.y"
+#line 884 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2704,21 +2781,21 @@ yyreduce:
   case 118:
 
 /* Line 1455 of yacc.c  */
-#line 819 "parser.y"
+#line 896 "parser.y"
     {printf("Typed function without parameters \n");}
     break;
 
   case 120:
 
 /* Line 1455 of yacc.c  */
-#line 823 "parser.y"
+#line 900 "parser.y"
     {printf("Multiple PARAMS\n");;}
     break;
 
   case 121:
 
 /* Line 1455 of yacc.c  */
-#line 826 "parser.y"
+#line 903 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (2)].stringValue));
                 if(entry != NULL){
@@ -2737,7 +2814,7 @@ yyreduce:
   case 122:
 
 /* Line 1455 of yacc.c  */
-#line 839 "parser.y"
+#line 916 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (4)].stringValue));
                 if(entry != NULL){
@@ -2778,7 +2855,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2782 "parser.tab.c"
+#line 2859 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2990,7 +3067,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 875 "parser.y"
+#line 952 "parser.y"
 
 
 
