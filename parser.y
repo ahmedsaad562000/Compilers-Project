@@ -36,6 +36,7 @@
 %type<lexeme> binary_expr
 %type<lexeme> term
 %type<lexeme> factor
+%type<lexeme> para
 %type<lexeme> function_call
 
 
@@ -515,7 +516,8 @@ negat: para
      | MINUS para %prec UMINUS           {printf("--------------negation------------------------\n");}
 
 para: factor
-        | LPAREN binary_expr RPAREN
+        | LPAREN binary_expr RPAREN   {$$ = $2;}
+        
         ;
 
 factor: 
@@ -545,8 +547,7 @@ factor:
                 $$.stringVal = entry->getLexemeEntry()->stringVal;
                 $$.boolVal = entry->getLexemeEntry()->boolVal;
                 $$.charVal = entry->getLexemeEntry()->charVal;
-        }
-
+        } ;
 
 /* function call */
 function_call:
