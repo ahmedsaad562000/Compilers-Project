@@ -385,6 +385,7 @@ call_params:
                 }
                 int type1 = (int)functionParameters.top();
                 int type2 = $3.type;
+
                 if(!isTypeMatching(type1,type2))
                 {
                         printSemanticError("Type mismatch in function call",lineno);
@@ -530,7 +531,7 @@ if_stmt:
         ;
 /* repeat until */
 repeat_until_stmt:
-        REPEAT LBRACE stmts RBRACE UNTIL LPAREN expr RPAREN SEMICOLON  {printf("REPEAT UNTIL\n");}
+        REPEAT LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();} UNTIL LPAREN expr { checkIfLexemIsBool($9.type != BOOL_TYPE,lineno);} RPAREN SEMICOLON  {printf("REPEAT UNTIL\n");}
         ;
 /* for loop */
 for_stmt:
@@ -556,21 +557,114 @@ case_stmt:
 /* function return types */
 type:  INT | FLOAT | CHAR | STRING | BOOL;
 /* function */
-function : function_prototype LBRACE stmts RBRACE  {printf("FUNCTION\n");}    
+function : function_prototype LBRACE stmts RBRACE  {exitCurrentScope(); currentFunction = nullptr;}    
         ;
 function_prototype:
-        VOID IDENTIFIER LPAREN params RPAREN  {printf("VOID FUNCTION WITH PARAMS\n");}  /* void function with params */
-        |VOID IDENTIFIER LPAREN RPAREN         {printf("VOID FUNCTION WITHOUT PARAMS\n");}  /* void function without params */
-        |type IDENTIFIER LPAREN params RPAREN  {printf("TYPE FUNCTION WITH PARAMS\n");}  /* type function with params */
-        |type IDENTIFIER LPAREN RPAREN          {printf("TYPE FUNCTION WITHOUT PARAMS\n");} /* type function without params */
+        VOID IDENTIFIER LPAREN{
+                SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
+                if(entry != NULL){
+                        printSemanticError("Function already declared",lineno);
+                        return 0;
+                }
+                LexemeEntry* lexeme = new LexemeEntry;
+                lexeme->type = VOID_TYPE;
+                lexeme->stringRep = getCurrentCount();
+                addEntryToTable($2,lexeme,FUNC,false,NULL, VOID_TYPE);
+                createNewTable();
+        }
+         params RPAREN  {printf("Void function with parameters \n");}  /* void function with params */
+        |VOID IDENTIFIER LPAREN {
+                SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
+                if(entry != NULL){
+                        printSemanticError("Function already declared",lineno);
+                        return 0;
+                }
+                LexemeEntry* lexeme = new LexemeEntry;
+                lexeme->type = VOID_TYPE;
+                lexeme->stringRep = getCurrentCount();
+                addEntryToTable($2,lexeme,FUNC,false,NULL, VOID_TYPE);
+                createNewTable();    
+        } RPAREN {printf("Void function without parameters \n");}  /* void function without params */
+        |type IDENTIFIER LPAREN {
+                SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
+                if(entry != NULL){
+                        printSemanticError("Function already declared",lineno);
+                        return 0;
+                }
+                LexemeEntry* lexeme = new LexemeEntry;
+                lexeme->type = static_cast<VariableType>($1);
+                lexeme->stringRep = getCurrentCount();
+                VariableType functionOutput = static_cast<VariableType>($1);
+                addEntryToTable($2,lexeme,FUNC,false,NULL, functionOutput);
+                createNewTable();
+        } params RPAREN  {printf("Typed function with parameters \n");}  /* type function with params */
+        |type IDENTIFIER LPAREN {
+                SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
+                if(entry != NULL){
+                        printSemanticError("Function already declared",lineno);
+                        return 0;
+                }
+                LexemeEntry* lexeme = new LexemeEntry;
+                lexeme->type = static_cast<VariableType>($1);
+                lexeme->stringRep = getCurrentCount();
+                VariableType functionOutput = static_cast<VariableType>($1);
+                addEntryToTable($2,lexeme,FUNC,false,NULL, functionOutput);
+                createNewTable();
+        } RPAREN {printf("Typed function without parameters \n")} /* type function without params */
         ;
 params:
         param                /* single param */
         | params COMMA param     {printf("Multiple PARAMS\n");}  /* multiple params */
         ;
 param:
-        type IDENTIFIER   {printf("Param without default\n");}    /* param without default value */
-        |type IDENTIFIER ASSIGN constant    {printf("Param with default\n");} /* param with default value */
+        type IDENTIFIER {
+                SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
+                if(entry != NULL){
+                        printSemanticError("Variable already declared",lineno);
+                        return 0;
+                }
+                LexemeEntry* lexeme = new LexemeEntry;
+                VariableType t = static_cast<VariableType>($1);
+                lexeme->type = t;
+                currentFunction->addFunctionInputsType(t);
+                lexeme->stringRep = getCurrentCount();
+                addEntryToTable($2,lexeme,PARAMETER,true);
+        }   /* param without default value */
+        |type IDENTIFIER ASSIGN constant {
+                SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
+                if(entry != NULL){
+                        printSemanticError("Variable already declared",lineno);
+                        return 0;
+                }
+                int type1 = $1;
+                int type2 = $4.type;
+                if(!isTypeMatching(type1,type2))
+                {
+                        printSemanticError("Type mismatch in variable declaration",lineno);
+                }
+                else{
+                        LexemeEntry* lexeme = new LexemeEntry;
+                        VariableType t = static_cast<VariableType>(type1);
+                        lexeme->type = t;
+                        currentFunction->addFunctionInputsType(t);
+                        lexeme->type = t;
+                        lexeme->stringRep = getCurrentCount();
+                        if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
+                                lexeme->intVal = (int)$4.floatVal;
+                        }else if (type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
+                                lexeme->floatVal = (float)$4.intVal;
+                        }else{
+                                lexeme->intVal = $4.intVal;
+                                lexeme->floatVal = $4.floatVal;
+                                lexeme->stringVal = $4.stringVal;
+                                lexeme->boolVal = $4.boolVal;
+                                lexeme->charVal = $4.charVal;
+                        }
+                        addEntryToTable($2,lexeme,PARAMETER,true);
+                }
+        } /* param with default value */
         ;
 %%
 

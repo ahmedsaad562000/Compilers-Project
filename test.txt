@@ -1,11 +1,15 @@
 int xx=5;
-int yy;
-<<<<<<< HEAD
-if(yy<10)
-=======
-int zzzz;
-while(5==55)
->>>>>>> 0aedea97a8a68a3062b86570a95e17f0aa9ddcad
+int yy=10;
+int zz=15;
+for(int x=0; x<5; x++)
 {
-    int z = 7;
+    int z = 10;
 }
+repeat{
+    int x;
+}until(xx<5);
+
+int megz_functions(int x, int y, int z){
+    int count = 0;
+}
+megz_functions(xx,yy,zz);

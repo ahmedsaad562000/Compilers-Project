@@ -1,3 +1,6 @@
-Variable not initialized At Line Number 3
-Warning: yy is declared but not used
-Warning: xx is declared but not used
+Warning: z is declared but not used
+Warning: x is declared but not used
+Warning: z is declared but not used
+Warning: y is declared but not used
+Warning: count is declared but not used
+Warning: x is declared but not used

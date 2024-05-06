@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "./SymbolTable/utils/enums.h"
 #include "parser.tab.h" // Include the y.tab.h file for the token definitions
-
+#include <string.h>
 int lineno = 1;  /* Line Number */
  int yylex();
 %}

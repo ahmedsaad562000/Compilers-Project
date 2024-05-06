@@ -1,17 +1,23 @@
 Identifier       Level        Kind        Type             Value
 ----------       -----        ----        ----              ----
-<<<<<<< HEAD
-yy                 0           VAR        INT_TYPE       16653416
-xx                 0           VAR        INT_TYPE              5
-
-=======
-zzzz                 0           VAR        INT_TYPE       39731288
-yy                 0           VAR        INT_TYPE       39731288
+megz_functions                 0          FUNC        INT_TYPE
+yy                 0           VAR        INT_TYPE             10
+zz                 0           VAR        INT_TYPE             15
 xx                 0           VAR        INT_TYPE              5
 
     Identifier       Level        Kind        Type             Value
     ----------       -----        ----        ----              ----
-    ww                 1           VAR        INT_TYPE       16523304
-    yy                 1           VAR        INT_TYPE       39731288
+    z                 1           VAR        INT_TYPE             10
+    x                 1           VAR        INT_TYPE              0
 
->>>>>>> 0aedea97a8a68a3062b86570a95e17f0aa9ddcad
+    Identifier       Level        Kind        Type             Value
+    ----------       -----        ----        ----              ----
+    x                 1           VAR        INT_TYPE              0
+
+    Identifier       Level        Kind        Type             Value
+    ----------       -----        ----        ----              ----
+    z                 1         PARAM        INT_TYPE
+    y                 1         PARAM        INT_TYPE
+    count                 1           VAR        INT_TYPE              0
+    x                 1         PARAM        INT_TYPE
+

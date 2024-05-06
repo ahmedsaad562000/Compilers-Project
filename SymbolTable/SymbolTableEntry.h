@@ -29,6 +29,7 @@ public:
     void setFunctionOutputType(VariableType type);
     VariableType getFunctionOutputType() const;
     void setFunctionInputsType(vector<VariableType> &types);
+    void addFunctionInputsType(VariableType type);
     vector<VariableType> getFunctionInputsType() const;
     void setEnumValues(vector<char *> &values);
     vector<char *> getEnumValues() const;
@@ -37,4 +38,4 @@ public:
     void setLexemeEntry(LexemeEntry *entry);
     LexemeEntry *getLexemeEntry() const;
 };
-#endif // COMPILERSPROJECT_SYMBOLTABLEENTRY_H
+#endif //COMPILERSPROJECT_SYMBOLTABLEENTRY_H

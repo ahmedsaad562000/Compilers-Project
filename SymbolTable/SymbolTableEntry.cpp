@@ -39,3 +39,7 @@ LexemeEntry *SymbolTableEntry::getLexemeEntry() const { return this->lexeme; }
 bool SymbolTableEntry::getIsInitialized() const { return this->isInitialized; }
 
 void SymbolTableEntry::setIsInitialized(bool isInitialized) { this->isInitialized = isInitialized; }
+
+void SymbolTableEntry::addFunctionInputsType(VariableType type){
+    this->functionInputsType.push_back(type);
+}
