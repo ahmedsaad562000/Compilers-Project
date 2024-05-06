@@ -280,9 +280,48 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                 }
         }
     | expr AND expr                             /* && */
+    {
+                int type1 = $1.type;
+                int type2 = $3.type;
+                if(type1 != BOOL_TYPE || type2 != BOOL_TYPE)
+                {
+                        printSemanticError("AND Operation should be between boolean types",lineno);
+                }else{
+                        $$.type = BOOL_TYPE;
+                        $$.stringRep = getCurrentCount();
+                        $$.boolVal = $1.boolVal && $3.boolVal;
+                }
+    }
     | expr OR expr                              /* || */
+       {
+                int type1 = $1.type;
+                int type2 = $3.type;
+                if(type1 != BOOL_TYPE || type2 != BOOL_TYPE)
+                {
+                        printSemanticError("OR Operation should be between boolean types",lineno);
+                }else{
+                        $$.type = BOOL_TYPE;
+                        $$.stringRep = getCurrentCount();
+                        $$.boolVal = $1.boolVal || $3.boolVal;
+                }
+        } 
     | NOT expr
-    |LPAREN bool_expr RPAREN                                  /* ! */         
+       {                                       /* ! */ 
+                int type = $2.type;
+                if(type != BOOL_TYPE)
+                {
+                        printSemanticError("NOT Operation should be on boolean type",lineno);
+                }else{
+                        $$.type = BOOL_TYPE;
+                        $$.stringRep = getCurrentCount();
+                        $$.boolVal = !$2.boolVal;
+                  
+                }
+        }
+    |LPAREN bool_expr RPAREN                                          
+     {
+                $$ = $2;
+     }
     |TRUE_VAL                                   /* true */
     |FALSE_VAL                                  /* false */
     ;
@@ -293,7 +332,73 @@ arithmetic_expr:binary_expr
                 ;
 
 unary_expr: IDENTIFIER INC
+        {
+                SymbolTableEntry* entry = getIdEntry($1);
+                if(entry == NULL){
+                        printSemanticError("Variable not declared",lineno);
+                        return 0;
+                }
+                 if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                VariableType type=entry->getLexemeEntry()->type;
+                if(type != INT_TYPE && type != FLOAT_TYPE)
+                {
+                        printSemanticError("Unary Operation should be on integer or float type",lineno);
+                }
+                else
+                {
+                        $$.stringRep = getCurrentCount();
+                        if(type == INT_TYPE)
+                        {
+                                $$.type = INT_TYPE;
+                                $$.intVal = entry->getLexemeEntry()->intVal + 1;
+                                entry->getLexemeEntry()->intVal = $$.intVal;
+                        }else
+                        {
+                                $$.type = FLOAT_TYPE;
+                                $$.floatVal = entry->getLexemeEntry()->floatVal + 1;
+                                entry->getLexemeEntry()->floatVal = $$.floatVal;
+                        }
+                    
+                }
+        }
         | IDENTIFIER DEC
+        {
+                SymbolTableEntry* entry = getIdEntry($1);
+                if(entry == NULL){
+                        printSemanticError("Variable not declared",lineno);
+                        return 0;
+                }
+                 if(entry->getIsInitialized() == false)
+                {
+                        printSemanticError("Variable not initialized",lineno);
+                        return 0;
+                }
+                VariableType type=entry->getLexemeEntry()->type;
+                if(type != INT_TYPE && type != FLOAT_TYPE)
+                {
+                        printSemanticError("Unary Operation should be on integer or float type",lineno);
+                }
+                else
+                {
+                        $$.stringRep = getCurrentCount();
+                        if(type == INT_TYPE)
+                        {
+                                $$.type = INT_TYPE;
+                                $$.intVal = entry->getLexemeEntry()->intVal - 1;
+                                entry->getLexemeEntry()->intVal = $$.intVal;
+                        }else
+                        {
+                                $$.type = FLOAT_TYPE;
+                                $$.floatVal = entry->getLexemeEntry()->floatVal - 1;
+                                entry->getLexemeEntry()->floatVal = $$.floatVal;
+                        }
+                    
+                }
+        }
     ;
 
 binary_expr: term
