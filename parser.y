@@ -554,7 +554,31 @@ factor:
 
 /* function call */
 function_call:
-        IDENTIFIER LPAREN RPAREN   // no params
+        IDENTIFIER LPAREN {
+                SymbolTableEntry* entry = getIdEntry($1);
+                if(entry == NULL){
+                        printSemanticError("Function not declared",lineno);
+                        return 0;
+                }
+                if(*entry->getKind() != FUNC)
+                {
+                        printSemanticError("Cannot call a non function type",lineno);
+                        return 0;
+                }
+                entry->setIsUsed(true);
+                convertFunctionParamsToStack(entry);
+        } RPAREN 
+        {
+                SymbolTableEntry* entry = getIdEntry($1);
+                $$.type = (int)entry->getFunctionOutputType();
+                $$.stringRep = $1;
+                $$.intVal = entry->getLexemeEntry()->intVal;
+                $$.floatVal = entry->getLexemeEntry()->floatVal;
+                $$.stringVal = entry->getLexemeEntry()->stringVal;
+                $$.boolVal = entry->getLexemeEntry()->boolVal;
+                $$.charVal = entry->getLexemeEntry()->charVal;
+                printf("%s \n" , "Function called successfully");
+        }   // no params
         | IDENTIFIER LPAREN {
                 SymbolTableEntry* entry = getIdEntry($1);
                 if(entry == NULL){

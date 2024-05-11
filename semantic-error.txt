@@ -1,4 +1,4 @@
-Division by zero At Line Number 10
 Warning: cc is declared but not used
 Warning: iam is declared but not used
 Warning: f is declared but not used
+Warning: x is declared but not used
