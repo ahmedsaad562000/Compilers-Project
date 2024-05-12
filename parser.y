@@ -334,7 +334,9 @@ arithmetic_expr:binary_expr
 
 unary_expr: IDENTIFIER INC
         {
+                printf("HELLO \n");
                 SymbolTableEntry* entry = getIdEntry($1);
+                printf("%d \n" , (entry->getLexemeEntry()->intVal));
                 if(entry == NULL){
                         printSemanticError("Variable not declared",lineno);
                         return 0;
@@ -345,6 +347,7 @@ unary_expr: IDENTIFIER INC
                         return 0;
                 }
                 VariableType type=entry->getLexemeEntry()->type;
+                
                 if(type != INT_TYPE && type != FLOAT_TYPE)
                 {
                         printSemanticError("Unary Operation should be on integer or float type",lineno);
@@ -357,11 +360,13 @@ unary_expr: IDENTIFIER INC
                                 $$.type = INT_TYPE;
                                 $$.intVal = entry->getLexemeEntry()->intVal + 1;
                                 entry->getLexemeEntry()->intVal = $$.intVal;
+                                printf("%d \n" , (entry->getLexemeEntry()->intVal));
                         }else
                         {
                                 $$.type = FLOAT_TYPE;
                                 $$.floatVal = entry->getLexemeEntry()->floatVal + 1;
                                 entry->getLexemeEntry()->floatVal = $$.floatVal;
+                                printf("%d \n" , (entry->getLexemeEntry()->intVal));
                         }
                     
                 }
@@ -569,6 +574,11 @@ function_call:
                 convertFunctionParamsToStack(entry);
         } RPAREN 
         {
+                if(functionParameters.size() != 0)
+                {
+                        printSemanticError("Function call parameters do not match function definition",lineno);
+                        return 0;
+                }
                 SymbolTableEntry* entry = getIdEntry($1);
                 $$.type = (int)entry->getFunctionOutputType();
                 $$.stringRep = $1;
