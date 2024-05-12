@@ -38,6 +38,7 @@
 %type<lexeme> factor
 %type<lexeme> para
 %type<lexeme> function_call
+%type<lexeme> negat
 
 
 
@@ -518,7 +519,12 @@ term: negat
         }      
     ;
 negat: para
-     | MINUS para %prec UMINUS           {printf("--------------negation------------------------\n wait in semantic");}
+     | MINUS para %prec UMINUS    {$$.type = $2.type;
+        if ($2.type == FLOAT_TYPE)
+                $$.floatVal = -$2.floatVal;
+        else
+                $$.intVal = -$2.intVal;
+      }
 
 para: factor
         | LPAREN binary_expr RPAREN   {$$ = $2;}
@@ -526,8 +532,8 @@ para: factor
         ;
 
 factor: 
-        INT_VAL                 {printf("INT_VAL\n");}
-        | FLOAT_VAL             {printf("FLOAT_VAL\n");}        
+        INT_VAL                 {$$.type = INT_TYPE;printf("INT_VAL_ASD\n");}
+        | FLOAT_VAL             {$$.type = FLOAT_TYPE;printf("INT_VAL_ASD\n");}        
         | factor EXP factor     {printf("EXP\n");}
         | function_call         {printf("FUNCTION_CALL\n");}
         | IDENTIFIER            {
@@ -644,7 +650,7 @@ const_dec_stmt:
                 int type2 = $5.type;
                 if(!isTypeMatching(type1,type2))
                 {
-                        printSemanticError("Type mismatch in variable declaration",lineno);
+                        printSemanticError("Type mismatch in const declaration",lineno);
                 }else{
                         LexemeEntry* lexeme = new LexemeEntry;
                         lexeme->type = static_cast<VariableType>(type1);
@@ -688,6 +694,7 @@ var_dec_stmt:
                 }
                 int type1 = $1;
                 int type2 = $4.type;
+                printf("Type1: %d Type2: %d\n",type1,type2);
                  if(!isTypeMatching(type1,type2))
                 {
                         printSemanticError("Type mismatch in variable declaration",lineno);
@@ -776,6 +783,7 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                 }
                 int type1 = (int) entry->getLexemeEntry()->type;
                 int type2 = $3.type;
+                printf("Type1 = %d Type2 = %d\n",type1,type2);
                 if(!isTypeMatching(type1,type2))
                 {
 
@@ -967,19 +975,24 @@ while_stmt:
 if_stmt:
         IF LPAREN expr {
                 checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);
-        } RPAREN LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();}    /* if-then */
-        | IF LPAREN expr {
-                checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);
-        } RPAREN LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();} ELSE LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();} /* if-then-else */
+        } RPAREN LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();}  if_expression_stmt   /* if-then */
         ;
+if_expression_stmt:
+        ELSE LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();} /* if-then-else */
+        |
+        ;
+
 /* repeat until */
 repeat_until_stmt:
         REPEAT LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();} UNTIL LPAREN expr { checkIfLexemIsBool($9.type != BOOL_TYPE,lineno);} RPAREN SEMICOLON  {printf("REPEAT UNTIL\n");}
         ;
 /* for loop */
 for_stmt:
-        FOR {createNewTable();} LPAREN var_dec_stmt expr {checkIfLexemIsBool($5.type != BOOL_TYPE,lineno); } SEMICOLON expr RPAREN LBRACE stmts RBRACE {exitCurrentScope();}
-        | FOR {createNewTable();} LPAREN assign_stmt expr {checkIfLexemIsBool($5.type != BOOL_TYPE,lineno);} SEMICOLON expr RPAREN LBRACE stmts RBRACE {exitCurrentScope();}
+        FOR {createNewTable();} for_expression_stmt
+        ;
+for_expression_stmt:
+        LPAREN var_dec_stmt expr {checkIfLexemIsBool($3.type != BOOL_TYPE,lineno); } SEMICOLON expr RPAREN LBRACE stmts RBRACE {exitCurrentScope();}
+        | LPAREN assign_stmt expr {checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);} SEMICOLON expr RPAREN LBRACE stmts RBRACE {exitCurrentScope();}
         ;
 /* switch case */
 switch_stmt:
@@ -1053,7 +1066,7 @@ function_prototype:
                 VariableType functionOutput = static_cast<VariableType>($1);
                 addEntryToTable($2,lexeme,FUNC,false,NULL, functionOutput);
                 createNewTable();
-        } RPAREN {printf("Typed function without parameters \n")} /* type function without params */
+        } RPAREN {printf("Typed function without parameters \n");} /* type function without params */
         ;
 params:
         param                /* single param */

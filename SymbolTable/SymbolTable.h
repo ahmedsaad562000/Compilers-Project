@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <vector>
 #include "./SymbolTableEntry.h"
+#include <string>
 using namespace std;
 
 class SymbolTable
