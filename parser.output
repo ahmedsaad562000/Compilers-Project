@@ -1,14 +1,3 @@
-Rules useless in parser due to conflicts
-
-   84 $@8: /* empty */
-
-   96 $@17: /* empty */
-
-
-State 17 conflicts: 1 reduce/reduce
-State 116 conflicts: 1 reduce/reduce
-
-
 Grammar
 
     0 $accept: stmts $end
@@ -85,154 +74,149 @@ Grammar
    56       | function_call
    57       | IDENTIFIER
 
-   58 $@2: /* empty */
+   58 function_call: IDENTIFIER LPAREN RPAREN
 
-   59 function_call: IDENTIFIER LPAREN $@2 RPAREN
+   59 $@2: /* empty */
 
-   60 $@3: /* empty */
+   60 function_call: IDENTIFIER LPAREN $@2 call_params RPAREN
 
-   61 function_call: IDENTIFIER LPAREN $@3 call_params RPAREN
+   61 call_params: call_params COMMA value
+   62            | value
 
-   62 call_params: call_params COMMA value
-   63            | value
+   63 constant: INT_VAL
+   64         | FLOAT_VAL
+   65         | STRING_VAL
+   66         | CHAR_VAL
+   67         | TRUE_VAL
+   68         | FALSE_VAL
 
-   64 constant: INT_VAL
-   65         | FLOAT_VAL
-   66         | STRING_VAL
-   67         | CHAR_VAL
-   68         | TRUE_VAL
-   69         | FALSE_VAL
+   69 const_dec_stmt: CONST type IDENTIFIER ASSIGN constant SEMICOLON
 
-   70 const_dec_stmt: CONST type IDENTIFIER ASSIGN constant SEMICOLON
+   70 var_dec_stmt: type IDENTIFIER SEMICOLON
+   71             | type IDENTIFIER ASSIGN value SEMICOLON
 
-   71 var_dec_stmt: type IDENTIFIER SEMICOLON
-   72             | type IDENTIFIER ASSIGN value SEMICOLON
+   72 assign_stmt: IDENTIFIER ASSIGN value SEMICOLON
+   73            | IDENTIFIER DIV_EQ value SEMICOLON
+   74            | IDENTIFIER MULT_EQ value SEMICOLON
+   75            | IDENTIFIER PLUS_EQ value SEMICOLON
+   76            | IDENTIFIER MINUS_EQ value SEMICOLON
 
-   73 assign_stmt: IDENTIFIER ASSIGN value SEMICOLON
-   74            | IDENTIFIER DIV_EQ value SEMICOLON
-   75            | IDENTIFIER MULT_EQ value SEMICOLON
-   76            | IDENTIFIER PLUS_EQ value SEMICOLON
-   77            | IDENTIFIER MINUS_EQ value SEMICOLON
+   77 $@3: /* empty */
 
    78 $@4: /* empty */
 
-   79 $@5: /* empty */
+   79 while_stmt: WHILE LPAREN expr $@3 RPAREN LBRACE $@4 stmts RBRACE
 
-   80 while_stmt: WHILE LPAREN expr $@4 RPAREN LBRACE $@5 stmts RBRACE
+   80 $@5: /* empty */
 
    81 $@6: /* empty */
 
    82 $@7: /* empty */
 
-   83 if_stmt: IF LPAREN expr $@6 RPAREN LBRACE $@7 stmts RBRACE
+   83 if_stmt: IF LPAREN expr $@5 RPAREN LBRACE $@6 stmts RBRACE $@7 if_expression_stmt
 
    84 $@8: /* empty */
 
-   85 $@9: /* empty */
+   85 if_expression_stmt: ELSE LBRACE $@8 stmts RBRACE
+   86                   | /* empty */
 
-   86 $@10: /* empty */
+   87 $@9: /* empty */
 
-   87 $@11: /* empty */
+   88 $@10: /* empty */
 
-   88 if_stmt: IF LPAREN expr $@8 RPAREN LBRACE $@9 stmts RBRACE $@10 ELSE LBRACE $@11 stmts RBRACE
+   89 $@11: /* empty */
 
-   89 $@12: /* empty */
+   90 repeat_until_stmt: REPEAT LBRACE $@9 stmts RBRACE $@10 UNTIL LPAREN expr $@11 RPAREN SEMICOLON
 
-   90 $@13: /* empty */
+   91 $@12: /* empty */
 
-   91 $@14: /* empty */
+   92 for_stmt: FOR $@12 for_expression_stmt
 
-   92 repeat_until_stmt: REPEAT LBRACE $@12 stmts RBRACE $@13 UNTIL LPAREN expr $@14 RPAREN SEMICOLON
+   93 $@13: /* empty */
 
-   93 $@15: /* empty */
+   94 for_expression_stmt: LPAREN var_dec_stmt expr $@13 SEMICOLON expr RPAREN LBRACE stmts RBRACE
 
-   94 $@16: /* empty */
+   95 $@14: /* empty */
 
-   95 for_stmt: FOR $@15 LPAREN var_dec_stmt expr $@16 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   96 for_expression_stmt: LPAREN assign_stmt expr $@14 SEMICOLON expr RPAREN LBRACE stmts RBRACE
 
-   96 $@17: /* empty */
+   97 $@15: /* empty */
 
-   97 $@18: /* empty */
+   98 switch_stmt: SWITCH LPAREN expr RPAREN LBRACE $@15 case_stmts RBRACE
 
-   98 for_stmt: FOR $@17 LPAREN assign_stmt expr $@18 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   99 case_stmts: case_stmts case_stmt
+  100           | case_stmt
 
-   99 $@19: /* empty */
+  101 case_stmt: CASE value COLON stmts
+  102          | DEFAULT COLON stmts
 
-  100 switch_stmt: SWITCH LPAREN expr RPAREN LBRACE $@19 case_stmts RBRACE
+  103 type: INT
+  104     | FLOAT
+  105     | CHAR
+  106     | STRING
+  107     | BOOL
 
-  101 case_stmts: case_stmts case_stmt
-  102           | case_stmt
+  108 function: function_prototype LBRACE stmts RBRACE
 
-  103 case_stmt: CASE value COLON stmts
-  104          | DEFAULT COLON stmts
+  109 $@16: /* empty */
 
-  105 type: INT
-  106     | FLOAT
-  107     | CHAR
-  108     | STRING
-  109     | BOOL
+  110 function_prototype: VOID IDENTIFIER LPAREN $@16 params RPAREN
 
-  110 function: function_prototype LBRACE stmts RBRACE
+  111 $@17: /* empty */
 
-  111 $@20: /* empty */
+  112 function_prototype: VOID IDENTIFIER LPAREN $@17 RPAREN
 
-  112 function_prototype: VOID IDENTIFIER LPAREN $@20 params RPAREN
+  113 $@18: /* empty */
 
-  113 $@21: /* empty */
+  114 function_prototype: type IDENTIFIER LPAREN $@18 params RPAREN
 
-  114 function_prototype: VOID IDENTIFIER LPAREN $@21 RPAREN
+  115 $@19: /* empty */
 
-  115 $@22: /* empty */
+  116 function_prototype: type IDENTIFIER LPAREN $@19 RPAREN
 
-  116 function_prototype: type IDENTIFIER LPAREN $@22 params RPAREN
+  117 params: param
+  118       | params COMMA param
 
-  117 $@23: /* empty */
-
-  118 function_prototype: type IDENTIFIER LPAREN $@23 RPAREN
-
-  119 params: param
-  120       | params COMMA param
-
-  121 param: type IDENTIFIER
-  122      | type IDENTIFIER ASSIGN constant
+  119 param: type IDENTIFIER
+  120      | type IDENTIFIER ASSIGN constant
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-INT (258) 105
-FLOAT (259) 106
-CHAR (260) 107
-BOOL (261) 109
-STRING (262) 108
-IDENTIFIER (263) 40 41 57 59 61 70 71 72 73 74 75 76 77 112 114 116
-    118 121 122
-INT_VAL (264) 53 64
-FLOAT_VAL (265) 54 65
-CHAR_VAL (266) 23 67
-STRING_VAL (267) 22 66
-TRUE_VAL (268) 36 68
-FALSE_VAL (269) 37 69
-CONST (270) 70
-SEMICOLON (271) 3 15 16 17 18 70 71 72 73 74 75 76 77 92 95 98
-COMMA (272) 62 120
-LBRACE (273) 5 80 83 88 92 95 98 100 110
-RBRACE (274) 5 80 83 88 92 95 98 100 110
-LPAREN (275) 18 35 52 59 61 80 83 88 92 95 98 100 112 114 116 118
-RPAREN (276) 18 35 52 59 61 80 83 88 92 95 98 100 112 114 116 118
+INT (258) 103
+FLOAT (259) 104
+CHAR (260) 105
+BOOL (261) 107
+STRING (262) 106
+IDENTIFIER (263) 40 41 57 58 60 69 70 71 72 73 74 75 76 110 112 114
+    116 119 120
+INT_VAL (264) 53 63
+FLOAT_VAL (265) 54 64
+CHAR_VAL (266) 23 66
+STRING_VAL (267) 22 65
+TRUE_VAL (268) 36 67
+FALSE_VAL (269) 37 68
+CONST (270) 69
+SEMICOLON (271) 3 15 16 17 18 69 70 71 72 73 74 75 76 90 94 96
+COMMA (272) 61 118
+LBRACE (273) 5 79 83 85 90 94 96 98 108
+RBRACE (274) 5 79 83 85 90 94 96 98 108
+LPAREN (275) 18 35 52 58 60 79 83 90 94 96 98 110 112 114 116
+RPAREN (276) 18 35 52 58 60 79 83 90 94 96 98 110 112 114 116
 BREAK (277) 16
 CONTINUE (278) 17
-WHILE (279) 80
-FOR (280) 95 98
-SWITCH (281) 100
-CASE (282) 103
-DEFAULT (283) 104
-COLON (284) 103 104
-IF (285) 83 88
-ELSE (286) 88
-REPEAT (287) 92
-UNTIL (288) 92
+WHILE (279) 79
+FOR (280) 92
+SWITCH (281) 98
+CASE (282) 101
+DEFAULT (283) 102
+COLON (284) 101 102
+IF (285) 83
+ELSE (286) 85
+REPEAT (287) 90
+UNTIL (288) 90
 LE (289) 31
 GE (290) 30
 NE (291) 27
@@ -248,15 +232,15 @@ EXP (300) 55
 OR (301) 33
 AND (302) 32
 NOT (303) 34
-ASSIGN (304) 70 72 73 122
-DIV_EQ (305) 74
-PLUS_EQ (306) 76
-MINUS_EQ (307) 77
-MULT_EQ (308) 75
+ASSIGN (304) 69 71 72 120
+DIV_EQ (305) 73
+PLUS_EQ (306) 75
+MINUS_EQ (307) 76
+MULT_EQ (308) 74
 INC (309) 40
 DEC (310) 41
 UMINUS (311)
-VOID (312) 112 114
+VOID (312) 110 112
 RETURN (313) 15
 PRINT (314) 18
 
@@ -266,7 +250,7 @@ Nonterminals, with rules where they appear
 $accept (60)
     on left: 0
 stmts (61)
-    on left: 1 2, on right: 0 1 5 80 83 88 92 95 98 103 104 110
+    on left: 1 2, on right: 0 1 5 79 83 85 90 94 96 101 102 108
 stmt (62)
     on left: 3 5 6 7 8 9 10 11 12 13 14 15 16 17 18, on right: 1 2
 $@1 (63)
@@ -274,10 +258,10 @@ $@1 (63)
 ret_val (64)
     on left: 19 20, on right: 15
 value (65)
-    on left: 21 22 23, on right: 18 19 62 63 72 73 74 75 76 77 103
+    on left: 21 22 23, on right: 18 19 61 62 71 72 73 74 75 76 101
 expr (66)
-    on left: 24 25, on right: 3 21 26 27 28 29 30 31 32 33 34 80 83
-    88 92 95 98 100
+    on left: 24 25, on right: 3 21 26 27 28 29 30 31 32 33 34 79 83
+    90 94 96 98
 bool_expr (67)
     on left: 26 27 28 29 30 31 32 33 34 35 36 37, on right: 24 35
 arithmetic_expr (68)
@@ -295,85 +279,81 @@ para (73)
 factor (74)
     on left: 53 54 55 56 57, on right: 46 47 48 51 55
 function_call (75)
-    on left: 59 61, on right: 56
+    on left: 58 60, on right: 56
 $@2 (76)
-    on left: 58, on right: 59
-$@3 (77)
-    on left: 60, on right: 61
-call_params (78)
-    on left: 62 63, on right: 61 62
-constant (79)
-    on left: 64 65 66 67 68 69, on right: 70 122
-const_dec_stmt (80)
-    on left: 70, on right: 6
-var_dec_stmt (81)
-    on left: 71 72, on right: 7 95
-assign_stmt (82)
-    on left: 73 74 75 76 77, on right: 8 98
-while_stmt (83)
-    on left: 80, on right: 9
+    on left: 59, on right: 60
+call_params (77)
+    on left: 61 62, on right: 60 61
+constant (78)
+    on left: 63 64 65 66 67 68, on right: 69 120
+const_dec_stmt (79)
+    on left: 69, on right: 6
+var_dec_stmt (80)
+    on left: 70 71, on right: 7 94
+assign_stmt (81)
+    on left: 72 73 74 75 76, on right: 8 96
+while_stmt (82)
+    on left: 79, on right: 9
+$@3 (83)
+    on left: 77, on right: 79
 $@4 (84)
-    on left: 78, on right: 80
-$@5 (85)
-    on left: 79, on right: 80
-if_stmt (86)
-    on left: 83 88, on right: 10
+    on left: 78, on right: 79
+if_stmt (85)
+    on left: 83, on right: 10
+$@5 (86)
+    on left: 80, on right: 83
 $@6 (87)
     on left: 81, on right: 83
 $@7 (88)
     on left: 82, on right: 83
-$@8 (89)
-    on left: 84, on right: 88
-$@9 (90)
-    on left: 85, on right: 88
-$@10 (91)
-    on left: 86, on right: 88
-$@11 (92)
-    on left: 87, on right: 88
-repeat_until_stmt (93)
-    on left: 92, on right: 11
-$@12 (94)
-    on left: 89, on right: 92
-$@13 (95)
-    on left: 90, on right: 92
-$@14 (96)
+if_expression_stmt (89)
+    on left: 85 86, on right: 83
+$@8 (90)
+    on left: 84, on right: 85
+repeat_until_stmt (91)
+    on left: 90, on right: 11
+$@9 (92)
+    on left: 87, on right: 90
+$@10 (93)
+    on left: 88, on right: 90
+$@11 (94)
+    on left: 89, on right: 90
+for_stmt (95)
+    on left: 92, on right: 12
+$@12 (96)
     on left: 91, on right: 92
-for_stmt (97)
-    on left: 95 98, on right: 12
-$@15 (98)
-    on left: 93, on right: 95
-$@16 (99)
-    on left: 94, on right: 95
-$@17 (100)
-    on left: 96, on right: 98
-$@18 (101)
+for_expression_stmt (97)
+    on left: 94 96, on right: 92
+$@13 (98)
+    on left: 93, on right: 94
+$@14 (99)
+    on left: 95, on right: 96
+switch_stmt (100)
+    on left: 98, on right: 13
+$@15 (101)
     on left: 97, on right: 98
-switch_stmt (102)
-    on left: 100, on right: 13
-$@19 (103)
-    on left: 99, on right: 100
-case_stmts (104)
-    on left: 101 102, on right: 100 101
-case_stmt (105)
-    on left: 103 104, on right: 101 102
-type (106)
-    on left: 105 106 107 108 109, on right: 70 71 72 116 118 121 122
-function (107)
-    on left: 110, on right: 14
-function_prototype (108)
-    on left: 112 114 116 118, on right: 110
-$@20 (109)
+case_stmts (102)
+    on left: 99 100, on right: 98 99
+case_stmt (103)
+    on left: 101 102, on right: 99 100
+type (104)
+    on left: 103 104 105 106 107, on right: 69 70 71 114 116 119 120
+function (105)
+    on left: 108, on right: 14
+function_prototype (106)
+    on left: 110 112 114 116, on right: 108
+$@16 (107)
+    on left: 109, on right: 110
+$@17 (108)
     on left: 111, on right: 112
-$@21 (110)
+$@18 (109)
     on left: 113, on right: 114
-$@22 (111)
+$@19 (110)
     on left: 115, on right: 116
-$@23 (112)
-    on left: 117, on right: 118
-params (113)
-    on left: 119 120, on right: 112 116 120
-param (114)
-    on left: 121 122, on right: 119 120
+params (111)
+    on left: 117 118, on right: 110 114 118
+param (112)
+    on left: 119 120, on right: 117 118
 
 
 state 0
@@ -433,37 +413,37 @@ state 0
 
 state 1
 
-  105 type: INT .
+  103 type: INT .
 
-    $default  reduce using rule 105 (type)
+    $default  reduce using rule 103 (type)
 
 
 state 2
 
-  106 type: FLOAT .
+  104 type: FLOAT .
 
-    $default  reduce using rule 106 (type)
+    $default  reduce using rule 104 (type)
 
 
 state 3
 
-  107 type: CHAR .
+  105 type: CHAR .
 
-    $default  reduce using rule 107 (type)
+    $default  reduce using rule 105 (type)
 
 
 state 4
 
-  109 type: BOOL .
+  107 type: BOOL .
 
-    $default  reduce using rule 109 (type)
+    $default  reduce using rule 107 (type)
 
 
 state 5
 
-  108 type: STRING .
+  106 type: STRING .
 
-    $default  reduce using rule 108 (type)
+    $default  reduce using rule 106 (type)
 
 
 state 6
@@ -471,13 +451,13 @@ state 6
    40 unary_expr: IDENTIFIER . INC
    41           | IDENTIFIER . DEC
    57 factor: IDENTIFIER .
-   59 function_call: IDENTIFIER . LPAREN $@2 RPAREN
-   61              | IDENTIFIER . LPAREN $@3 call_params RPAREN
-   73 assign_stmt: IDENTIFIER . ASSIGN value SEMICOLON
-   74            | IDENTIFIER . DIV_EQ value SEMICOLON
-   75            | IDENTIFIER . MULT_EQ value SEMICOLON
-   76            | IDENTIFIER . PLUS_EQ value SEMICOLON
-   77            | IDENTIFIER . MINUS_EQ value SEMICOLON
+   58 function_call: IDENTIFIER . LPAREN RPAREN
+   60              | IDENTIFIER . LPAREN $@2 call_params RPAREN
+   72 assign_stmt: IDENTIFIER . ASSIGN value SEMICOLON
+   73            | IDENTIFIER . DIV_EQ value SEMICOLON
+   74            | IDENTIFIER . MULT_EQ value SEMICOLON
+   75            | IDENTIFIER . PLUS_EQ value SEMICOLON
+   76            | IDENTIFIER . MINUS_EQ value SEMICOLON
 
     LPAREN    shift, and go to state 49
     ASSIGN    shift, and go to state 50
@@ -521,7 +501,7 @@ state 10
 
 state 11
 
-   70 const_dec_stmt: CONST . type IDENTIFIER ASSIGN constant SEMICOLON
+   69 const_dec_stmt: CONST . type IDENTIFIER ASSIGN constant SEMICOLON
 
     INT     shift, and go to state 1
     FLOAT   shift, and go to state 2
@@ -583,56 +563,51 @@ state 15
 
 state 16
 
-   80 while_stmt: WHILE . LPAREN expr $@4 RPAREN LBRACE $@5 stmts RBRACE
+   79 while_stmt: WHILE . LPAREN expr $@3 RPAREN LBRACE $@4 stmts RBRACE
 
     LPAREN  shift, and go to state 65
 
 
 state 17
 
-   95 for_stmt: FOR . $@15 LPAREN var_dec_stmt expr $@16 SEMICOLON expr RPAREN LBRACE stmts RBRACE
-   98         | FOR . $@17 LPAREN assign_stmt expr $@18 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   92 for_stmt: FOR . $@12 for_expression_stmt
 
-    LPAREN    reduce using rule 93 ($@15)
-    LPAREN    [reduce using rule 96 ($@17)]
-    $default  reduce using rule 93 ($@15)
+    $default  reduce using rule 91 ($@12)
 
-    $@15  go to state 66
-    $@17  go to state 67
+    $@12  go to state 66
 
 
 state 18
 
-  100 switch_stmt: SWITCH . LPAREN expr RPAREN LBRACE $@19 case_stmts RBRACE
+   98 switch_stmt: SWITCH . LPAREN expr RPAREN LBRACE $@15 case_stmts RBRACE
 
-    LPAREN  shift, and go to state 68
+    LPAREN  shift, and go to state 67
 
 
 state 19
 
-   83 if_stmt: IF . LPAREN expr $@6 RPAREN LBRACE $@7 stmts RBRACE
-   88        | IF . LPAREN expr $@8 RPAREN LBRACE $@9 stmts RBRACE $@10 ELSE LBRACE $@11 stmts RBRACE
+   83 if_stmt: IF . LPAREN expr $@5 RPAREN LBRACE $@6 stmts RBRACE $@7 if_expression_stmt
 
-    LPAREN  shift, and go to state 69
+    LPAREN  shift, and go to state 68
 
 
 state 20
 
-   92 repeat_until_stmt: REPEAT . LBRACE $@12 stmts RBRACE $@13 UNTIL LPAREN expr $@14 RPAREN SEMICOLON
+   90 repeat_until_stmt: REPEAT . LBRACE $@9 stmts RBRACE $@10 UNTIL LPAREN expr $@11 RPAREN SEMICOLON
 
-    LBRACE  shift, and go to state 70
+    LBRACE  shift, and go to state 69
 
 
 state 21
 
    50 negat: MINUS . para
 
-    IDENTIFIER  shift, and go to state 71
+    IDENTIFIER  shift, and go to state 70
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    LPAREN      shift, and go to state 72
+    LPAREN      shift, and go to state 71
 
-    para           go to state 73
+    para           go to state 72
     factor         go to state 36
     function_call  go to state 37
 
@@ -650,7 +625,7 @@ state 22
     MINUS       shift, and go to state 21
     NOT         shift, and go to state 22
 
-    expr             go to state 74
+    expr             go to state 73
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -664,10 +639,10 @@ state 22
 
 state 23
 
-  112 function_prototype: VOID . IDENTIFIER LPAREN $@20 params RPAREN
-  114                   | VOID . IDENTIFIER LPAREN $@21 RPAREN
+  110 function_prototype: VOID . IDENTIFIER LPAREN $@16 params RPAREN
+  112                   | VOID . IDENTIFIER LPAREN $@17 RPAREN
 
-    IDENTIFIER  shift, and go to state 75
+    IDENTIFIER  shift, and go to state 74
 
 
 state 24
@@ -677,8 +652,8 @@ state 24
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    CHAR_VAL    shift, and go to state 76
-    STRING_VAL  shift, and go to state 77
+    CHAR_VAL    shift, and go to state 75
+    STRING_VAL  shift, and go to state 76
     TRUE_VAL    shift, and go to state 9
     FALSE_VAL   shift, and go to state 10
     LPAREN      shift, and go to state 13
@@ -687,9 +662,9 @@ state 24
 
     $default  reduce using rule 20 (ret_val)
 
-    ret_val          go to state 78
-    value            go to state 79
-    expr             go to state 80
+    ret_val          go to state 77
+    value            go to state 78
+    expr             go to state 79
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -705,7 +680,7 @@ state 25
 
    18 stmt: PRINT . LPAREN value RPAREN SEMICOLON
 
-    LPAREN  shift, and go to state 81
+    LPAREN  shift, and go to state 80
 
 
 state 26
@@ -713,7 +688,7 @@ state 26
     0 $accept: stmts . $end
     1 stmts: stmts . stmt
 
-    $end        shift, and go to state 82
+    $end        shift, and go to state 81
     INT         shift, and go to state 1
     FLOAT       shift, and go to state 2
     CHAR        shift, and go to state 3
@@ -740,7 +715,7 @@ state 26
     RETURN      shift, and go to state 24
     PRINT       shift, and go to state 25
 
-    stmt                go to state 83
+    stmt                go to state 82
     expr                go to state 28
     bool_expr           go to state 29
     arithmetic_expr     go to state 30
@@ -783,15 +758,15 @@ state 28
    32          | expr . AND expr
    33          | expr . OR expr
 
-    SEMICOLON  shift, and go to state 84
-    LE         shift, and go to state 85
-    GE         shift, and go to state 86
-    NE         shift, and go to state 87
-    EQUAL      shift, and go to state 88
-    LESS       shift, and go to state 89
-    GREATER    shift, and go to state 90
-    OR         shift, and go to state 91
-    AND        shift, and go to state 92
+    SEMICOLON  shift, and go to state 83
+    LE         shift, and go to state 84
+    GE         shift, and go to state 85
+    NE         shift, and go to state 86
+    EQUAL      shift, and go to state 87
+    LESS       shift, and go to state 88
+    GREATER    shift, and go to state 89
+    OR         shift, and go to state 90
+    AND        shift, and go to state 91
 
 
 state 29
@@ -821,8 +796,8 @@ state 32
    43 binary_expr: binary_expr . PLUS term
    44            | binary_expr . MINUS term
 
-    MINUS  shift, and go to state 93
-    PLUS   shift, and go to state 94
+    MINUS  shift, and go to state 92
+    PLUS   shift, and go to state 93
 
     $default  reduce using rule 38 (arithmetic_expr)
 
@@ -834,9 +809,9 @@ state 33
    47     | term . DIV factor
    48     | term . MOD factor
 
-    MOD   shift, and go to state 95
-    DIV   shift, and go to state 96
-    MULT  shift, and go to state 97
+    MOD   shift, and go to state 94
+    DIV   shift, and go to state 95
+    MULT  shift, and go to state 96
 
     $default  reduce using rule 42 (binary_expr)
 
@@ -860,7 +835,7 @@ state 36
    51 para: factor .
    55 factor: factor . EXP factor
 
-    EXP  shift, and go to state 98
+    EXP  shift, and go to state 97
 
     $default  reduce using rule 51 (para)
 
@@ -930,12 +905,12 @@ state 45
 
 state 46
 
-   71 var_dec_stmt: type . IDENTIFIER SEMICOLON
-   72             | type . IDENTIFIER ASSIGN value SEMICOLON
-  116 function_prototype: type . IDENTIFIER LPAREN $@22 params RPAREN
-  118                   | type . IDENTIFIER LPAREN $@23 RPAREN
+   70 var_dec_stmt: type . IDENTIFIER SEMICOLON
+   71             | type . IDENTIFIER ASSIGN value SEMICOLON
+  114 function_prototype: type . IDENTIFIER LPAREN $@18 params RPAREN
+  116                   | type . IDENTIFIER LPAREN $@19 RPAREN
 
-    IDENTIFIER  shift, and go to state 99
+    IDENTIFIER  shift, and go to state 98
 
 
 state 47
@@ -947,40 +922,40 @@ state 47
 
 state 48
 
-  110 function: function_prototype . LBRACE stmts RBRACE
+  108 function: function_prototype . LBRACE stmts RBRACE
 
-    LBRACE  shift, and go to state 100
+    LBRACE  shift, and go to state 99
 
 
 state 49
 
-   59 function_call: IDENTIFIER LPAREN . $@2 RPAREN
-   61              | IDENTIFIER LPAREN . $@3 call_params RPAREN
+   58 function_call: IDENTIFIER LPAREN . RPAREN
+   60              | IDENTIFIER LPAREN . $@2 call_params RPAREN
 
-    RPAREN    reduce using rule 58 ($@2)
-    $default  reduce using rule 60 ($@3)
+    RPAREN  shift, and go to state 100
+
+    $default  reduce using rule 59 ($@2)
 
     $@2  go to state 101
-    $@3  go to state 102
 
 
 state 50
 
-   73 assign_stmt: IDENTIFIER ASSIGN . value SEMICOLON
+   72 assign_stmt: IDENTIFIER ASSIGN . value SEMICOLON
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    CHAR_VAL    shift, and go to state 76
-    STRING_VAL  shift, and go to state 77
+    CHAR_VAL    shift, and go to state 75
+    STRING_VAL  shift, and go to state 76
     TRUE_VAL    shift, and go to state 9
     FALSE_VAL   shift, and go to state 10
     LPAREN      shift, and go to state 13
     MINUS       shift, and go to state 21
     NOT         shift, and go to state 22
 
-    value            go to state 103
-    expr             go to state 80
+    value            go to state 102
+    expr             go to state 79
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -994,21 +969,21 @@ state 50
 
 state 51
 
-   74 assign_stmt: IDENTIFIER DIV_EQ . value SEMICOLON
+   73 assign_stmt: IDENTIFIER DIV_EQ . value SEMICOLON
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    CHAR_VAL    shift, and go to state 76
-    STRING_VAL  shift, and go to state 77
+    CHAR_VAL    shift, and go to state 75
+    STRING_VAL  shift, and go to state 76
     TRUE_VAL    shift, and go to state 9
     FALSE_VAL   shift, and go to state 10
     LPAREN      shift, and go to state 13
     MINUS       shift, and go to state 21
     NOT         shift, and go to state 22
 
-    value            go to state 104
-    expr             go to state 80
+    value            go to state 103
+    expr             go to state 79
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -1022,21 +997,21 @@ state 51
 
 state 52
 
-   76 assign_stmt: IDENTIFIER PLUS_EQ . value SEMICOLON
+   75 assign_stmt: IDENTIFIER PLUS_EQ . value SEMICOLON
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    CHAR_VAL    shift, and go to state 76
-    STRING_VAL  shift, and go to state 77
+    CHAR_VAL    shift, and go to state 75
+    STRING_VAL  shift, and go to state 76
     TRUE_VAL    shift, and go to state 9
     FALSE_VAL   shift, and go to state 10
     LPAREN      shift, and go to state 13
     MINUS       shift, and go to state 21
     NOT         shift, and go to state 22
 
-    value            go to state 105
-    expr             go to state 80
+    value            go to state 104
+    expr             go to state 79
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -1050,21 +1025,21 @@ state 52
 
 state 53
 
-   77 assign_stmt: IDENTIFIER MINUS_EQ . value SEMICOLON
+   76 assign_stmt: IDENTIFIER MINUS_EQ . value SEMICOLON
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    CHAR_VAL    shift, and go to state 76
-    STRING_VAL  shift, and go to state 77
+    CHAR_VAL    shift, and go to state 75
+    STRING_VAL  shift, and go to state 76
     TRUE_VAL    shift, and go to state 9
     FALSE_VAL   shift, and go to state 10
     LPAREN      shift, and go to state 13
     MINUS       shift, and go to state 21
     NOT         shift, and go to state 22
 
-    value            go to state 106
-    expr             go to state 80
+    value            go to state 105
+    expr             go to state 79
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -1078,21 +1053,21 @@ state 53
 
 state 54
 
-   75 assign_stmt: IDENTIFIER MULT_EQ . value SEMICOLON
+   74 assign_stmt: IDENTIFIER MULT_EQ . value SEMICOLON
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    CHAR_VAL    shift, and go to state 76
-    STRING_VAL  shift, and go to state 77
+    CHAR_VAL    shift, and go to state 75
+    STRING_VAL  shift, and go to state 76
     TRUE_VAL    shift, and go to state 9
     FALSE_VAL   shift, and go to state 10
     LPAREN      shift, and go to state 13
     MINUS       shift, and go to state 21
     NOT         shift, and go to state 22
 
-    value            go to state 107
-    expr             go to state 80
+    value            go to state 106
+    expr             go to state 79
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -1120,9 +1095,9 @@ state 56
 
 state 57
 
-   70 const_dec_stmt: CONST type . IDENTIFIER ASSIGN constant SEMICOLON
+   69 const_dec_stmt: CONST type . IDENTIFIER ASSIGN constant SEMICOLON
 
-    IDENTIFIER  shift, and go to state 108
+    IDENTIFIER  shift, and go to state 107
 
 
 state 58
@@ -1155,7 +1130,7 @@ state 58
     RETURN      shift, and go to state 24
     PRINT       shift, and go to state 25
 
-    stmts               go to state 109
+    stmts               go to state 108
     stmt                go to state 27
     expr                go to state 28
     bool_expr           go to state 29
@@ -1185,8 +1160,8 @@ state 59
    40 unary_expr: IDENTIFIER . INC
    41           | IDENTIFIER . DEC
    57 factor: IDENTIFIER .
-   59 function_call: IDENTIFIER . LPAREN $@2 RPAREN
-   61              | IDENTIFIER . LPAREN $@3 call_params RPAREN
+   58 function_call: IDENTIFIER . LPAREN RPAREN
+   60              | IDENTIFIER . LPAREN $@2 call_params RPAREN
 
     LPAREN  shift, and go to state 49
     INC     shift, and go to state 55
@@ -1206,14 +1181,14 @@ state 60
    32          | expr . AND expr
    33          | expr . OR expr
 
-    LE       shift, and go to state 85
-    GE       shift, and go to state 86
-    NE       shift, and go to state 87
-    EQUAL    shift, and go to state 88
-    LESS     shift, and go to state 89
-    GREATER  shift, and go to state 90
-    OR       shift, and go to state 91
-    AND      shift, and go to state 92
+    LE       shift, and go to state 84
+    GE       shift, and go to state 85
+    NE       shift, and go to state 86
+    EQUAL    shift, and go to state 87
+    LESS     shift, and go to state 88
+    GREATER  shift, and go to state 89
+    OR       shift, and go to state 90
+    AND      shift, and go to state 91
 
 
 state 61
@@ -1221,7 +1196,7 @@ state 61
    24 expr: bool_expr .
    35 bool_expr: LPAREN bool_expr . RPAREN
 
-    RPAREN  shift, and go to state 110
+    RPAREN  shift, and go to state 109
 
     $default  reduce using rule 24 (expr)
 
@@ -1233,9 +1208,9 @@ state 62
    44            | binary_expr . MINUS term
    52 para: LPAREN binary_expr . RPAREN
 
-    RPAREN  shift, and go to state 111
-    MINUS   shift, and go to state 93
-    PLUS    shift, and go to state 94
+    RPAREN  shift, and go to state 110
+    MINUS   shift, and go to state 92
+    PLUS    shift, and go to state 93
 
     $default  reduce using rule 38 (arithmetic_expr)
 
@@ -1256,7 +1231,7 @@ state 64
 
 state 65
 
-   80 while_stmt: WHILE LPAREN . expr $@4 RPAREN LBRACE $@5 stmts RBRACE
+   79 while_stmt: WHILE LPAREN . expr $@3 RPAREN LBRACE $@4 stmts RBRACE
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
@@ -1267,7 +1242,7 @@ state 65
     MINUS       shift, and go to state 21
     NOT         shift, and go to state 22
 
-    expr             go to state 112
+    expr             go to state 111
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -1281,21 +1256,41 @@ state 65
 
 state 66
 
-   95 for_stmt: FOR $@15 . LPAREN var_dec_stmt expr $@16 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   92 for_stmt: FOR $@12 . for_expression_stmt
 
-    LPAREN  shift, and go to state 113
+    LPAREN  shift, and go to state 112
+
+    for_expression_stmt  go to state 113
 
 
 state 67
 
-   98 for_stmt: FOR $@17 . LPAREN assign_stmt expr $@18 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   98 switch_stmt: SWITCH LPAREN . expr RPAREN LBRACE $@15 case_stmts RBRACE
 
-    LPAREN  shift, and go to state 114
+    IDENTIFIER  shift, and go to state 59
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    LPAREN      shift, and go to state 13
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+
+    expr             go to state 114
+    bool_expr        go to state 29
+    arithmetic_expr  go to state 30
+    unary_expr       go to state 31
+    binary_expr      go to state 32
+    term             go to state 33
+    negat            go to state 34
+    para             go to state 35
+    factor           go to state 36
+    function_call    go to state 37
 
 
 state 68
 
-  100 switch_stmt: SWITCH LPAREN . expr RPAREN LBRACE $@19 case_stmts RBRACE
+   83 if_stmt: IF LPAREN . expr $@5 RPAREN LBRACE $@6 stmts RBRACE $@7 if_expression_stmt
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
@@ -1320,61 +1315,35 @@ state 68
 
 state 69
 
-   83 if_stmt: IF LPAREN . expr $@6 RPAREN LBRACE $@7 stmts RBRACE
-   88        | IF LPAREN . expr $@8 RPAREN LBRACE $@9 stmts RBRACE $@10 ELSE LBRACE $@11 stmts RBRACE
+   90 repeat_until_stmt: REPEAT LBRACE . $@9 stmts RBRACE $@10 UNTIL LPAREN expr $@11 RPAREN SEMICOLON
 
-    IDENTIFIER  shift, and go to state 59
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    LPAREN      shift, and go to state 13
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
+    $default  reduce using rule 87 ($@9)
 
-    expr             go to state 116
-    bool_expr        go to state 29
-    arithmetic_expr  go to state 30
-    unary_expr       go to state 31
-    binary_expr      go to state 32
-    term             go to state 33
-    negat            go to state 34
-    para             go to state 35
-    factor           go to state 36
-    function_call    go to state 37
+    $@9  go to state 116
 
 
 state 70
 
-   92 repeat_until_stmt: REPEAT LBRACE . $@12 stmts RBRACE $@13 UNTIL LPAREN expr $@14 RPAREN SEMICOLON
-
-    $default  reduce using rule 89 ($@12)
-
-    $@12  go to state 117
-
-
-state 71
-
    57 factor: IDENTIFIER .
-   59 function_call: IDENTIFIER . LPAREN $@2 RPAREN
-   61              | IDENTIFIER . LPAREN $@3 call_params RPAREN
+   58 function_call: IDENTIFIER . LPAREN RPAREN
+   60              | IDENTIFIER . LPAREN $@2 call_params RPAREN
 
     LPAREN  shift, and go to state 49
 
     $default  reduce using rule 57 (factor)
 
 
-state 72
+state 71
 
    52 para: LPAREN . binary_expr RPAREN
 
-    IDENTIFIER  shift, and go to state 71
+    IDENTIFIER  shift, and go to state 70
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    LPAREN      shift, and go to state 72
+    LPAREN      shift, and go to state 71
     MINUS       shift, and go to state 21
 
-    binary_expr    go to state 118
+    binary_expr    go to state 117
     term           go to state 33
     negat          go to state 34
     para           go to state 35
@@ -1382,14 +1351,14 @@ state 72
     function_call  go to state 37
 
 
-state 73
+state 72
 
    50 negat: MINUS para .
 
     $default  reduce using rule 50 (negat)
 
 
-state 74
+state 73
 
    26 bool_expr: expr . EQUAL arithmetic_expr
    27          | expr . NE arithmetic_expr
@@ -1404,43 +1373,43 @@ state 74
     $default  reduce using rule 34 (bool_expr)
 
 
+state 74
+
+  110 function_prototype: VOID IDENTIFIER . LPAREN $@16 params RPAREN
+  112                   | VOID IDENTIFIER . LPAREN $@17 RPAREN
+
+    LPAREN  shift, and go to state 118
+
+
 state 75
-
-  112 function_prototype: VOID IDENTIFIER . LPAREN $@20 params RPAREN
-  114                   | VOID IDENTIFIER . LPAREN $@21 RPAREN
-
-    LPAREN  shift, and go to state 119
-
-
-state 76
 
    23 value: CHAR_VAL .
 
     $default  reduce using rule 23 (value)
 
 
-state 77
+state 76
 
    22 value: STRING_VAL .
 
     $default  reduce using rule 22 (value)
 
 
-state 78
+state 77
 
    15 stmt: RETURN ret_val . SEMICOLON
 
-    SEMICOLON  shift, and go to state 120
+    SEMICOLON  shift, and go to state 119
 
 
-state 79
+state 78
 
    19 ret_val: value .
 
     $default  reduce using rule 19 (ret_val)
 
 
-state 80
+state 79
 
    21 value: expr .
    26 bool_expr: expr . EQUAL arithmetic_expr
@@ -1452,35 +1421,35 @@ state 80
    32          | expr . AND expr
    33          | expr . OR expr
 
-    LE       shift, and go to state 85
-    GE       shift, and go to state 86
-    NE       shift, and go to state 87
-    EQUAL    shift, and go to state 88
-    LESS     shift, and go to state 89
-    GREATER  shift, and go to state 90
-    OR       shift, and go to state 91
-    AND      shift, and go to state 92
+    LE       shift, and go to state 84
+    GE       shift, and go to state 85
+    NE       shift, and go to state 86
+    EQUAL    shift, and go to state 87
+    LESS     shift, and go to state 88
+    GREATER  shift, and go to state 89
+    OR       shift, and go to state 90
+    AND      shift, and go to state 91
 
     $default  reduce using rule 21 (value)
 
 
-state 81
+state 80
 
    18 stmt: PRINT LPAREN . value RPAREN SEMICOLON
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    CHAR_VAL    shift, and go to state 76
-    STRING_VAL  shift, and go to state 77
+    CHAR_VAL    shift, and go to state 75
+    STRING_VAL  shift, and go to state 76
     TRUE_VAL    shift, and go to state 9
     FALSE_VAL   shift, and go to state 10
     LPAREN      shift, and go to state 13
     MINUS       shift, and go to state 21
     NOT         shift, and go to state 22
 
-    value            go to state 121
-    expr             go to state 80
+    value            go to state 120
+    expr             go to state 79
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -1492,35 +1461,55 @@ state 81
     function_call    go to state 37
 
 
-state 82
+state 81
 
     0 $accept: stmts $end .
 
     $default  accept
 
 
-state 83
+state 82
 
     1 stmts: stmts stmt .
 
     $default  reduce using rule 1 (stmts)
 
 
-state 84
+state 83
 
     3 stmt: expr SEMICOLON .
 
     $default  reduce using rule 3 (stmt)
 
 
-state 85
+state 84
 
    31 bool_expr: expr LE . arithmetic_expr
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    LPAREN      shift, and go to state 72
+    LPAREN      shift, and go to state 71
+    MINUS       shift, and go to state 21
+
+    arithmetic_expr  go to state 121
+    unary_expr       go to state 31
+    binary_expr      go to state 32
+    term             go to state 33
+    negat            go to state 34
+    para             go to state 35
+    factor           go to state 36
+    function_call    go to state 37
+
+
+state 85
+
+   30 bool_expr: expr GE . arithmetic_expr
+
+    IDENTIFIER  shift, and go to state 59
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    LPAREN      shift, and go to state 71
     MINUS       shift, and go to state 21
 
     arithmetic_expr  go to state 122
@@ -1535,12 +1524,12 @@ state 85
 
 state 86
 
-   30 bool_expr: expr GE . arithmetic_expr
+   27 bool_expr: expr NE . arithmetic_expr
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    LPAREN      shift, and go to state 72
+    LPAREN      shift, and go to state 71
     MINUS       shift, and go to state 21
 
     arithmetic_expr  go to state 123
@@ -1555,12 +1544,12 @@ state 86
 
 state 87
 
-   27 bool_expr: expr NE . arithmetic_expr
+   26 bool_expr: expr EQUAL . arithmetic_expr
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    LPAREN      shift, and go to state 72
+    LPAREN      shift, and go to state 71
     MINUS       shift, and go to state 21
 
     arithmetic_expr  go to state 124
@@ -1575,12 +1564,12 @@ state 87
 
 state 88
 
-   26 bool_expr: expr EQUAL . arithmetic_expr
+   29 bool_expr: expr LESS . arithmetic_expr
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    LPAREN      shift, and go to state 72
+    LPAREN      shift, and go to state 71
     MINUS       shift, and go to state 21
 
     arithmetic_expr  go to state 125
@@ -1595,12 +1584,12 @@ state 88
 
 state 89
 
-   29 bool_expr: expr LESS . arithmetic_expr
+   28 bool_expr: expr GREATER . arithmetic_expr
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    LPAREN      shift, and go to state 72
+    LPAREN      shift, and go to state 71
     MINUS       shift, and go to state 21
 
     arithmetic_expr  go to state 126
@@ -1615,15 +1604,20 @@ state 89
 
 state 90
 
-   28 bool_expr: expr GREATER . arithmetic_expr
+   33 bool_expr: expr OR . expr
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    LPAREN      shift, and go to state 72
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    LPAREN      shift, and go to state 13
     MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
 
-    arithmetic_expr  go to state 127
+    expr             go to state 127
+    bool_expr        go to state 29
+    arithmetic_expr  go to state 30
     unary_expr       go to state 31
     binary_expr      go to state 32
     term             go to state 33
@@ -1635,7 +1629,7 @@ state 90
 
 state 91
 
-   33 bool_expr: expr OR . expr
+   32 bool_expr: expr AND . expr
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
@@ -1660,37 +1654,29 @@ state 91
 
 state 92
 
-   32 bool_expr: expr AND . expr
+   44 binary_expr: binary_expr MINUS . term
 
-    IDENTIFIER  shift, and go to state 59
+    IDENTIFIER  shift, and go to state 70
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    LPAREN      shift, and go to state 13
+    LPAREN      shift, and go to state 71
     MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
 
-    expr             go to state 129
-    bool_expr        go to state 29
-    arithmetic_expr  go to state 30
-    unary_expr       go to state 31
-    binary_expr      go to state 32
-    term             go to state 33
-    negat            go to state 34
-    para             go to state 35
-    factor           go to state 36
-    function_call    go to state 37
+    term           go to state 129
+    negat          go to state 34
+    para           go to state 35
+    factor         go to state 36
+    function_call  go to state 37
 
 
 state 93
 
-   44 binary_expr: binary_expr MINUS . term
+   43 binary_expr: binary_expr PLUS . term
 
-    IDENTIFIER  shift, and go to state 71
+    IDENTIFIER  shift, and go to state 70
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    LPAREN      shift, and go to state 72
+    LPAREN      shift, and go to state 71
     MINUS       shift, and go to state 21
 
     term           go to state 130
@@ -1702,26 +1688,21 @@ state 93
 
 state 94
 
-   43 binary_expr: binary_expr PLUS . term
+   48 term: term MOD . factor
 
-    IDENTIFIER  shift, and go to state 71
+    IDENTIFIER  shift, and go to state 70
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    LPAREN      shift, and go to state 72
-    MINUS       shift, and go to state 21
 
-    term           go to state 131
-    negat          go to state 34
-    para           go to state 35
-    factor         go to state 36
+    factor         go to state 131
     function_call  go to state 37
 
 
 state 95
 
-   48 term: term MOD . factor
+   47 term: term DIV . factor
 
-    IDENTIFIER  shift, and go to state 71
+    IDENTIFIER  shift, and go to state 70
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
 
@@ -1731,9 +1712,9 @@ state 95
 
 state 96
 
-   47 term: term DIV . factor
+   46 term: term MULT . factor
 
-    IDENTIFIER  shift, and go to state 71
+    IDENTIFIER  shift, and go to state 70
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
 
@@ -1743,9 +1724,9 @@ state 96
 
 state 97
 
-   46 term: term MULT . factor
+   55 factor: factor EXP . factor
 
-    IDENTIFIER  shift, and go to state 71
+    IDENTIFIER  shift, and go to state 70
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
 
@@ -1755,31 +1736,19 @@ state 97
 
 state 98
 
-   55 factor: factor EXP . factor
+   70 var_dec_stmt: type IDENTIFIER . SEMICOLON
+   71             | type IDENTIFIER . ASSIGN value SEMICOLON
+  114 function_prototype: type IDENTIFIER . LPAREN $@18 params RPAREN
+  116                   | type IDENTIFIER . LPAREN $@19 RPAREN
 
-    IDENTIFIER  shift, and go to state 71
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-
-    factor         go to state 135
-    function_call  go to state 37
+    SEMICOLON  shift, and go to state 135
+    LPAREN     shift, and go to state 136
+    ASSIGN     shift, and go to state 137
 
 
 state 99
 
-   71 var_dec_stmt: type IDENTIFIER . SEMICOLON
-   72             | type IDENTIFIER . ASSIGN value SEMICOLON
-  116 function_prototype: type IDENTIFIER . LPAREN $@22 params RPAREN
-  118                   | type IDENTIFIER . LPAREN $@23 RPAREN
-
-    SEMICOLON  shift, and go to state 136
-    LPAREN     shift, and go to state 137
-    ASSIGN     shift, and go to state 138
-
-
-state 100
-
-  110 function: function_prototype LBRACE . stmts RBRACE
+  108 function: function_prototype LBRACE . stmts RBRACE
 
     INT         shift, and go to state 1
     FLOAT       shift, and go to state 2
@@ -1807,7 +1776,7 @@ state 100
     RETURN      shift, and go to state 24
     PRINT       shift, and go to state 25
 
-    stmts               go to state 139
+    stmts               go to state 138
     stmt                go to state 27
     expr                go to state 28
     bool_expr           go to state 29
@@ -1832,30 +1801,30 @@ state 100
     function_prototype  go to state 48
 
 
+state 100
+
+   58 function_call: IDENTIFIER LPAREN RPAREN .
+
+    $default  reduce using rule 58 (function_call)
+
+
 state 101
 
-   59 function_call: IDENTIFIER LPAREN $@2 . RPAREN
-
-    RPAREN  shift, and go to state 140
-
-
-state 102
-
-   61 function_call: IDENTIFIER LPAREN $@3 . call_params RPAREN
+   60 function_call: IDENTIFIER LPAREN $@2 . call_params RPAREN
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    CHAR_VAL    shift, and go to state 76
-    STRING_VAL  shift, and go to state 77
+    CHAR_VAL    shift, and go to state 75
+    STRING_VAL  shift, and go to state 76
     TRUE_VAL    shift, and go to state 9
     FALSE_VAL   shift, and go to state 10
     LPAREN      shift, and go to state 13
     MINUS       shift, and go to state 21
     NOT         shift, and go to state 22
 
-    value            go to state 141
-    expr             go to state 80
+    value            go to state 139
+    expr             go to state 79
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -1865,52 +1834,52 @@ state 102
     para             go to state 35
     factor           go to state 36
     function_call    go to state 37
-    call_params      go to state 142
+    call_params      go to state 140
+
+
+state 102
+
+   72 assign_stmt: IDENTIFIER ASSIGN value . SEMICOLON
+
+    SEMICOLON  shift, and go to state 141
 
 
 state 103
 
-   73 assign_stmt: IDENTIFIER ASSIGN value . SEMICOLON
+   73 assign_stmt: IDENTIFIER DIV_EQ value . SEMICOLON
 
-    SEMICOLON  shift, and go to state 143
+    SEMICOLON  shift, and go to state 142
 
 
 state 104
 
-   74 assign_stmt: IDENTIFIER DIV_EQ value . SEMICOLON
+   75 assign_stmt: IDENTIFIER PLUS_EQ value . SEMICOLON
 
-    SEMICOLON  shift, and go to state 144
+    SEMICOLON  shift, and go to state 143
 
 
 state 105
 
-   76 assign_stmt: IDENTIFIER PLUS_EQ value . SEMICOLON
+   76 assign_stmt: IDENTIFIER MINUS_EQ value . SEMICOLON
 
-    SEMICOLON  shift, and go to state 145
+    SEMICOLON  shift, and go to state 144
 
 
 state 106
 
-   77 assign_stmt: IDENTIFIER MINUS_EQ value . SEMICOLON
+   74 assign_stmt: IDENTIFIER MULT_EQ value . SEMICOLON
 
-    SEMICOLON  shift, and go to state 146
+    SEMICOLON  shift, and go to state 145
 
 
 state 107
 
-   75 assign_stmt: IDENTIFIER MULT_EQ value . SEMICOLON
+   69 const_dec_stmt: CONST type IDENTIFIER . ASSIGN constant SEMICOLON
 
-    SEMICOLON  shift, and go to state 147
+    ASSIGN  shift, and go to state 146
 
 
 state 108
-
-   70 const_dec_stmt: CONST type IDENTIFIER . ASSIGN constant SEMICOLON
-
-    ASSIGN  shift, and go to state 148
-
-
-state 109
 
     1 stmts: stmts . stmt
     5 stmt: LBRACE $@1 stmts . RBRACE
@@ -1927,7 +1896,7 @@ state 109
     FALSE_VAL   shift, and go to state 10
     CONST       shift, and go to state 11
     LBRACE      shift, and go to state 12
-    RBRACE      shift, and go to state 149
+    RBRACE      shift, and go to state 147
     LPAREN      shift, and go to state 13
     BREAK       shift, and go to state 14
     CONTINUE    shift, and go to state 15
@@ -1942,7 +1911,7 @@ state 109
     RETURN      shift, and go to state 24
     PRINT       shift, and go to state 25
 
-    stmt                go to state 83
+    stmt                go to state 82
     expr                go to state 28
     bool_expr           go to state 29
     arithmetic_expr     go to state 30
@@ -1966,21 +1935,21 @@ state 109
     function_prototype  go to state 48
 
 
-state 110
+state 109
 
    35 bool_expr: LPAREN bool_expr RPAREN .
 
     $default  reduce using rule 35 (bool_expr)
 
 
-state 111
+state 110
 
    52 para: LPAREN binary_expr RPAREN .
 
     $default  reduce using rule 52 (para)
 
 
-state 112
+state 111
 
    26 bool_expr: expr . EQUAL arithmetic_expr
    27          | expr . NE arithmetic_expr
@@ -1990,43 +1959,67 @@ state 112
    31          | expr . LE arithmetic_expr
    32          | expr . AND expr
    33          | expr . OR expr
-   80 while_stmt: WHILE LPAREN expr . $@4 RPAREN LBRACE $@5 stmts RBRACE
+   79 while_stmt: WHILE LPAREN expr . $@3 RPAREN LBRACE $@4 stmts RBRACE
 
-    LE       shift, and go to state 85
-    GE       shift, and go to state 86
-    NE       shift, and go to state 87
-    EQUAL    shift, and go to state 88
-    LESS     shift, and go to state 89
-    GREATER  shift, and go to state 90
-    OR       shift, and go to state 91
-    AND      shift, and go to state 92
+    LE       shift, and go to state 84
+    GE       shift, and go to state 85
+    NE       shift, and go to state 86
+    EQUAL    shift, and go to state 87
+    LESS     shift, and go to state 88
+    GREATER  shift, and go to state 89
+    OR       shift, and go to state 90
+    AND      shift, and go to state 91
 
-    $default  reduce using rule 78 ($@4)
+    $default  reduce using rule 77 ($@3)
 
-    $@4  go to state 150
+    $@3  go to state 148
+
+
+state 112
+
+   94 for_expression_stmt: LPAREN . var_dec_stmt expr $@13 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   96                    | LPAREN . assign_stmt expr $@14 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+
+    INT         shift, and go to state 1
+    FLOAT       shift, and go to state 2
+    CHAR        shift, and go to state 3
+    BOOL        shift, and go to state 4
+    STRING      shift, and go to state 5
+    IDENTIFIER  shift, and go to state 149
+
+    var_dec_stmt  go to state 150
+    assign_stmt   go to state 151
+    type          go to state 152
 
 
 state 113
 
-   95 for_stmt: FOR $@15 LPAREN . var_dec_stmt expr $@16 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   92 for_stmt: FOR $@12 for_expression_stmt .
 
-    INT     shift, and go to state 1
-    FLOAT   shift, and go to state 2
-    CHAR    shift, and go to state 3
-    BOOL    shift, and go to state 4
-    STRING  shift, and go to state 5
-
-    var_dec_stmt  go to state 151
-    type          go to state 152
+    $default  reduce using rule 92 (for_stmt)
 
 
 state 114
 
-   98 for_stmt: FOR $@17 LPAREN . assign_stmt expr $@18 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   26 bool_expr: expr . EQUAL arithmetic_expr
+   27          | expr . NE arithmetic_expr
+   28          | expr . GREATER arithmetic_expr
+   29          | expr . LESS arithmetic_expr
+   30          | expr . GE arithmetic_expr
+   31          | expr . LE arithmetic_expr
+   32          | expr . AND expr
+   33          | expr . OR expr
+   98 switch_stmt: SWITCH LPAREN expr . RPAREN LBRACE $@15 case_stmts RBRACE
 
-    IDENTIFIER  shift, and go to state 153
-
-    assign_stmt  go to state 154
+    RPAREN   shift, and go to state 153
+    LE       shift, and go to state 84
+    GE       shift, and go to state 85
+    NE       shift, and go to state 86
+    EQUAL    shift, and go to state 87
+    LESS     shift, and go to state 88
+    GREATER  shift, and go to state 89
+    OR       shift, and go to state 90
+    AND      shift, and go to state 91
 
 
 state 115
@@ -2039,52 +2032,25 @@ state 115
    31          | expr . LE arithmetic_expr
    32          | expr . AND expr
    33          | expr . OR expr
-  100 switch_stmt: SWITCH LPAREN expr . RPAREN LBRACE $@19 case_stmts RBRACE
+   83 if_stmt: IF LPAREN expr . $@5 RPAREN LBRACE $@6 stmts RBRACE $@7 if_expression_stmt
 
-    RPAREN   shift, and go to state 155
-    LE       shift, and go to state 85
-    GE       shift, and go to state 86
-    NE       shift, and go to state 87
-    EQUAL    shift, and go to state 88
-    LESS     shift, and go to state 89
-    GREATER  shift, and go to state 90
-    OR       shift, and go to state 91
-    AND      shift, and go to state 92
+    LE       shift, and go to state 84
+    GE       shift, and go to state 85
+    NE       shift, and go to state 86
+    EQUAL    shift, and go to state 87
+    LESS     shift, and go to state 88
+    GREATER  shift, and go to state 89
+    OR       shift, and go to state 90
+    AND      shift, and go to state 91
+
+    $default  reduce using rule 80 ($@5)
+
+    $@5  go to state 154
 
 
 state 116
 
-   26 bool_expr: expr . EQUAL arithmetic_expr
-   27          | expr . NE arithmetic_expr
-   28          | expr . GREATER arithmetic_expr
-   29          | expr . LESS arithmetic_expr
-   30          | expr . GE arithmetic_expr
-   31          | expr . LE arithmetic_expr
-   32          | expr . AND expr
-   33          | expr . OR expr
-   83 if_stmt: IF LPAREN expr . $@6 RPAREN LBRACE $@7 stmts RBRACE
-   88        | IF LPAREN expr . $@8 RPAREN LBRACE $@9 stmts RBRACE $@10 ELSE LBRACE $@11 stmts RBRACE
-
-    LE       shift, and go to state 85
-    GE       shift, and go to state 86
-    NE       shift, and go to state 87
-    EQUAL    shift, and go to state 88
-    LESS     shift, and go to state 89
-    GREATER  shift, and go to state 90
-    OR       shift, and go to state 91
-    AND      shift, and go to state 92
-
-    RPAREN    reduce using rule 81 ($@6)
-    RPAREN    [reduce using rule 84 ($@8)]
-    $default  reduce using rule 81 ($@6)
-
-    $@6  go to state 156
-    $@8  go to state 157
-
-
-state 117
-
-   92 repeat_until_stmt: REPEAT LBRACE $@12 . stmts RBRACE $@13 UNTIL LPAREN expr $@14 RPAREN SEMICOLON
+   90 repeat_until_stmt: REPEAT LBRACE $@9 . stmts RBRACE $@10 UNTIL LPAREN expr $@11 RPAREN SEMICOLON
 
     INT         shift, and go to state 1
     FLOAT       shift, and go to state 2
@@ -2112,7 +2078,7 @@ state 117
     RETURN      shift, and go to state 24
     PRINT       shift, and go to state 25
 
-    stmts               go to state 158
+    stmts               go to state 155
     stmt                go to state 27
     expr                go to state 28
     bool_expr           go to state 29
@@ -2137,86 +2103,86 @@ state 117
     function_prototype  go to state 48
 
 
-state 118
+state 117
 
    43 binary_expr: binary_expr . PLUS term
    44            | binary_expr . MINUS term
    52 para: LPAREN binary_expr . RPAREN
 
-    RPAREN  shift, and go to state 111
-    MINUS   shift, and go to state 93
-    PLUS    shift, and go to state 94
+    RPAREN  shift, and go to state 110
+    MINUS   shift, and go to state 92
+    PLUS    shift, and go to state 93
+
+
+state 118
+
+  110 function_prototype: VOID IDENTIFIER LPAREN . $@16 params RPAREN
+  112                   | VOID IDENTIFIER LPAREN . $@17 RPAREN
+
+    RPAREN    reduce using rule 111 ($@17)
+    $default  reduce using rule 109 ($@16)
+
+    $@16  go to state 156
+    $@17  go to state 157
 
 
 state 119
-
-  112 function_prototype: VOID IDENTIFIER LPAREN . $@20 params RPAREN
-  114                   | VOID IDENTIFIER LPAREN . $@21 RPAREN
-
-    RPAREN    reduce using rule 113 ($@21)
-    $default  reduce using rule 111 ($@20)
-
-    $@20  go to state 159
-    $@21  go to state 160
-
-
-state 120
 
    15 stmt: RETURN ret_val SEMICOLON .
 
     $default  reduce using rule 15 (stmt)
 
 
-state 121
+state 120
 
    18 stmt: PRINT LPAREN value . RPAREN SEMICOLON
 
-    RPAREN  shift, and go to state 161
+    RPAREN  shift, and go to state 158
 
 
-state 122
+state 121
 
    31 bool_expr: expr LE arithmetic_expr .
 
     $default  reduce using rule 31 (bool_expr)
 
 
-state 123
+state 122
 
    30 bool_expr: expr GE arithmetic_expr .
 
     $default  reduce using rule 30 (bool_expr)
 
 
-state 124
+state 123
 
    27 bool_expr: expr NE arithmetic_expr .
 
     $default  reduce using rule 27 (bool_expr)
 
 
-state 125
+state 124
 
    26 bool_expr: expr EQUAL arithmetic_expr .
 
     $default  reduce using rule 26 (bool_expr)
 
 
-state 126
+state 125
 
    29 bool_expr: expr LESS arithmetic_expr .
 
     $default  reduce using rule 29 (bool_expr)
 
 
-state 127
+state 126
 
    28 bool_expr: expr GREATER arithmetic_expr .
 
     $default  reduce using rule 28 (bool_expr)
 
 
-state 128
+state 127
 
    26 bool_expr: expr . EQUAL arithmetic_expr
    27          | expr . NE arithmetic_expr
@@ -2231,7 +2197,7 @@ state 128
     $default  reduce using rule 33 (bool_expr)
 
 
-state 129
+state 128
 
    26 bool_expr: expr . EQUAL arithmetic_expr
    27          | expr . NE arithmetic_expr
@@ -2246,65 +2212,65 @@ state 129
     $default  reduce using rule 32 (bool_expr)
 
 
-state 130
+state 129
 
    44 binary_expr: binary_expr MINUS term .
    46 term: term . MULT factor
    47     | term . DIV factor
    48     | term . MOD factor
 
-    MOD   shift, and go to state 95
-    DIV   shift, and go to state 96
-    MULT  shift, and go to state 97
+    MOD   shift, and go to state 94
+    DIV   shift, and go to state 95
+    MULT  shift, and go to state 96
 
     $default  reduce using rule 44 (binary_expr)
 
 
-state 131
+state 130
 
    43 binary_expr: binary_expr PLUS term .
    46 term: term . MULT factor
    47     | term . DIV factor
    48     | term . MOD factor
 
-    MOD   shift, and go to state 95
-    DIV   shift, and go to state 96
-    MULT  shift, and go to state 97
+    MOD   shift, and go to state 94
+    DIV   shift, and go to state 95
+    MULT  shift, and go to state 96
 
     $default  reduce using rule 43 (binary_expr)
 
 
-state 132
+state 131
 
    48 term: term MOD factor .
    55 factor: factor . EXP factor
 
-    EXP  shift, and go to state 98
+    EXP  shift, and go to state 97
 
     $default  reduce using rule 48 (term)
 
 
-state 133
+state 132
 
    47 term: term DIV factor .
    55 factor: factor . EXP factor
 
-    EXP  shift, and go to state 98
+    EXP  shift, and go to state 97
 
     $default  reduce using rule 47 (term)
 
 
-state 134
+state 133
 
    46 term: term MULT factor .
    55 factor: factor . EXP factor
 
-    EXP  shift, and go to state 98
+    EXP  shift, and go to state 97
 
     $default  reduce using rule 46 (term)
 
 
-state 135
+state 134
 
    55 factor: factor . EXP factor
    55       | factor EXP factor .
@@ -2312,42 +2278,42 @@ state 135
     $default  reduce using rule 55 (factor)
 
 
+state 135
+
+   70 var_dec_stmt: type IDENTIFIER SEMICOLON .
+
+    $default  reduce using rule 70 (var_dec_stmt)
+
+
 state 136
 
-   71 var_dec_stmt: type IDENTIFIER SEMICOLON .
+  114 function_prototype: type IDENTIFIER LPAREN . $@18 params RPAREN
+  116                   | type IDENTIFIER LPAREN . $@19 RPAREN
 
-    $default  reduce using rule 71 (var_dec_stmt)
+    RPAREN    reduce using rule 115 ($@19)
+    $default  reduce using rule 113 ($@18)
+
+    $@18  go to state 159
+    $@19  go to state 160
 
 
 state 137
 
-  116 function_prototype: type IDENTIFIER LPAREN . $@22 params RPAREN
-  118                   | type IDENTIFIER LPAREN . $@23 RPAREN
-
-    RPAREN    reduce using rule 117 ($@23)
-    $default  reduce using rule 115 ($@22)
-
-    $@22  go to state 162
-    $@23  go to state 163
-
-
-state 138
-
-   72 var_dec_stmt: type IDENTIFIER ASSIGN . value SEMICOLON
+   71 var_dec_stmt: type IDENTIFIER ASSIGN . value SEMICOLON
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    CHAR_VAL    shift, and go to state 76
-    STRING_VAL  shift, and go to state 77
+    CHAR_VAL    shift, and go to state 75
+    STRING_VAL  shift, and go to state 76
     TRUE_VAL    shift, and go to state 9
     FALSE_VAL   shift, and go to state 10
     LPAREN      shift, and go to state 13
     MINUS       shift, and go to state 21
     NOT         shift, and go to state 22
 
-    value            go to state 164
-    expr             go to state 80
+    value            go to state 161
+    expr             go to state 79
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -2359,10 +2325,10 @@ state 138
     function_call    go to state 37
 
 
-state 139
+state 138
 
     1 stmts: stmts . stmt
-  110 function: function_prototype LBRACE stmts . RBRACE
+  108 function: function_prototype LBRACE stmts . RBRACE
 
     INT         shift, and go to state 1
     FLOAT       shift, and go to state 2
@@ -2376,7 +2342,7 @@ state 139
     FALSE_VAL   shift, and go to state 10
     CONST       shift, and go to state 11
     LBRACE      shift, and go to state 12
-    RBRACE      shift, and go to state 165
+    RBRACE      shift, and go to state 162
     LPAREN      shift, and go to state 13
     BREAK       shift, and go to state 14
     CONTINUE    shift, and go to state 15
@@ -2391,7 +2357,7 @@ state 139
     RETURN      shift, and go to state 24
     PRINT       shift, and go to state 25
 
-    stmt                go to state 83
+    stmt                go to state 82
     expr                go to state 28
     bool_expr           go to state 29
     arithmetic_expr     go to state 30
@@ -2415,95 +2381,103 @@ state 139
     function_prototype  go to state 48
 
 
+state 139
+
+   62 call_params: value .
+
+    $default  reduce using rule 62 (call_params)
+
+
 state 140
 
-   59 function_call: IDENTIFIER LPAREN $@2 RPAREN .
+   60 function_call: IDENTIFIER LPAREN $@2 call_params . RPAREN
+   61 call_params: call_params . COMMA value
 
-    $default  reduce using rule 59 (function_call)
+    COMMA   shift, and go to state 163
+    RPAREN  shift, and go to state 164
 
 
 state 141
 
-   63 call_params: value .
+   72 assign_stmt: IDENTIFIER ASSIGN value SEMICOLON .
 
-    $default  reduce using rule 63 (call_params)
+    $default  reduce using rule 72 (assign_stmt)
 
 
 state 142
 
-   61 function_call: IDENTIFIER LPAREN $@3 call_params . RPAREN
-   62 call_params: call_params . COMMA value
-
-    COMMA   shift, and go to state 166
-    RPAREN  shift, and go to state 167
-
-
-state 143
-
-   73 assign_stmt: IDENTIFIER ASSIGN value SEMICOLON .
+   73 assign_stmt: IDENTIFIER DIV_EQ value SEMICOLON .
 
     $default  reduce using rule 73 (assign_stmt)
 
 
-state 144
+state 143
 
-   74 assign_stmt: IDENTIFIER DIV_EQ value SEMICOLON .
-
-    $default  reduce using rule 74 (assign_stmt)
-
-
-state 145
-
-   76 assign_stmt: IDENTIFIER PLUS_EQ value SEMICOLON .
-
-    $default  reduce using rule 76 (assign_stmt)
-
-
-state 146
-
-   77 assign_stmt: IDENTIFIER MINUS_EQ value SEMICOLON .
-
-    $default  reduce using rule 77 (assign_stmt)
-
-
-state 147
-
-   75 assign_stmt: IDENTIFIER MULT_EQ value SEMICOLON .
+   75 assign_stmt: IDENTIFIER PLUS_EQ value SEMICOLON .
 
     $default  reduce using rule 75 (assign_stmt)
 
 
-state 148
+state 144
 
-   70 const_dec_stmt: CONST type IDENTIFIER ASSIGN . constant SEMICOLON
+   76 assign_stmt: IDENTIFIER MINUS_EQ value SEMICOLON .
 
-    INT_VAL     shift, and go to state 168
-    FLOAT_VAL   shift, and go to state 169
-    CHAR_VAL    shift, and go to state 170
-    STRING_VAL  shift, and go to state 171
-    TRUE_VAL    shift, and go to state 172
-    FALSE_VAL   shift, and go to state 173
-
-    constant  go to state 174
+    $default  reduce using rule 76 (assign_stmt)
 
 
-state 149
+state 145
+
+   74 assign_stmt: IDENTIFIER MULT_EQ value SEMICOLON .
+
+    $default  reduce using rule 74 (assign_stmt)
+
+
+state 146
+
+   69 const_dec_stmt: CONST type IDENTIFIER ASSIGN . constant SEMICOLON
+
+    INT_VAL     shift, and go to state 165
+    FLOAT_VAL   shift, and go to state 166
+    CHAR_VAL    shift, and go to state 167
+    STRING_VAL  shift, and go to state 168
+    TRUE_VAL    shift, and go to state 169
+    FALSE_VAL   shift, and go to state 170
+
+    constant  go to state 171
+
+
+state 147
 
     5 stmt: LBRACE $@1 stmts RBRACE .
 
     $default  reduce using rule 5 (stmt)
 
 
+state 148
+
+   79 while_stmt: WHILE LPAREN expr $@3 . RPAREN LBRACE $@4 stmts RBRACE
+
+    RPAREN  shift, and go to state 172
+
+
+state 149
+
+   72 assign_stmt: IDENTIFIER . ASSIGN value SEMICOLON
+   73            | IDENTIFIER . DIV_EQ value SEMICOLON
+   74            | IDENTIFIER . MULT_EQ value SEMICOLON
+   75            | IDENTIFIER . PLUS_EQ value SEMICOLON
+   76            | IDENTIFIER . MINUS_EQ value SEMICOLON
+
+    ASSIGN    shift, and go to state 50
+    DIV_EQ    shift, and go to state 51
+    PLUS_EQ   shift, and go to state 52
+    MINUS_EQ  shift, and go to state 53
+    MULT_EQ   shift, and go to state 54
+
+
 state 150
 
-   80 while_stmt: WHILE LPAREN expr $@4 . RPAREN LBRACE $@5 stmts RBRACE
-
-    RPAREN  shift, and go to state 175
-
-
-state 151
-
-   95 for_stmt: FOR $@15 LPAREN var_dec_stmt . expr $@16 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   94 for_expression_stmt: LPAREN var_dec_stmt . expr $@13 SEMICOLON expr RPAREN LBRACE stmts RBRACE
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
@@ -2514,7 +2488,32 @@ state 151
     MINUS       shift, and go to state 21
     NOT         shift, and go to state 22
 
-    expr             go to state 176
+    expr             go to state 173
+    bool_expr        go to state 29
+    arithmetic_expr  go to state 30
+    unary_expr       go to state 31
+    binary_expr      go to state 32
+    term             go to state 33
+    negat            go to state 34
+    para             go to state 35
+    factor           go to state 36
+    function_call    go to state 37
+
+
+state 151
+
+   96 for_expression_stmt: LPAREN assign_stmt . expr $@14 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+
+    IDENTIFIER  shift, and go to state 59
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    LPAREN      shift, and go to state 13
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+
+    expr             go to state 174
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -2528,77 +2527,30 @@ state 151
 
 state 152
 
-   71 var_dec_stmt: type . IDENTIFIER SEMICOLON
-   72             | type . IDENTIFIER ASSIGN value SEMICOLON
+   70 var_dec_stmt: type . IDENTIFIER SEMICOLON
+   71             | type . IDENTIFIER ASSIGN value SEMICOLON
 
-    IDENTIFIER  shift, and go to state 177
+    IDENTIFIER  shift, and go to state 175
 
 
 state 153
 
-   73 assign_stmt: IDENTIFIER . ASSIGN value SEMICOLON
-   74            | IDENTIFIER . DIV_EQ value SEMICOLON
-   75            | IDENTIFIER . MULT_EQ value SEMICOLON
-   76            | IDENTIFIER . PLUS_EQ value SEMICOLON
-   77            | IDENTIFIER . MINUS_EQ value SEMICOLON
+   98 switch_stmt: SWITCH LPAREN expr RPAREN . LBRACE $@15 case_stmts RBRACE
 
-    ASSIGN    shift, and go to state 50
-    DIV_EQ    shift, and go to state 51
-    PLUS_EQ   shift, and go to state 52
-    MINUS_EQ  shift, and go to state 53
-    MULT_EQ   shift, and go to state 54
+    LBRACE  shift, and go to state 176
 
 
 state 154
 
-   98 for_stmt: FOR $@17 LPAREN assign_stmt . expr $@18 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   83 if_stmt: IF LPAREN expr $@5 . RPAREN LBRACE $@6 stmts RBRACE $@7 if_expression_stmt
 
-    IDENTIFIER  shift, and go to state 59
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    LPAREN      shift, and go to state 13
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-
-    expr             go to state 178
-    bool_expr        go to state 29
-    arithmetic_expr  go to state 30
-    unary_expr       go to state 31
-    binary_expr      go to state 32
-    term             go to state 33
-    negat            go to state 34
-    para             go to state 35
-    factor           go to state 36
-    function_call    go to state 37
+    RPAREN  shift, and go to state 177
 
 
 state 155
 
-  100 switch_stmt: SWITCH LPAREN expr RPAREN . LBRACE $@19 case_stmts RBRACE
-
-    LBRACE  shift, and go to state 179
-
-
-state 156
-
-   83 if_stmt: IF LPAREN expr $@6 . RPAREN LBRACE $@7 stmts RBRACE
-
-    RPAREN  shift, and go to state 180
-
-
-state 157
-
-   88 if_stmt: IF LPAREN expr $@8 . RPAREN LBRACE $@9 stmts RBRACE $@10 ELSE LBRACE $@11 stmts RBRACE
-
-    RPAREN  shift, and go to state 181
-
-
-state 158
-
     1 stmts: stmts . stmt
-   92 repeat_until_stmt: REPEAT LBRACE $@12 stmts . RBRACE $@13 UNTIL LPAREN expr $@14 RPAREN SEMICOLON
+   90 repeat_until_stmt: REPEAT LBRACE $@9 stmts . RBRACE $@10 UNTIL LPAREN expr $@11 RPAREN SEMICOLON
 
     INT         shift, and go to state 1
     FLOAT       shift, and go to state 2
@@ -2612,7 +2564,7 @@ state 158
     FALSE_VAL   shift, and go to state 10
     CONST       shift, and go to state 11
     LBRACE      shift, and go to state 12
-    RBRACE      shift, and go to state 182
+    RBRACE      shift, and go to state 178
     LPAREN      shift, and go to state 13
     BREAK       shift, and go to state 14
     CONTINUE    shift, and go to state 15
@@ -2627,7 +2579,7 @@ state 158
     RETURN      shift, and go to state 24
     PRINT       shift, and go to state 25
 
-    stmt                go to state 83
+    stmt                go to state 82
     expr                go to state 28
     bool_expr           go to state 29
     arithmetic_expr     go to state 30
@@ -2651,9 +2603,9 @@ state 158
     function_prototype  go to state 48
 
 
-state 159
+state 156
 
-  112 function_prototype: VOID IDENTIFIER LPAREN $@20 . params RPAREN
+  110 function_prototype: VOID IDENTIFIER LPAREN $@16 . params RPAREN
 
     INT     shift, and go to state 1
     FLOAT   shift, and go to state 2
@@ -2661,78 +2613,78 @@ state 159
     BOOL    shift, and go to state 4
     STRING  shift, and go to state 5
 
-    type    go to state 183
+    type    go to state 179
+    params  go to state 180
+    param   go to state 181
+
+
+state 157
+
+  112 function_prototype: VOID IDENTIFIER LPAREN $@17 . RPAREN
+
+    RPAREN  shift, and go to state 182
+
+
+state 158
+
+   18 stmt: PRINT LPAREN value RPAREN . SEMICOLON
+
+    SEMICOLON  shift, and go to state 183
+
+
+state 159
+
+  114 function_prototype: type IDENTIFIER LPAREN $@18 . params RPAREN
+
+    INT     shift, and go to state 1
+    FLOAT   shift, and go to state 2
+    CHAR    shift, and go to state 3
+    BOOL    shift, and go to state 4
+    STRING  shift, and go to state 5
+
+    type    go to state 179
     params  go to state 184
-    param   go to state 185
+    param   go to state 181
 
 
 state 160
 
-  114 function_prototype: VOID IDENTIFIER LPAREN $@21 . RPAREN
+  116 function_prototype: type IDENTIFIER LPAREN $@19 . RPAREN
 
-    RPAREN  shift, and go to state 186
+    RPAREN  shift, and go to state 185
 
 
 state 161
 
-   18 stmt: PRINT LPAREN value RPAREN . SEMICOLON
+   71 var_dec_stmt: type IDENTIFIER ASSIGN value . SEMICOLON
 
-    SEMICOLON  shift, and go to state 187
+    SEMICOLON  shift, and go to state 186
 
 
 state 162
 
-  116 function_prototype: type IDENTIFIER LPAREN $@22 . params RPAREN
+  108 function: function_prototype LBRACE stmts RBRACE .
 
-    INT     shift, and go to state 1
-    FLOAT   shift, and go to state 2
-    CHAR    shift, and go to state 3
-    BOOL    shift, and go to state 4
-    STRING  shift, and go to state 5
-
-    type    go to state 183
-    params  go to state 188
-    param   go to state 185
+    $default  reduce using rule 108 (function)
 
 
 state 163
 
-  118 function_prototype: type IDENTIFIER LPAREN $@23 . RPAREN
-
-    RPAREN  shift, and go to state 189
-
-
-state 164
-
-   72 var_dec_stmt: type IDENTIFIER ASSIGN value . SEMICOLON
-
-    SEMICOLON  shift, and go to state 190
-
-
-state 165
-
-  110 function: function_prototype LBRACE stmts RBRACE .
-
-    $default  reduce using rule 110 (function)
-
-
-state 166
-
-   62 call_params: call_params COMMA . value
+   61 call_params: call_params COMMA . value
 
     IDENTIFIER  shift, and go to state 59
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
-    CHAR_VAL    shift, and go to state 76
-    STRING_VAL  shift, and go to state 77
+    CHAR_VAL    shift, and go to state 75
+    STRING_VAL  shift, and go to state 76
     TRUE_VAL    shift, and go to state 9
     FALSE_VAL   shift, and go to state 10
     LPAREN      shift, and go to state 13
     MINUS       shift, and go to state 21
     NOT         shift, and go to state 22
 
-    value            go to state 191
-    expr             go to state 80
+    value            go to state 187
+    expr             go to state 79
     bool_expr        go to state 29
     arithmetic_expr  go to state 30
     unary_expr       go to state 31
@@ -2744,309 +2696,293 @@ state 166
     function_call    go to state 37
 
 
-state 167
+state 164
 
-   61 function_call: IDENTIFIER LPAREN $@3 call_params RPAREN .
+   60 function_call: IDENTIFIER LPAREN $@2 call_params RPAREN .
 
-    $default  reduce using rule 61 (function_call)
+    $default  reduce using rule 60 (function_call)
 
 
-state 168
+state 165
 
-   64 constant: INT_VAL .
+   63 constant: INT_VAL .
+
+    $default  reduce using rule 63 (constant)
+
+
+state 166
+
+   64 constant: FLOAT_VAL .
 
     $default  reduce using rule 64 (constant)
 
 
-state 169
+state 167
 
-   65 constant: FLOAT_VAL .
-
-    $default  reduce using rule 65 (constant)
-
-
-state 170
-
-   67 constant: CHAR_VAL .
-
-    $default  reduce using rule 67 (constant)
-
-
-state 171
-
-   66 constant: STRING_VAL .
+   66 constant: CHAR_VAL .
 
     $default  reduce using rule 66 (constant)
 
 
-state 172
+state 168
 
-   68 constant: TRUE_VAL .
+   65 constant: STRING_VAL .
+
+    $default  reduce using rule 65 (constant)
+
+
+state 169
+
+   67 constant: TRUE_VAL .
+
+    $default  reduce using rule 67 (constant)
+
+
+state 170
+
+   68 constant: FALSE_VAL .
 
     $default  reduce using rule 68 (constant)
 
 
+state 171
+
+   69 const_dec_stmt: CONST type IDENTIFIER ASSIGN constant . SEMICOLON
+
+    SEMICOLON  shift, and go to state 188
+
+
+state 172
+
+   79 while_stmt: WHILE LPAREN expr $@3 RPAREN . LBRACE $@4 stmts RBRACE
+
+    LBRACE  shift, and go to state 189
+
+
 state 173
 
-   69 constant: FALSE_VAL .
+   26 bool_expr: expr . EQUAL arithmetic_expr
+   27          | expr . NE arithmetic_expr
+   28          | expr . GREATER arithmetic_expr
+   29          | expr . LESS arithmetic_expr
+   30          | expr . GE arithmetic_expr
+   31          | expr . LE arithmetic_expr
+   32          | expr . AND expr
+   33          | expr . OR expr
+   94 for_expression_stmt: LPAREN var_dec_stmt expr . $@13 SEMICOLON expr RPAREN LBRACE stmts RBRACE
 
-    $default  reduce using rule 69 (constant)
+    LE       shift, and go to state 84
+    GE       shift, and go to state 85
+    NE       shift, and go to state 86
+    EQUAL    shift, and go to state 87
+    LESS     shift, and go to state 88
+    GREATER  shift, and go to state 89
+    OR       shift, and go to state 90
+    AND      shift, and go to state 91
+
+    $default  reduce using rule 93 ($@13)
+
+    $@13  go to state 190
 
 
 state 174
 
-   70 const_dec_stmt: CONST type IDENTIFIER ASSIGN constant . SEMICOLON
+   26 bool_expr: expr . EQUAL arithmetic_expr
+   27          | expr . NE arithmetic_expr
+   28          | expr . GREATER arithmetic_expr
+   29          | expr . LESS arithmetic_expr
+   30          | expr . GE arithmetic_expr
+   31          | expr . LE arithmetic_expr
+   32          | expr . AND expr
+   33          | expr . OR expr
+   96 for_expression_stmt: LPAREN assign_stmt expr . $@14 SEMICOLON expr RPAREN LBRACE stmts RBRACE
 
-    SEMICOLON  shift, and go to state 192
+    LE       shift, and go to state 84
+    GE       shift, and go to state 85
+    NE       shift, and go to state 86
+    EQUAL    shift, and go to state 87
+    LESS     shift, and go to state 88
+    GREATER  shift, and go to state 89
+    OR       shift, and go to state 90
+    AND      shift, and go to state 91
+
+    $default  reduce using rule 95 ($@14)
+
+    $@14  go to state 191
 
 
 state 175
 
-   80 while_stmt: WHILE LPAREN expr $@4 RPAREN . LBRACE $@5 stmts RBRACE
+   70 var_dec_stmt: type IDENTIFIER . SEMICOLON
+   71             | type IDENTIFIER . ASSIGN value SEMICOLON
 
-    LBRACE  shift, and go to state 193
+    SEMICOLON  shift, and go to state 135
+    ASSIGN     shift, and go to state 137
 
 
 state 176
 
-   26 bool_expr: expr . EQUAL arithmetic_expr
-   27          | expr . NE arithmetic_expr
-   28          | expr . GREATER arithmetic_expr
-   29          | expr . LESS arithmetic_expr
-   30          | expr . GE arithmetic_expr
-   31          | expr . LE arithmetic_expr
-   32          | expr . AND expr
-   33          | expr . OR expr
-   95 for_stmt: FOR $@15 LPAREN var_dec_stmt expr . $@16 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   98 switch_stmt: SWITCH LPAREN expr RPAREN LBRACE . $@15 case_stmts RBRACE
 
-    LE       shift, and go to state 85
-    GE       shift, and go to state 86
-    NE       shift, and go to state 87
-    EQUAL    shift, and go to state 88
-    LESS     shift, and go to state 89
-    GREATER  shift, and go to state 90
-    OR       shift, and go to state 91
-    AND      shift, and go to state 92
+    $default  reduce using rule 97 ($@15)
 
-    $default  reduce using rule 94 ($@16)
-
-    $@16  go to state 194
+    $@15  go to state 192
 
 
 state 177
 
-   71 var_dec_stmt: type IDENTIFIER . SEMICOLON
-   72             | type IDENTIFIER . ASSIGN value SEMICOLON
+   83 if_stmt: IF LPAREN expr $@5 RPAREN . LBRACE $@6 stmts RBRACE $@7 if_expression_stmt
 
-    SEMICOLON  shift, and go to state 136
-    ASSIGN     shift, and go to state 138
+    LBRACE  shift, and go to state 193
 
 
 state 178
 
-   26 bool_expr: expr . EQUAL arithmetic_expr
-   27          | expr . NE arithmetic_expr
-   28          | expr . GREATER arithmetic_expr
-   29          | expr . LESS arithmetic_expr
-   30          | expr . GE arithmetic_expr
-   31          | expr . LE arithmetic_expr
-   32          | expr . AND expr
-   33          | expr . OR expr
-   98 for_stmt: FOR $@17 LPAREN assign_stmt expr . $@18 SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   90 repeat_until_stmt: REPEAT LBRACE $@9 stmts RBRACE . $@10 UNTIL LPAREN expr $@11 RPAREN SEMICOLON
 
-    LE       shift, and go to state 85
-    GE       shift, and go to state 86
-    NE       shift, and go to state 87
-    EQUAL    shift, and go to state 88
-    LESS     shift, and go to state 89
-    GREATER  shift, and go to state 90
-    OR       shift, and go to state 91
-    AND      shift, and go to state 92
+    $default  reduce using rule 88 ($@10)
 
-    $default  reduce using rule 97 ($@18)
-
-    $@18  go to state 195
+    $@10  go to state 194
 
 
 state 179
 
-  100 switch_stmt: SWITCH LPAREN expr RPAREN LBRACE . $@19 case_stmts RBRACE
+  119 param: type . IDENTIFIER
+  120      | type . IDENTIFIER ASSIGN constant
 
-    $default  reduce using rule 99 ($@19)
-
-    $@19  go to state 196
+    IDENTIFIER  shift, and go to state 195
 
 
 state 180
 
-   83 if_stmt: IF LPAREN expr $@6 RPAREN . LBRACE $@7 stmts RBRACE
+  110 function_prototype: VOID IDENTIFIER LPAREN $@16 params . RPAREN
+  118 params: params . COMMA param
 
-    LBRACE  shift, and go to state 197
+    COMMA   shift, and go to state 196
+    RPAREN  shift, and go to state 197
 
 
 state 181
 
-   88 if_stmt: IF LPAREN expr $@8 RPAREN . LBRACE $@9 stmts RBRACE $@10 ELSE LBRACE $@11 stmts RBRACE
+  117 params: param .
 
-    LBRACE  shift, and go to state 198
+    $default  reduce using rule 117 (params)
 
 
 state 182
 
-   92 repeat_until_stmt: REPEAT LBRACE $@12 stmts RBRACE . $@13 UNTIL LPAREN expr $@14 RPAREN SEMICOLON
+  112 function_prototype: VOID IDENTIFIER LPAREN $@17 RPAREN .
 
-    $default  reduce using rule 90 ($@13)
-
-    $@13  go to state 199
+    $default  reduce using rule 112 (function_prototype)
 
 
 state 183
-
-  121 param: type . IDENTIFIER
-  122      | type . IDENTIFIER ASSIGN constant
-
-    IDENTIFIER  shift, and go to state 200
-
-
-state 184
-
-  112 function_prototype: VOID IDENTIFIER LPAREN $@20 params . RPAREN
-  120 params: params . COMMA param
-
-    COMMA   shift, and go to state 201
-    RPAREN  shift, and go to state 202
-
-
-state 185
-
-  119 params: param .
-
-    $default  reduce using rule 119 (params)
-
-
-state 186
-
-  114 function_prototype: VOID IDENTIFIER LPAREN $@21 RPAREN .
-
-    $default  reduce using rule 114 (function_prototype)
-
-
-state 187
 
    18 stmt: PRINT LPAREN value RPAREN SEMICOLON .
 
     $default  reduce using rule 18 (stmt)
 
 
+state 184
+
+  114 function_prototype: type IDENTIFIER LPAREN $@18 params . RPAREN
+  118 params: params . COMMA param
+
+    COMMA   shift, and go to state 196
+    RPAREN  shift, and go to state 198
+
+
+state 185
+
+  116 function_prototype: type IDENTIFIER LPAREN $@19 RPAREN .
+
+    $default  reduce using rule 116 (function_prototype)
+
+
+state 186
+
+   71 var_dec_stmt: type IDENTIFIER ASSIGN value SEMICOLON .
+
+    $default  reduce using rule 71 (var_dec_stmt)
+
+
+state 187
+
+   61 call_params: call_params COMMA value .
+
+    $default  reduce using rule 61 (call_params)
+
+
 state 188
 
-  116 function_prototype: type IDENTIFIER LPAREN $@22 params . RPAREN
-  120 params: params . COMMA param
+   69 const_dec_stmt: CONST type IDENTIFIER ASSIGN constant SEMICOLON .
 
-    COMMA   shift, and go to state 201
-    RPAREN  shift, and go to state 203
+    $default  reduce using rule 69 (const_dec_stmt)
 
 
 state 189
 
-  118 function_prototype: type IDENTIFIER LPAREN $@23 RPAREN .
+   79 while_stmt: WHILE LPAREN expr $@3 RPAREN LBRACE . $@4 stmts RBRACE
 
-    $default  reduce using rule 118 (function_prototype)
+    $default  reduce using rule 78 ($@4)
+
+    $@4  go to state 199
 
 
 state 190
 
-   72 var_dec_stmt: type IDENTIFIER ASSIGN value SEMICOLON .
+   94 for_expression_stmt: LPAREN var_dec_stmt expr $@13 . SEMICOLON expr RPAREN LBRACE stmts RBRACE
 
-    $default  reduce using rule 72 (var_dec_stmt)
+    SEMICOLON  shift, and go to state 200
 
 
 state 191
 
-   62 call_params: call_params COMMA value .
+   96 for_expression_stmt: LPAREN assign_stmt expr $@14 . SEMICOLON expr RPAREN LBRACE stmts RBRACE
 
-    $default  reduce using rule 62 (call_params)
+    SEMICOLON  shift, and go to state 201
 
 
 state 192
 
-   70 const_dec_stmt: CONST type IDENTIFIER ASSIGN constant SEMICOLON .
+   98 switch_stmt: SWITCH LPAREN expr RPAREN LBRACE $@15 . case_stmts RBRACE
 
-    $default  reduce using rule 70 (const_dec_stmt)
+    CASE     shift, and go to state 202
+    DEFAULT  shift, and go to state 203
+
+    case_stmts  go to state 204
+    case_stmt   go to state 205
 
 
 state 193
 
-   80 while_stmt: WHILE LPAREN expr $@4 RPAREN LBRACE . $@5 stmts RBRACE
+   83 if_stmt: IF LPAREN expr $@5 RPAREN LBRACE . $@6 stmts RBRACE $@7 if_expression_stmt
 
-    $default  reduce using rule 79 ($@5)
+    $default  reduce using rule 81 ($@6)
 
-    $@5  go to state 204
+    $@6  go to state 206
 
 
 state 194
 
-   95 for_stmt: FOR $@15 LPAREN var_dec_stmt expr $@16 . SEMICOLON expr RPAREN LBRACE stmts RBRACE
+   90 repeat_until_stmt: REPEAT LBRACE $@9 stmts RBRACE $@10 . UNTIL LPAREN expr $@11 RPAREN SEMICOLON
 
-    SEMICOLON  shift, and go to state 205
+    UNTIL  shift, and go to state 207
 
 
 state 195
 
-   98 for_stmt: FOR $@17 LPAREN assign_stmt expr $@18 . SEMICOLON expr RPAREN LBRACE stmts RBRACE
+  119 param: type IDENTIFIER .
+  120      | type IDENTIFIER . ASSIGN constant
 
-    SEMICOLON  shift, and go to state 206
+    ASSIGN  shift, and go to state 208
+
+    $default  reduce using rule 119 (param)
 
 
 state 196
 
-  100 switch_stmt: SWITCH LPAREN expr RPAREN LBRACE $@19 . case_stmts RBRACE
-
-    CASE     shift, and go to state 207
-    DEFAULT  shift, and go to state 208
-
-    case_stmts  go to state 209
-    case_stmt   go to state 210
-
-
-state 197
-
-   83 if_stmt: IF LPAREN expr $@6 RPAREN LBRACE . $@7 stmts RBRACE
-
-    $default  reduce using rule 82 ($@7)
-
-    $@7  go to state 211
-
-
-state 198
-
-   88 if_stmt: IF LPAREN expr $@8 RPAREN LBRACE . $@9 stmts RBRACE $@10 ELSE LBRACE $@11 stmts RBRACE
-
-    $default  reduce using rule 85 ($@9)
-
-    $@9  go to state 212
-
-
-state 199
-
-   92 repeat_until_stmt: REPEAT LBRACE $@12 stmts RBRACE $@13 . UNTIL LPAREN expr $@14 RPAREN SEMICOLON
-
-    UNTIL  shift, and go to state 213
-
-
-state 200
-
-  121 param: type IDENTIFIER .
-  122      | type IDENTIFIER . ASSIGN constant
-
-    ASSIGN  shift, and go to state 214
-
-    $default  reduce using rule 121 (param)
-
-
-state 201
-
-  120 params: params COMMA . param
+  118 params: params COMMA . param
 
     INT     shift, and go to state 1
     FLOAT   shift, and go to state 2
@@ -3054,186 +2990,186 @@ state 201
     BOOL    shift, and go to state 4
     STRING  shift, and go to state 5
 
-    type   go to state 183
-    param  go to state 215
+    type   go to state 179
+    param  go to state 209
+
+
+state 197
+
+  110 function_prototype: VOID IDENTIFIER LPAREN $@16 params RPAREN .
+
+    $default  reduce using rule 110 (function_prototype)
+
+
+state 198
+
+  114 function_prototype: type IDENTIFIER LPAREN $@18 params RPAREN .
+
+    $default  reduce using rule 114 (function_prototype)
+
+
+state 199
+
+   79 while_stmt: WHILE LPAREN expr $@3 RPAREN LBRACE $@4 . stmts RBRACE
+
+    INT         shift, and go to state 1
+    FLOAT       shift, and go to state 2
+    CHAR        shift, and go to state 3
+    BOOL        shift, and go to state 4
+    STRING      shift, and go to state 5
+    IDENTIFIER  shift, and go to state 6
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    CONST       shift, and go to state 11
+    LBRACE      shift, and go to state 12
+    LPAREN      shift, and go to state 13
+    BREAK       shift, and go to state 14
+    CONTINUE    shift, and go to state 15
+    WHILE       shift, and go to state 16
+    FOR         shift, and go to state 17
+    SWITCH      shift, and go to state 18
+    IF          shift, and go to state 19
+    REPEAT      shift, and go to state 20
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+    VOID        shift, and go to state 23
+    RETURN      shift, and go to state 24
+    PRINT       shift, and go to state 25
+
+    stmts               go to state 210
+    stmt                go to state 27
+    expr                go to state 28
+    bool_expr           go to state 29
+    arithmetic_expr     go to state 30
+    unary_expr          go to state 31
+    binary_expr         go to state 32
+    term                go to state 33
+    negat               go to state 34
+    para                go to state 35
+    factor              go to state 36
+    function_call       go to state 37
+    const_dec_stmt      go to state 38
+    var_dec_stmt        go to state 39
+    assign_stmt         go to state 40
+    while_stmt          go to state 41
+    if_stmt             go to state 42
+    repeat_until_stmt   go to state 43
+    for_stmt            go to state 44
+    switch_stmt         go to state 45
+    type                go to state 46
+    function            go to state 47
+    function_prototype  go to state 48
+
+
+state 200
+
+   94 for_expression_stmt: LPAREN var_dec_stmt expr $@13 SEMICOLON . expr RPAREN LBRACE stmts RBRACE
+
+    IDENTIFIER  shift, and go to state 59
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    LPAREN      shift, and go to state 13
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+
+    expr             go to state 211
+    bool_expr        go to state 29
+    arithmetic_expr  go to state 30
+    unary_expr       go to state 31
+    binary_expr      go to state 32
+    term             go to state 33
+    negat            go to state 34
+    para             go to state 35
+    factor           go to state 36
+    function_call    go to state 37
+
+
+state 201
+
+   96 for_expression_stmt: LPAREN assign_stmt expr $@14 SEMICOLON . expr RPAREN LBRACE stmts RBRACE
+
+    IDENTIFIER  shift, and go to state 59
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    LPAREN      shift, and go to state 13
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+
+    expr             go to state 212
+    bool_expr        go to state 29
+    arithmetic_expr  go to state 30
+    unary_expr       go to state 31
+    binary_expr      go to state 32
+    term             go to state 33
+    negat            go to state 34
+    para             go to state 35
+    factor           go to state 36
+    function_call    go to state 37
 
 
 state 202
 
-  112 function_prototype: VOID IDENTIFIER LPAREN $@20 params RPAREN .
+  101 case_stmt: CASE . value COLON stmts
 
-    $default  reduce using rule 112 (function_prototype)
+    IDENTIFIER  shift, and go to state 59
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    CHAR_VAL    shift, and go to state 75
+    STRING_VAL  shift, and go to state 76
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    LPAREN      shift, and go to state 13
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+
+    value            go to state 213
+    expr             go to state 79
+    bool_expr        go to state 29
+    arithmetic_expr  go to state 30
+    unary_expr       go to state 31
+    binary_expr      go to state 32
+    term             go to state 33
+    negat            go to state 34
+    para             go to state 35
+    factor           go to state 36
+    function_call    go to state 37
 
 
 state 203
 
-  116 function_prototype: type IDENTIFIER LPAREN $@22 params RPAREN .
+  102 case_stmt: DEFAULT . COLON stmts
 
-    $default  reduce using rule 116 (function_prototype)
+    COLON  shift, and go to state 214
 
 
 state 204
 
-   80 while_stmt: WHILE LPAREN expr $@4 RPAREN LBRACE $@5 . stmts RBRACE
+   98 switch_stmt: SWITCH LPAREN expr RPAREN LBRACE $@15 case_stmts . RBRACE
+   99 case_stmts: case_stmts . case_stmt
 
-    INT         shift, and go to state 1
-    FLOAT       shift, and go to state 2
-    CHAR        shift, and go to state 3
-    BOOL        shift, and go to state 4
-    STRING      shift, and go to state 5
-    IDENTIFIER  shift, and go to state 6
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    CONST       shift, and go to state 11
-    LBRACE      shift, and go to state 12
-    LPAREN      shift, and go to state 13
-    BREAK       shift, and go to state 14
-    CONTINUE    shift, and go to state 15
-    WHILE       shift, and go to state 16
-    FOR         shift, and go to state 17
-    SWITCH      shift, and go to state 18
-    IF          shift, and go to state 19
-    REPEAT      shift, and go to state 20
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-    VOID        shift, and go to state 23
-    RETURN      shift, and go to state 24
-    PRINT       shift, and go to state 25
+    RBRACE   shift, and go to state 215
+    CASE     shift, and go to state 202
+    DEFAULT  shift, and go to state 203
 
-    stmts               go to state 216
-    stmt                go to state 27
-    expr                go to state 28
-    bool_expr           go to state 29
-    arithmetic_expr     go to state 30
-    unary_expr          go to state 31
-    binary_expr         go to state 32
-    term                go to state 33
-    negat               go to state 34
-    para                go to state 35
-    factor              go to state 36
-    function_call       go to state 37
-    const_dec_stmt      go to state 38
-    var_dec_stmt        go to state 39
-    assign_stmt         go to state 40
-    while_stmt          go to state 41
-    if_stmt             go to state 42
-    repeat_until_stmt   go to state 43
-    for_stmt            go to state 44
-    switch_stmt         go to state 45
-    type                go to state 46
-    function            go to state 47
-    function_prototype  go to state 48
+    case_stmt  go to state 216
 
 
 state 205
 
-   95 for_stmt: FOR $@15 LPAREN var_dec_stmt expr $@16 SEMICOLON . expr RPAREN LBRACE stmts RBRACE
+  100 case_stmts: case_stmt .
 
-    IDENTIFIER  shift, and go to state 59
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    LPAREN      shift, and go to state 13
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-
-    expr             go to state 217
-    bool_expr        go to state 29
-    arithmetic_expr  go to state 30
-    unary_expr       go to state 31
-    binary_expr      go to state 32
-    term             go to state 33
-    negat            go to state 34
-    para             go to state 35
-    factor           go to state 36
-    function_call    go to state 37
+    $default  reduce using rule 100 (case_stmts)
 
 
 state 206
 
-   98 for_stmt: FOR $@17 LPAREN assign_stmt expr $@18 SEMICOLON . expr RPAREN LBRACE stmts RBRACE
-
-    IDENTIFIER  shift, and go to state 59
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    LPAREN      shift, and go to state 13
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-
-    expr             go to state 218
-    bool_expr        go to state 29
-    arithmetic_expr  go to state 30
-    unary_expr       go to state 31
-    binary_expr      go to state 32
-    term             go to state 33
-    negat            go to state 34
-    para             go to state 35
-    factor           go to state 36
-    function_call    go to state 37
-
-
-state 207
-
-  103 case_stmt: CASE . value COLON stmts
-
-    IDENTIFIER  shift, and go to state 59
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    CHAR_VAL    shift, and go to state 76
-    STRING_VAL  shift, and go to state 77
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    LPAREN      shift, and go to state 13
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-
-    value            go to state 219
-    expr             go to state 80
-    bool_expr        go to state 29
-    arithmetic_expr  go to state 30
-    unary_expr       go to state 31
-    binary_expr      go to state 32
-    term             go to state 33
-    negat            go to state 34
-    para             go to state 35
-    factor           go to state 36
-    function_call    go to state 37
-
-
-state 208
-
-  104 case_stmt: DEFAULT . COLON stmts
-
-    COLON  shift, and go to state 220
-
-
-state 209
-
-  100 switch_stmt: SWITCH LPAREN expr RPAREN LBRACE $@19 case_stmts . RBRACE
-  101 case_stmts: case_stmts . case_stmt
-
-    RBRACE   shift, and go to state 221
-    CASE     shift, and go to state 207
-    DEFAULT  shift, and go to state 208
-
-    case_stmt  go to state 222
-
-
-state 210
-
-  102 case_stmts: case_stmt .
-
-    $default  reduce using rule 102 (case_stmts)
-
-
-state 211
-
-   83 if_stmt: IF LPAREN expr $@6 RPAREN LBRACE $@7 . stmts RBRACE
+   83 if_stmt: IF LPAREN expr $@5 RPAREN LBRACE $@6 . stmts RBRACE $@7 if_expression_stmt
 
     INT         shift, and go to state 1
     FLOAT       shift, and go to state 2
@@ -3261,7 +3197,7 @@ state 211
     RETURN      shift, and go to state 24
     PRINT       shift, and go to state 25
 
-    stmts               go to state 223
+    stmts               go to state 217
     stmt                go to state 27
     expr                go to state 28
     bool_expr           go to state 29
@@ -3286,9 +3222,146 @@ state 211
     function_prototype  go to state 48
 
 
+state 207
+
+   90 repeat_until_stmt: REPEAT LBRACE $@9 stmts RBRACE $@10 UNTIL . LPAREN expr $@11 RPAREN SEMICOLON
+
+    LPAREN  shift, and go to state 218
+
+
+state 208
+
+  120 param: type IDENTIFIER ASSIGN . constant
+
+    INT_VAL     shift, and go to state 165
+    FLOAT_VAL   shift, and go to state 166
+    CHAR_VAL    shift, and go to state 167
+    STRING_VAL  shift, and go to state 168
+    TRUE_VAL    shift, and go to state 169
+    FALSE_VAL   shift, and go to state 170
+
+    constant  go to state 219
+
+
+state 209
+
+  118 params: params COMMA param .
+
+    $default  reduce using rule 118 (params)
+
+
+state 210
+
+    1 stmts: stmts . stmt
+   79 while_stmt: WHILE LPAREN expr $@3 RPAREN LBRACE $@4 stmts . RBRACE
+
+    INT         shift, and go to state 1
+    FLOAT       shift, and go to state 2
+    CHAR        shift, and go to state 3
+    BOOL        shift, and go to state 4
+    STRING      shift, and go to state 5
+    IDENTIFIER  shift, and go to state 6
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    CONST       shift, and go to state 11
+    LBRACE      shift, and go to state 12
+    RBRACE      shift, and go to state 220
+    LPAREN      shift, and go to state 13
+    BREAK       shift, and go to state 14
+    CONTINUE    shift, and go to state 15
+    WHILE       shift, and go to state 16
+    FOR         shift, and go to state 17
+    SWITCH      shift, and go to state 18
+    IF          shift, and go to state 19
+    REPEAT      shift, and go to state 20
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+    VOID        shift, and go to state 23
+    RETURN      shift, and go to state 24
+    PRINT       shift, and go to state 25
+
+    stmt                go to state 82
+    expr                go to state 28
+    bool_expr           go to state 29
+    arithmetic_expr     go to state 30
+    unary_expr          go to state 31
+    binary_expr         go to state 32
+    term                go to state 33
+    negat               go to state 34
+    para                go to state 35
+    factor              go to state 36
+    function_call       go to state 37
+    const_dec_stmt      go to state 38
+    var_dec_stmt        go to state 39
+    assign_stmt         go to state 40
+    while_stmt          go to state 41
+    if_stmt             go to state 42
+    repeat_until_stmt   go to state 43
+    for_stmt            go to state 44
+    switch_stmt         go to state 45
+    type                go to state 46
+    function            go to state 47
+    function_prototype  go to state 48
+
+
+state 211
+
+   26 bool_expr: expr . EQUAL arithmetic_expr
+   27          | expr . NE arithmetic_expr
+   28          | expr . GREATER arithmetic_expr
+   29          | expr . LESS arithmetic_expr
+   30          | expr . GE arithmetic_expr
+   31          | expr . LE arithmetic_expr
+   32          | expr . AND expr
+   33          | expr . OR expr
+   94 for_expression_stmt: LPAREN var_dec_stmt expr $@13 SEMICOLON expr . RPAREN LBRACE stmts RBRACE
+
+    RPAREN   shift, and go to state 221
+    LE       shift, and go to state 84
+    GE       shift, and go to state 85
+    NE       shift, and go to state 86
+    EQUAL    shift, and go to state 87
+    LESS     shift, and go to state 88
+    GREATER  shift, and go to state 89
+    OR       shift, and go to state 90
+    AND      shift, and go to state 91
+
+
 state 212
 
-   88 if_stmt: IF LPAREN expr $@8 RPAREN LBRACE $@9 . stmts RBRACE $@10 ELSE LBRACE $@11 stmts RBRACE
+   26 bool_expr: expr . EQUAL arithmetic_expr
+   27          | expr . NE arithmetic_expr
+   28          | expr . GREATER arithmetic_expr
+   29          | expr . LESS arithmetic_expr
+   30          | expr . GE arithmetic_expr
+   31          | expr . LE arithmetic_expr
+   32          | expr . AND expr
+   33          | expr . OR expr
+   96 for_expression_stmt: LPAREN assign_stmt expr $@14 SEMICOLON expr . RPAREN LBRACE stmts RBRACE
+
+    RPAREN   shift, and go to state 222
+    LE       shift, and go to state 84
+    GE       shift, and go to state 85
+    NE       shift, and go to state 86
+    EQUAL    shift, and go to state 87
+    LESS     shift, and go to state 88
+    GREATER  shift, and go to state 89
+    OR       shift, and go to state 90
+    AND      shift, and go to state 91
+
+
+state 213
+
+  101 case_stmt: CASE value . COLON stmts
+
+    COLON  shift, and go to state 223
+
+
+state 214
+
+  102 case_stmt: DEFAULT COLON . stmts
 
     INT         shift, and go to state 1
     FLOAT       shift, and go to state 2
@@ -3341,146 +3414,24 @@ state 212
     function_prototype  go to state 48
 
 
-state 213
-
-   92 repeat_until_stmt: REPEAT LBRACE $@12 stmts RBRACE $@13 UNTIL . LPAREN expr $@14 RPAREN SEMICOLON
-
-    LPAREN  shift, and go to state 225
-
-
-state 214
-
-  122 param: type IDENTIFIER ASSIGN . constant
-
-    INT_VAL     shift, and go to state 168
-    FLOAT_VAL   shift, and go to state 169
-    CHAR_VAL    shift, and go to state 170
-    STRING_VAL  shift, and go to state 171
-    TRUE_VAL    shift, and go to state 172
-    FALSE_VAL   shift, and go to state 173
-
-    constant  go to state 226
-
-
 state 215
 
-  120 params: params COMMA param .
+   98 switch_stmt: SWITCH LPAREN expr RPAREN LBRACE $@15 case_stmts RBRACE .
 
-    $default  reduce using rule 120 (params)
+    $default  reduce using rule 98 (switch_stmt)
 
 
 state 216
 
-    1 stmts: stmts . stmt
-   80 while_stmt: WHILE LPAREN expr $@4 RPAREN LBRACE $@5 stmts . RBRACE
+   99 case_stmts: case_stmts case_stmt .
 
-    INT         shift, and go to state 1
-    FLOAT       shift, and go to state 2
-    CHAR        shift, and go to state 3
-    BOOL        shift, and go to state 4
-    STRING      shift, and go to state 5
-    IDENTIFIER  shift, and go to state 6
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    CONST       shift, and go to state 11
-    LBRACE      shift, and go to state 12
-    RBRACE      shift, and go to state 227
-    LPAREN      shift, and go to state 13
-    BREAK       shift, and go to state 14
-    CONTINUE    shift, and go to state 15
-    WHILE       shift, and go to state 16
-    FOR         shift, and go to state 17
-    SWITCH      shift, and go to state 18
-    IF          shift, and go to state 19
-    REPEAT      shift, and go to state 20
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-    VOID        shift, and go to state 23
-    RETURN      shift, and go to state 24
-    PRINT       shift, and go to state 25
-
-    stmt                go to state 83
-    expr                go to state 28
-    bool_expr           go to state 29
-    arithmetic_expr     go to state 30
-    unary_expr          go to state 31
-    binary_expr         go to state 32
-    term                go to state 33
-    negat               go to state 34
-    para                go to state 35
-    factor              go to state 36
-    function_call       go to state 37
-    const_dec_stmt      go to state 38
-    var_dec_stmt        go to state 39
-    assign_stmt         go to state 40
-    while_stmt          go to state 41
-    if_stmt             go to state 42
-    repeat_until_stmt   go to state 43
-    for_stmt            go to state 44
-    switch_stmt         go to state 45
-    type                go to state 46
-    function            go to state 47
-    function_prototype  go to state 48
+    $default  reduce using rule 99 (case_stmts)
 
 
 state 217
 
-   26 bool_expr: expr . EQUAL arithmetic_expr
-   27          | expr . NE arithmetic_expr
-   28          | expr . GREATER arithmetic_expr
-   29          | expr . LESS arithmetic_expr
-   30          | expr . GE arithmetic_expr
-   31          | expr . LE arithmetic_expr
-   32          | expr . AND expr
-   33          | expr . OR expr
-   95 for_stmt: FOR $@15 LPAREN var_dec_stmt expr $@16 SEMICOLON expr . RPAREN LBRACE stmts RBRACE
-
-    RPAREN   shift, and go to state 228
-    LE       shift, and go to state 85
-    GE       shift, and go to state 86
-    NE       shift, and go to state 87
-    EQUAL    shift, and go to state 88
-    LESS     shift, and go to state 89
-    GREATER  shift, and go to state 90
-    OR       shift, and go to state 91
-    AND      shift, and go to state 92
-
-
-state 218
-
-   26 bool_expr: expr . EQUAL arithmetic_expr
-   27          | expr . NE arithmetic_expr
-   28          | expr . GREATER arithmetic_expr
-   29          | expr . LESS arithmetic_expr
-   30          | expr . GE arithmetic_expr
-   31          | expr . LE arithmetic_expr
-   32          | expr . AND expr
-   33          | expr . OR expr
-   98 for_stmt: FOR $@17 LPAREN assign_stmt expr $@18 SEMICOLON expr . RPAREN LBRACE stmts RBRACE
-
-    RPAREN   shift, and go to state 229
-    LE       shift, and go to state 85
-    GE       shift, and go to state 86
-    NE       shift, and go to state 87
-    EQUAL    shift, and go to state 88
-    LESS     shift, and go to state 89
-    GREATER  shift, and go to state 90
-    OR       shift, and go to state 91
-    AND      shift, and go to state 92
-
-
-state 219
-
-  103 case_stmt: CASE value . COLON stmts
-
-    COLON  shift, and go to state 230
-
-
-state 220
-
-  104 case_stmt: DEFAULT COLON . stmts
+    1 stmts: stmts . stmt
+   83 if_stmt: IF LPAREN expr $@5 RPAREN LBRACE $@6 stmts . RBRACE $@7 if_expression_stmt
 
     INT         shift, and go to state 1
     FLOAT       shift, and go to state 2
@@ -3494,6 +3445,7 @@ state 220
     FALSE_VAL   shift, and go to state 10
     CONST       shift, and go to state 11
     LBRACE      shift, and go to state 12
+    RBRACE      shift, and go to state 225
     LPAREN      shift, and go to state 13
     BREAK       shift, and go to state 14
     CONTINUE    shift, and go to state 15
@@ -3508,8 +3460,7 @@ state 220
     RETURN      shift, and go to state 24
     PRINT       shift, and go to state 25
 
-    stmts               go to state 231
-    stmt                go to state 27
+    stmt                go to state 82
     expr                go to state 28
     bool_expr           go to state 29
     arithmetic_expr     go to state 30
@@ -3533,24 +3484,62 @@ state 220
     function_prototype  go to state 48
 
 
+state 218
+
+   90 repeat_until_stmt: REPEAT LBRACE $@9 stmts RBRACE $@10 UNTIL LPAREN . expr $@11 RPAREN SEMICOLON
+
+    IDENTIFIER  shift, and go to state 59
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    LPAREN      shift, and go to state 13
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+
+    expr             go to state 226
+    bool_expr        go to state 29
+    arithmetic_expr  go to state 30
+    unary_expr       go to state 31
+    binary_expr      go to state 32
+    term             go to state 33
+    negat            go to state 34
+    para             go to state 35
+    factor           go to state 36
+    function_call    go to state 37
+
+
+state 219
+
+  120 param: type IDENTIFIER ASSIGN constant .
+
+    $default  reduce using rule 120 (param)
+
+
+state 220
+
+   79 while_stmt: WHILE LPAREN expr $@3 RPAREN LBRACE $@4 stmts RBRACE .
+
+    $default  reduce using rule 79 (while_stmt)
+
+
 state 221
 
-  100 switch_stmt: SWITCH LPAREN expr RPAREN LBRACE $@19 case_stmts RBRACE .
+   94 for_expression_stmt: LPAREN var_dec_stmt expr $@13 SEMICOLON expr RPAREN . LBRACE stmts RBRACE
 
-    $default  reduce using rule 100 (switch_stmt)
+    LBRACE  shift, and go to state 227
 
 
 state 222
 
-  101 case_stmts: case_stmts case_stmt .
+   96 for_expression_stmt: LPAREN assign_stmt expr $@14 SEMICOLON expr RPAREN . LBRACE stmts RBRACE
 
-    $default  reduce using rule 101 (case_stmts)
+    LBRACE  shift, and go to state 228
 
 
 state 223
 
-    1 stmts: stmts . stmt
-   83 if_stmt: IF LPAREN expr $@6 RPAREN LBRACE $@7 stmts . RBRACE
+  101 case_stmt: CASE value COLON . stmts
 
     INT         shift, and go to state 1
     FLOAT       shift, and go to state 2
@@ -3564,7 +3553,6 @@ state 223
     FALSE_VAL   shift, and go to state 10
     CONST       shift, and go to state 11
     LBRACE      shift, and go to state 12
-    RBRACE      shift, and go to state 232
     LPAREN      shift, and go to state 13
     BREAK       shift, and go to state 14
     CONTINUE    shift, and go to state 15
@@ -3579,7 +3567,8 @@ state 223
     RETURN      shift, and go to state 24
     PRINT       shift, and go to state 25
 
-    stmt                go to state 83
+    stmts               go to state 229
+    stmt                go to state 27
     expr                go to state 28
     bool_expr           go to state 29
     arithmetic_expr     go to state 30
@@ -3606,7 +3595,7 @@ state 223
 state 224
 
     1 stmts: stmts . stmt
-   88 if_stmt: IF LPAREN expr $@8 RPAREN LBRACE $@9 stmts . RBRACE $@10 ELSE LBRACE $@11 stmts RBRACE
+  102 case_stmt: DEFAULT COLON stmts .
 
     INT         shift, and go to state 1
     FLOAT       shift, and go to state 2
@@ -3620,7 +3609,6 @@ state 224
     FALSE_VAL   shift, and go to state 10
     CONST       shift, and go to state 11
     LBRACE      shift, and go to state 12
-    RBRACE      shift, and go to state 233
     LPAREN      shift, and go to state 13
     BREAK       shift, and go to state 14
     CONTINUE    shift, and go to state 15
@@ -3635,7 +3623,9 @@ state 224
     RETURN      shift, and go to state 24
     PRINT       shift, and go to state 25
 
-    stmt                go to state 83
+    $default  reduce using rule 102 (case_stmt)
+
+    stmt                go to state 82
     expr                go to state 28
     bool_expr           go to state 29
     arithmetic_expr     go to state 30
@@ -3661,186 +3651,14 @@ state 224
 
 state 225
 
-   92 repeat_until_stmt: REPEAT LBRACE $@12 stmts RBRACE $@13 UNTIL LPAREN . expr $@14 RPAREN SEMICOLON
+   83 if_stmt: IF LPAREN expr $@5 RPAREN LBRACE $@6 stmts RBRACE . $@7 if_expression_stmt
 
-    IDENTIFIER  shift, and go to state 59
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    LPAREN      shift, and go to state 13
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
+    $default  reduce using rule 82 ($@7)
 
-    expr             go to state 234
-    bool_expr        go to state 29
-    arithmetic_expr  go to state 30
-    unary_expr       go to state 31
-    binary_expr      go to state 32
-    term             go to state 33
-    negat            go to state 34
-    para             go to state 35
-    factor           go to state 36
-    function_call    go to state 37
+    $@7  go to state 230
 
 
 state 226
-
-  122 param: type IDENTIFIER ASSIGN constant .
-
-    $default  reduce using rule 122 (param)
-
-
-state 227
-
-   80 while_stmt: WHILE LPAREN expr $@4 RPAREN LBRACE $@5 stmts RBRACE .
-
-    $default  reduce using rule 80 (while_stmt)
-
-
-state 228
-
-   95 for_stmt: FOR $@15 LPAREN var_dec_stmt expr $@16 SEMICOLON expr RPAREN . LBRACE stmts RBRACE
-
-    LBRACE  shift, and go to state 235
-
-
-state 229
-
-   98 for_stmt: FOR $@17 LPAREN assign_stmt expr $@18 SEMICOLON expr RPAREN . LBRACE stmts RBRACE
-
-    LBRACE  shift, and go to state 236
-
-
-state 230
-
-  103 case_stmt: CASE value COLON . stmts
-
-    INT         shift, and go to state 1
-    FLOAT       shift, and go to state 2
-    CHAR        shift, and go to state 3
-    BOOL        shift, and go to state 4
-    STRING      shift, and go to state 5
-    IDENTIFIER  shift, and go to state 6
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    CONST       shift, and go to state 11
-    LBRACE      shift, and go to state 12
-    LPAREN      shift, and go to state 13
-    BREAK       shift, and go to state 14
-    CONTINUE    shift, and go to state 15
-    WHILE       shift, and go to state 16
-    FOR         shift, and go to state 17
-    SWITCH      shift, and go to state 18
-    IF          shift, and go to state 19
-    REPEAT      shift, and go to state 20
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-    VOID        shift, and go to state 23
-    RETURN      shift, and go to state 24
-    PRINT       shift, and go to state 25
-
-    stmts               go to state 237
-    stmt                go to state 27
-    expr                go to state 28
-    bool_expr           go to state 29
-    arithmetic_expr     go to state 30
-    unary_expr          go to state 31
-    binary_expr         go to state 32
-    term                go to state 33
-    negat               go to state 34
-    para                go to state 35
-    factor              go to state 36
-    function_call       go to state 37
-    const_dec_stmt      go to state 38
-    var_dec_stmt        go to state 39
-    assign_stmt         go to state 40
-    while_stmt          go to state 41
-    if_stmt             go to state 42
-    repeat_until_stmt   go to state 43
-    for_stmt            go to state 44
-    switch_stmt         go to state 45
-    type                go to state 46
-    function            go to state 47
-    function_prototype  go to state 48
-
-
-state 231
-
-    1 stmts: stmts . stmt
-  104 case_stmt: DEFAULT COLON stmts .
-
-    INT         shift, and go to state 1
-    FLOAT       shift, and go to state 2
-    CHAR        shift, and go to state 3
-    BOOL        shift, and go to state 4
-    STRING      shift, and go to state 5
-    IDENTIFIER  shift, and go to state 6
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    CONST       shift, and go to state 11
-    LBRACE      shift, and go to state 12
-    LPAREN      shift, and go to state 13
-    BREAK       shift, and go to state 14
-    CONTINUE    shift, and go to state 15
-    WHILE       shift, and go to state 16
-    FOR         shift, and go to state 17
-    SWITCH      shift, and go to state 18
-    IF          shift, and go to state 19
-    REPEAT      shift, and go to state 20
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-    VOID        shift, and go to state 23
-    RETURN      shift, and go to state 24
-    PRINT       shift, and go to state 25
-
-    $default  reduce using rule 104 (case_stmt)
-
-    stmt                go to state 83
-    expr                go to state 28
-    bool_expr           go to state 29
-    arithmetic_expr     go to state 30
-    unary_expr          go to state 31
-    binary_expr         go to state 32
-    term                go to state 33
-    negat               go to state 34
-    para                go to state 35
-    factor              go to state 36
-    function_call       go to state 37
-    const_dec_stmt      go to state 38
-    var_dec_stmt        go to state 39
-    assign_stmt         go to state 40
-    while_stmt          go to state 41
-    if_stmt             go to state 42
-    repeat_until_stmt   go to state 43
-    for_stmt            go to state 44
-    switch_stmt         go to state 45
-    type                go to state 46
-    function            go to state 47
-    function_prototype  go to state 48
-
-
-state 232
-
-   83 if_stmt: IF LPAREN expr $@6 RPAREN LBRACE $@7 stmts RBRACE .
-
-    $default  reduce using rule 83 (if_stmt)
-
-
-state 233
-
-   88 if_stmt: IF LPAREN expr $@8 RPAREN LBRACE $@9 stmts RBRACE . $@10 ELSE LBRACE $@11 stmts RBRACE
-
-    $default  reduce using rule 86 ($@10)
-
-    $@10  go to state 238
-
-
-state 234
 
    26 bool_expr: expr . EQUAL arithmetic_expr
    27          | expr . NE arithmetic_expr
@@ -3850,263 +3668,373 @@ state 234
    31          | expr . LE arithmetic_expr
    32          | expr . AND expr
    33          | expr . OR expr
-   92 repeat_until_stmt: REPEAT LBRACE $@12 stmts RBRACE $@13 UNTIL LPAREN expr . $@14 RPAREN SEMICOLON
+   90 repeat_until_stmt: REPEAT LBRACE $@9 stmts RBRACE $@10 UNTIL LPAREN expr . $@11 RPAREN SEMICOLON
 
-    LE       shift, and go to state 85
-    GE       shift, and go to state 86
-    NE       shift, and go to state 87
-    EQUAL    shift, and go to state 88
-    LESS     shift, and go to state 89
-    GREATER  shift, and go to state 90
-    OR       shift, and go to state 91
-    AND      shift, and go to state 92
+    LE       shift, and go to state 84
+    GE       shift, and go to state 85
+    NE       shift, and go to state 86
+    EQUAL    shift, and go to state 87
+    LESS     shift, and go to state 88
+    GREATER  shift, and go to state 89
+    OR       shift, and go to state 90
+    AND      shift, and go to state 91
 
-    $default  reduce using rule 91 ($@14)
+    $default  reduce using rule 89 ($@11)
 
-    $@14  go to state 239
+    $@11  go to state 231
+
+
+state 227
+
+   94 for_expression_stmt: LPAREN var_dec_stmt expr $@13 SEMICOLON expr RPAREN LBRACE . stmts RBRACE
+
+    INT         shift, and go to state 1
+    FLOAT       shift, and go to state 2
+    CHAR        shift, and go to state 3
+    BOOL        shift, and go to state 4
+    STRING      shift, and go to state 5
+    IDENTIFIER  shift, and go to state 6
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    CONST       shift, and go to state 11
+    LBRACE      shift, and go to state 12
+    LPAREN      shift, and go to state 13
+    BREAK       shift, and go to state 14
+    CONTINUE    shift, and go to state 15
+    WHILE       shift, and go to state 16
+    FOR         shift, and go to state 17
+    SWITCH      shift, and go to state 18
+    IF          shift, and go to state 19
+    REPEAT      shift, and go to state 20
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+    VOID        shift, and go to state 23
+    RETURN      shift, and go to state 24
+    PRINT       shift, and go to state 25
+
+    stmts               go to state 232
+    stmt                go to state 27
+    expr                go to state 28
+    bool_expr           go to state 29
+    arithmetic_expr     go to state 30
+    unary_expr          go to state 31
+    binary_expr         go to state 32
+    term                go to state 33
+    negat               go to state 34
+    para                go to state 35
+    factor              go to state 36
+    function_call       go to state 37
+    const_dec_stmt      go to state 38
+    var_dec_stmt        go to state 39
+    assign_stmt         go to state 40
+    while_stmt          go to state 41
+    if_stmt             go to state 42
+    repeat_until_stmt   go to state 43
+    for_stmt            go to state 44
+    switch_stmt         go to state 45
+    type                go to state 46
+    function            go to state 47
+    function_prototype  go to state 48
+
+
+state 228
+
+   96 for_expression_stmt: LPAREN assign_stmt expr $@14 SEMICOLON expr RPAREN LBRACE . stmts RBRACE
+
+    INT         shift, and go to state 1
+    FLOAT       shift, and go to state 2
+    CHAR        shift, and go to state 3
+    BOOL        shift, and go to state 4
+    STRING      shift, and go to state 5
+    IDENTIFIER  shift, and go to state 6
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    CONST       shift, and go to state 11
+    LBRACE      shift, and go to state 12
+    LPAREN      shift, and go to state 13
+    BREAK       shift, and go to state 14
+    CONTINUE    shift, and go to state 15
+    WHILE       shift, and go to state 16
+    FOR         shift, and go to state 17
+    SWITCH      shift, and go to state 18
+    IF          shift, and go to state 19
+    REPEAT      shift, and go to state 20
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+    VOID        shift, and go to state 23
+    RETURN      shift, and go to state 24
+    PRINT       shift, and go to state 25
+
+    stmts               go to state 233
+    stmt                go to state 27
+    expr                go to state 28
+    bool_expr           go to state 29
+    arithmetic_expr     go to state 30
+    unary_expr          go to state 31
+    binary_expr         go to state 32
+    term                go to state 33
+    negat               go to state 34
+    para                go to state 35
+    factor              go to state 36
+    function_call       go to state 37
+    const_dec_stmt      go to state 38
+    var_dec_stmt        go to state 39
+    assign_stmt         go to state 40
+    while_stmt          go to state 41
+    if_stmt             go to state 42
+    repeat_until_stmt   go to state 43
+    for_stmt            go to state 44
+    switch_stmt         go to state 45
+    type                go to state 46
+    function            go to state 47
+    function_prototype  go to state 48
+
+
+state 229
+
+    1 stmts: stmts . stmt
+  101 case_stmt: CASE value COLON stmts .
+
+    INT         shift, and go to state 1
+    FLOAT       shift, and go to state 2
+    CHAR        shift, and go to state 3
+    BOOL        shift, and go to state 4
+    STRING      shift, and go to state 5
+    IDENTIFIER  shift, and go to state 6
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    CONST       shift, and go to state 11
+    LBRACE      shift, and go to state 12
+    LPAREN      shift, and go to state 13
+    BREAK       shift, and go to state 14
+    CONTINUE    shift, and go to state 15
+    WHILE       shift, and go to state 16
+    FOR         shift, and go to state 17
+    SWITCH      shift, and go to state 18
+    IF          shift, and go to state 19
+    REPEAT      shift, and go to state 20
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+    VOID        shift, and go to state 23
+    RETURN      shift, and go to state 24
+    PRINT       shift, and go to state 25
+
+    $default  reduce using rule 101 (case_stmt)
+
+    stmt                go to state 82
+    expr                go to state 28
+    bool_expr           go to state 29
+    arithmetic_expr     go to state 30
+    unary_expr          go to state 31
+    binary_expr         go to state 32
+    term                go to state 33
+    negat               go to state 34
+    para                go to state 35
+    factor              go to state 36
+    function_call       go to state 37
+    const_dec_stmt      go to state 38
+    var_dec_stmt        go to state 39
+    assign_stmt         go to state 40
+    while_stmt          go to state 41
+    if_stmt             go to state 42
+    repeat_until_stmt   go to state 43
+    for_stmt            go to state 44
+    switch_stmt         go to state 45
+    type                go to state 46
+    function            go to state 47
+    function_prototype  go to state 48
+
+
+state 230
+
+   83 if_stmt: IF LPAREN expr $@5 RPAREN LBRACE $@6 stmts RBRACE $@7 . if_expression_stmt
+
+    ELSE  shift, and go to state 234
+
+    $default  reduce using rule 86 (if_expression_stmt)
+
+    if_expression_stmt  go to state 235
+
+
+state 231
+
+   90 repeat_until_stmt: REPEAT LBRACE $@9 stmts RBRACE $@10 UNTIL LPAREN expr $@11 . RPAREN SEMICOLON
+
+    RPAREN  shift, and go to state 236
+
+
+state 232
+
+    1 stmts: stmts . stmt
+   94 for_expression_stmt: LPAREN var_dec_stmt expr $@13 SEMICOLON expr RPAREN LBRACE stmts . RBRACE
+
+    INT         shift, and go to state 1
+    FLOAT       shift, and go to state 2
+    CHAR        shift, and go to state 3
+    BOOL        shift, and go to state 4
+    STRING      shift, and go to state 5
+    IDENTIFIER  shift, and go to state 6
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    CONST       shift, and go to state 11
+    LBRACE      shift, and go to state 12
+    RBRACE      shift, and go to state 237
+    LPAREN      shift, and go to state 13
+    BREAK       shift, and go to state 14
+    CONTINUE    shift, and go to state 15
+    WHILE       shift, and go to state 16
+    FOR         shift, and go to state 17
+    SWITCH      shift, and go to state 18
+    IF          shift, and go to state 19
+    REPEAT      shift, and go to state 20
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+    VOID        shift, and go to state 23
+    RETURN      shift, and go to state 24
+    PRINT       shift, and go to state 25
+
+    stmt                go to state 82
+    expr                go to state 28
+    bool_expr           go to state 29
+    arithmetic_expr     go to state 30
+    unary_expr          go to state 31
+    binary_expr         go to state 32
+    term                go to state 33
+    negat               go to state 34
+    para                go to state 35
+    factor              go to state 36
+    function_call       go to state 37
+    const_dec_stmt      go to state 38
+    var_dec_stmt        go to state 39
+    assign_stmt         go to state 40
+    while_stmt          go to state 41
+    if_stmt             go to state 42
+    repeat_until_stmt   go to state 43
+    for_stmt            go to state 44
+    switch_stmt         go to state 45
+    type                go to state 46
+    function            go to state 47
+    function_prototype  go to state 48
+
+
+state 233
+
+    1 stmts: stmts . stmt
+   96 for_expression_stmt: LPAREN assign_stmt expr $@14 SEMICOLON expr RPAREN LBRACE stmts . RBRACE
+
+    INT         shift, and go to state 1
+    FLOAT       shift, and go to state 2
+    CHAR        shift, and go to state 3
+    BOOL        shift, and go to state 4
+    STRING      shift, and go to state 5
+    IDENTIFIER  shift, and go to state 6
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    CONST       shift, and go to state 11
+    LBRACE      shift, and go to state 12
+    RBRACE      shift, and go to state 238
+    LPAREN      shift, and go to state 13
+    BREAK       shift, and go to state 14
+    CONTINUE    shift, and go to state 15
+    WHILE       shift, and go to state 16
+    FOR         shift, and go to state 17
+    SWITCH      shift, and go to state 18
+    IF          shift, and go to state 19
+    REPEAT      shift, and go to state 20
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+    VOID        shift, and go to state 23
+    RETURN      shift, and go to state 24
+    PRINT       shift, and go to state 25
+
+    stmt                go to state 82
+    expr                go to state 28
+    bool_expr           go to state 29
+    arithmetic_expr     go to state 30
+    unary_expr          go to state 31
+    binary_expr         go to state 32
+    term                go to state 33
+    negat               go to state 34
+    para                go to state 35
+    factor              go to state 36
+    function_call       go to state 37
+    const_dec_stmt      go to state 38
+    var_dec_stmt        go to state 39
+    assign_stmt         go to state 40
+    while_stmt          go to state 41
+    if_stmt             go to state 42
+    repeat_until_stmt   go to state 43
+    for_stmt            go to state 44
+    switch_stmt         go to state 45
+    type                go to state 46
+    function            go to state 47
+    function_prototype  go to state 48
+
+
+state 234
+
+   85 if_expression_stmt: ELSE . LBRACE $@8 stmts RBRACE
+
+    LBRACE  shift, and go to state 239
 
 
 state 235
 
-   95 for_stmt: FOR $@15 LPAREN var_dec_stmt expr $@16 SEMICOLON expr RPAREN LBRACE . stmts RBRACE
+   83 if_stmt: IF LPAREN expr $@5 RPAREN LBRACE $@6 stmts RBRACE $@7 if_expression_stmt .
 
-    INT         shift, and go to state 1
-    FLOAT       shift, and go to state 2
-    CHAR        shift, and go to state 3
-    BOOL        shift, and go to state 4
-    STRING      shift, and go to state 5
-    IDENTIFIER  shift, and go to state 6
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    CONST       shift, and go to state 11
-    LBRACE      shift, and go to state 12
-    LPAREN      shift, and go to state 13
-    BREAK       shift, and go to state 14
-    CONTINUE    shift, and go to state 15
-    WHILE       shift, and go to state 16
-    FOR         shift, and go to state 17
-    SWITCH      shift, and go to state 18
-    IF          shift, and go to state 19
-    REPEAT      shift, and go to state 20
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-    VOID        shift, and go to state 23
-    RETURN      shift, and go to state 24
-    PRINT       shift, and go to state 25
-
-    stmts               go to state 240
-    stmt                go to state 27
-    expr                go to state 28
-    bool_expr           go to state 29
-    arithmetic_expr     go to state 30
-    unary_expr          go to state 31
-    binary_expr         go to state 32
-    term                go to state 33
-    negat               go to state 34
-    para                go to state 35
-    factor              go to state 36
-    function_call       go to state 37
-    const_dec_stmt      go to state 38
-    var_dec_stmt        go to state 39
-    assign_stmt         go to state 40
-    while_stmt          go to state 41
-    if_stmt             go to state 42
-    repeat_until_stmt   go to state 43
-    for_stmt            go to state 44
-    switch_stmt         go to state 45
-    type                go to state 46
-    function            go to state 47
-    function_prototype  go to state 48
+    $default  reduce using rule 83 (if_stmt)
 
 
 state 236
 
-   98 for_stmt: FOR $@17 LPAREN assign_stmt expr $@18 SEMICOLON expr RPAREN LBRACE . stmts RBRACE
+   90 repeat_until_stmt: REPEAT LBRACE $@9 stmts RBRACE $@10 UNTIL LPAREN expr $@11 RPAREN . SEMICOLON
 
-    INT         shift, and go to state 1
-    FLOAT       shift, and go to state 2
-    CHAR        shift, and go to state 3
-    BOOL        shift, and go to state 4
-    STRING      shift, and go to state 5
-    IDENTIFIER  shift, and go to state 6
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    CONST       shift, and go to state 11
-    LBRACE      shift, and go to state 12
-    LPAREN      shift, and go to state 13
-    BREAK       shift, and go to state 14
-    CONTINUE    shift, and go to state 15
-    WHILE       shift, and go to state 16
-    FOR         shift, and go to state 17
-    SWITCH      shift, and go to state 18
-    IF          shift, and go to state 19
-    REPEAT      shift, and go to state 20
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-    VOID        shift, and go to state 23
-    RETURN      shift, and go to state 24
-    PRINT       shift, and go to state 25
-
-    stmts               go to state 241
-    stmt                go to state 27
-    expr                go to state 28
-    bool_expr           go to state 29
-    arithmetic_expr     go to state 30
-    unary_expr          go to state 31
-    binary_expr         go to state 32
-    term                go to state 33
-    negat               go to state 34
-    para                go to state 35
-    factor              go to state 36
-    function_call       go to state 37
-    const_dec_stmt      go to state 38
-    var_dec_stmt        go to state 39
-    assign_stmt         go to state 40
-    while_stmt          go to state 41
-    if_stmt             go to state 42
-    repeat_until_stmt   go to state 43
-    for_stmt            go to state 44
-    switch_stmt         go to state 45
-    type                go to state 46
-    function            go to state 47
-    function_prototype  go to state 48
+    SEMICOLON  shift, and go to state 240
 
 
 state 237
 
-    1 stmts: stmts . stmt
-  103 case_stmt: CASE value COLON stmts .
+   94 for_expression_stmt: LPAREN var_dec_stmt expr $@13 SEMICOLON expr RPAREN LBRACE stmts RBRACE .
 
-    INT         shift, and go to state 1
-    FLOAT       shift, and go to state 2
-    CHAR        shift, and go to state 3
-    BOOL        shift, and go to state 4
-    STRING      shift, and go to state 5
-    IDENTIFIER  shift, and go to state 6
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    CONST       shift, and go to state 11
-    LBRACE      shift, and go to state 12
-    LPAREN      shift, and go to state 13
-    BREAK       shift, and go to state 14
-    CONTINUE    shift, and go to state 15
-    WHILE       shift, and go to state 16
-    FOR         shift, and go to state 17
-    SWITCH      shift, and go to state 18
-    IF          shift, and go to state 19
-    REPEAT      shift, and go to state 20
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-    VOID        shift, and go to state 23
-    RETURN      shift, and go to state 24
-    PRINT       shift, and go to state 25
-
-    $default  reduce using rule 103 (case_stmt)
-
-    stmt                go to state 83
-    expr                go to state 28
-    bool_expr           go to state 29
-    arithmetic_expr     go to state 30
-    unary_expr          go to state 31
-    binary_expr         go to state 32
-    term                go to state 33
-    negat               go to state 34
-    para                go to state 35
-    factor              go to state 36
-    function_call       go to state 37
-    const_dec_stmt      go to state 38
-    var_dec_stmt        go to state 39
-    assign_stmt         go to state 40
-    while_stmt          go to state 41
-    if_stmt             go to state 42
-    repeat_until_stmt   go to state 43
-    for_stmt            go to state 44
-    switch_stmt         go to state 45
-    type                go to state 46
-    function            go to state 47
-    function_prototype  go to state 48
+    $default  reduce using rule 94 (for_expression_stmt)
 
 
 state 238
 
-   88 if_stmt: IF LPAREN expr $@8 RPAREN LBRACE $@9 stmts RBRACE $@10 . ELSE LBRACE $@11 stmts RBRACE
+   96 for_expression_stmt: LPAREN assign_stmt expr $@14 SEMICOLON expr RPAREN LBRACE stmts RBRACE .
 
-    ELSE  shift, and go to state 242
+    $default  reduce using rule 96 (for_expression_stmt)
 
 
 state 239
 
-   92 repeat_until_stmt: REPEAT LBRACE $@12 stmts RBRACE $@13 UNTIL LPAREN expr $@14 . RPAREN SEMICOLON
+   85 if_expression_stmt: ELSE LBRACE . $@8 stmts RBRACE
 
-    RPAREN  shift, and go to state 243
+    $default  reduce using rule 84 ($@8)
+
+    $@8  go to state 241
 
 
 state 240
 
-    1 stmts: stmts . stmt
-   95 for_stmt: FOR $@15 LPAREN var_dec_stmt expr $@16 SEMICOLON expr RPAREN LBRACE stmts . RBRACE
+   90 repeat_until_stmt: REPEAT LBRACE $@9 stmts RBRACE $@10 UNTIL LPAREN expr $@11 RPAREN SEMICOLON .
 
-    INT         shift, and go to state 1
-    FLOAT       shift, and go to state 2
-    CHAR        shift, and go to state 3
-    BOOL        shift, and go to state 4
-    STRING      shift, and go to state 5
-    IDENTIFIER  shift, and go to state 6
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    CONST       shift, and go to state 11
-    LBRACE      shift, and go to state 12
-    RBRACE      shift, and go to state 244
-    LPAREN      shift, and go to state 13
-    BREAK       shift, and go to state 14
-    CONTINUE    shift, and go to state 15
-    WHILE       shift, and go to state 16
-    FOR         shift, and go to state 17
-    SWITCH      shift, and go to state 18
-    IF          shift, and go to state 19
-    REPEAT      shift, and go to state 20
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-    VOID        shift, and go to state 23
-    RETURN      shift, and go to state 24
-    PRINT       shift, and go to state 25
-
-    stmt                go to state 83
-    expr                go to state 28
-    bool_expr           go to state 29
-    arithmetic_expr     go to state 30
-    unary_expr          go to state 31
-    binary_expr         go to state 32
-    term                go to state 33
-    negat               go to state 34
-    para                go to state 35
-    factor              go to state 36
-    function_call       go to state 37
-    const_dec_stmt      go to state 38
-    var_dec_stmt        go to state 39
-    assign_stmt         go to state 40
-    while_stmt          go to state 41
-    if_stmt             go to state 42
-    repeat_until_stmt   go to state 43
-    for_stmt            go to state 44
-    switch_stmt         go to state 45
-    type                go to state 46
-    function            go to state 47
-    function_prototype  go to state 48
+    $default  reduce using rule 90 (repeat_until_stmt)
 
 
 state 241
 
-    1 stmts: stmts . stmt
-   98 for_stmt: FOR $@17 LPAREN assign_stmt expr $@18 SEMICOLON expr RPAREN LBRACE stmts . RBRACE
+   85 if_expression_stmt: ELSE LBRACE $@8 . stmts RBRACE
 
     INT         shift, and go to state 1
     FLOAT       shift, and go to state 2
@@ -4120,7 +4048,6 @@ state 241
     FALSE_VAL   shift, and go to state 10
     CONST       shift, and go to state 11
     LBRACE      shift, and go to state 12
-    RBRACE      shift, and go to state 245
     LPAREN      shift, and go to state 13
     BREAK       shift, and go to state 14
     CONTINUE    shift, and go to state 15
@@ -4135,7 +4062,8 @@ state 241
     RETURN      shift, and go to state 24
     PRINT       shift, and go to state 25
 
-    stmt                go to state 83
+    stmts               go to state 242
+    stmt                go to state 27
     expr                go to state 28
     bool_expr           go to state 29
     arithmetic_expr     go to state 30
@@ -4161,161 +4089,62 @@ state 241
 
 state 242
 
-   88 if_stmt: IF LPAREN expr $@8 RPAREN LBRACE $@9 stmts RBRACE $@10 ELSE . LBRACE $@11 stmts RBRACE
+    1 stmts: stmts . stmt
+   85 if_expression_stmt: ELSE LBRACE $@8 stmts . RBRACE
 
-    LBRACE  shift, and go to state 246
+    INT         shift, and go to state 1
+    FLOAT       shift, and go to state 2
+    CHAR        shift, and go to state 3
+    BOOL        shift, and go to state 4
+    STRING      shift, and go to state 5
+    IDENTIFIER  shift, and go to state 6
+    INT_VAL     shift, and go to state 7
+    FLOAT_VAL   shift, and go to state 8
+    TRUE_VAL    shift, and go to state 9
+    FALSE_VAL   shift, and go to state 10
+    CONST       shift, and go to state 11
+    LBRACE      shift, and go to state 12
+    RBRACE      shift, and go to state 243
+    LPAREN      shift, and go to state 13
+    BREAK       shift, and go to state 14
+    CONTINUE    shift, and go to state 15
+    WHILE       shift, and go to state 16
+    FOR         shift, and go to state 17
+    SWITCH      shift, and go to state 18
+    IF          shift, and go to state 19
+    REPEAT      shift, and go to state 20
+    MINUS       shift, and go to state 21
+    NOT         shift, and go to state 22
+    VOID        shift, and go to state 23
+    RETURN      shift, and go to state 24
+    PRINT       shift, and go to state 25
+
+    stmt                go to state 82
+    expr                go to state 28
+    bool_expr           go to state 29
+    arithmetic_expr     go to state 30
+    unary_expr          go to state 31
+    binary_expr         go to state 32
+    term                go to state 33
+    negat               go to state 34
+    para                go to state 35
+    factor              go to state 36
+    function_call       go to state 37
+    const_dec_stmt      go to state 38
+    var_dec_stmt        go to state 39
+    assign_stmt         go to state 40
+    while_stmt          go to state 41
+    if_stmt             go to state 42
+    repeat_until_stmt   go to state 43
+    for_stmt            go to state 44
+    switch_stmt         go to state 45
+    type                go to state 46
+    function            go to state 47
+    function_prototype  go to state 48
 
 
 state 243
 
-   92 repeat_until_stmt: REPEAT LBRACE $@12 stmts RBRACE $@13 UNTIL LPAREN expr $@14 RPAREN . SEMICOLON
+   85 if_expression_stmt: ELSE LBRACE $@8 stmts RBRACE .
 
-    SEMICOLON  shift, and go to state 247
-
-
-state 244
-
-   95 for_stmt: FOR $@15 LPAREN var_dec_stmt expr $@16 SEMICOLON expr RPAREN LBRACE stmts RBRACE .
-
-    $default  reduce using rule 95 (for_stmt)
-
-
-state 245
-
-   98 for_stmt: FOR $@17 LPAREN assign_stmt expr $@18 SEMICOLON expr RPAREN LBRACE stmts RBRACE .
-
-    $default  reduce using rule 98 (for_stmt)
-
-
-state 246
-
-   88 if_stmt: IF LPAREN expr $@8 RPAREN LBRACE $@9 stmts RBRACE $@10 ELSE LBRACE . $@11 stmts RBRACE
-
-    $default  reduce using rule 87 ($@11)
-
-    $@11  go to state 248
-
-
-state 247
-
-   92 repeat_until_stmt: REPEAT LBRACE $@12 stmts RBRACE $@13 UNTIL LPAREN expr $@14 RPAREN SEMICOLON .
-
-    $default  reduce using rule 92 (repeat_until_stmt)
-
-
-state 248
-
-   88 if_stmt: IF LPAREN expr $@8 RPAREN LBRACE $@9 stmts RBRACE $@10 ELSE LBRACE $@11 . stmts RBRACE
-
-    INT         shift, and go to state 1
-    FLOAT       shift, and go to state 2
-    CHAR        shift, and go to state 3
-    BOOL        shift, and go to state 4
-    STRING      shift, and go to state 5
-    IDENTIFIER  shift, and go to state 6
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    CONST       shift, and go to state 11
-    LBRACE      shift, and go to state 12
-    LPAREN      shift, and go to state 13
-    BREAK       shift, and go to state 14
-    CONTINUE    shift, and go to state 15
-    WHILE       shift, and go to state 16
-    FOR         shift, and go to state 17
-    SWITCH      shift, and go to state 18
-    IF          shift, and go to state 19
-    REPEAT      shift, and go to state 20
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-    VOID        shift, and go to state 23
-    RETURN      shift, and go to state 24
-    PRINT       shift, and go to state 25
-
-    stmts               go to state 249
-    stmt                go to state 27
-    expr                go to state 28
-    bool_expr           go to state 29
-    arithmetic_expr     go to state 30
-    unary_expr          go to state 31
-    binary_expr         go to state 32
-    term                go to state 33
-    negat               go to state 34
-    para                go to state 35
-    factor              go to state 36
-    function_call       go to state 37
-    const_dec_stmt      go to state 38
-    var_dec_stmt        go to state 39
-    assign_stmt         go to state 40
-    while_stmt          go to state 41
-    if_stmt             go to state 42
-    repeat_until_stmt   go to state 43
-    for_stmt            go to state 44
-    switch_stmt         go to state 45
-    type                go to state 46
-    function            go to state 47
-    function_prototype  go to state 48
-
-
-state 249
-
-    1 stmts: stmts . stmt
-   88 if_stmt: IF LPAREN expr $@8 RPAREN LBRACE $@9 stmts RBRACE $@10 ELSE LBRACE $@11 stmts . RBRACE
-
-    INT         shift, and go to state 1
-    FLOAT       shift, and go to state 2
-    CHAR        shift, and go to state 3
-    BOOL        shift, and go to state 4
-    STRING      shift, and go to state 5
-    IDENTIFIER  shift, and go to state 6
-    INT_VAL     shift, and go to state 7
-    FLOAT_VAL   shift, and go to state 8
-    TRUE_VAL    shift, and go to state 9
-    FALSE_VAL   shift, and go to state 10
-    CONST       shift, and go to state 11
-    LBRACE      shift, and go to state 12
-    RBRACE      shift, and go to state 250
-    LPAREN      shift, and go to state 13
-    BREAK       shift, and go to state 14
-    CONTINUE    shift, and go to state 15
-    WHILE       shift, and go to state 16
-    FOR         shift, and go to state 17
-    SWITCH      shift, and go to state 18
-    IF          shift, and go to state 19
-    REPEAT      shift, and go to state 20
-    MINUS       shift, and go to state 21
-    NOT         shift, and go to state 22
-    VOID        shift, and go to state 23
-    RETURN      shift, and go to state 24
-    PRINT       shift, and go to state 25
-
-    stmt                go to state 83
-    expr                go to state 28
-    bool_expr           go to state 29
-    arithmetic_expr     go to state 30
-    unary_expr          go to state 31
-    binary_expr         go to state 32
-    term                go to state 33
-    negat               go to state 34
-    para                go to state 35
-    factor              go to state 36
-    function_call       go to state 37
-    const_dec_stmt      go to state 38
-    var_dec_stmt        go to state 39
-    assign_stmt         go to state 40
-    while_stmt          go to state 41
-    if_stmt             go to state 42
-    repeat_until_stmt   go to state 43
-    for_stmt            go to state 44
-    switch_stmt         go to state 45
-    type                go to state 46
-    function            go to state 47
-    function_prototype  go to state 48
-
-
-state 250
-
-   88 if_stmt: IF LPAREN expr $@8 RPAREN LBRACE $@9 stmts RBRACE $@10 ELSE LBRACE $@11 stmts RBRACE .
-
-    $default  reduce using rule 88 (if_stmt)
+    $default  reduce using rule 85 (if_expression_stmt)

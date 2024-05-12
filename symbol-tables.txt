@@ -1,0 +1,13 @@
+<<<<<<< HEAD
+=======
+Identifier       Level        Kind        Type             Value
+----------       -----        ----        ----              ----
+cc                 0           VAR       CHAR_TYPE              '
+v                 0           VAR        INT_TYPE              0
+k                 0           VAR      FLOAT_TYPE              5
+f                 0           VAR        INT_TYPE            -21
+y                 0           VAR        INT_TYPE              3
+iam                 0      CONSTANT        INT_TYPE              5
+x                 0           VAR        INT_TYPE            -98
+
+>>>>>>> bdb468d3cc7cbea392b43de2762017ea01eee678

@@ -1,0 +1,6 @@
+<<<<<<< HEAD
+=======
+Warning: cc is declared but not used
+Warning: f is declared but not used
+Warning: iam is declared but not used
+>>>>>>> bdb468d3cc7cbea392b43de2762017ea01eee678
