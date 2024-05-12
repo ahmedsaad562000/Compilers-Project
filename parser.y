@@ -538,9 +538,7 @@ factor:
         | function_call         {printf("FUNCTION_CALL\n");}
         | IDENTIFIER            {
                 SymbolTableEntry* entry = getIdEntry($1);
-                if(idExistsInAnEnum(rootSymbolTable,$1))
-                        return 0;
-                        
+             
                 if(entry == NULL){
                         printSemanticError("Variable not declared",lineno);
                         return 0;
@@ -562,7 +560,31 @@ factor:
 
 /* function call */
 function_call:
-        IDENTIFIER LPAREN RPAREN   // no params
+        IDENTIFIER LPAREN {
+                SymbolTableEntry* entry = getIdEntry($1);
+                if(entry == NULL){
+                        printSemanticError("Function not declared",lineno);
+                        return 0;
+                }
+                if(*entry->getKind() != FUNC)
+                {
+                        printSemanticError("Cannot call a non function type",lineno);
+                        return 0;
+                }
+                entry->setIsUsed(true);
+                convertFunctionParamsToStack(entry);
+        } RPAREN 
+        {
+                SymbolTableEntry* entry = getIdEntry($1);
+                $$.type = (int)entry->getFunctionOutputType();
+                $$.stringRep = $1;
+                $$.intVal = entry->getLexemeEntry()->intVal;
+                $$.floatVal = entry->getLexemeEntry()->floatVal;
+                $$.stringVal = entry->getLexemeEntry()->stringVal;
+                $$.boolVal = entry->getLexemeEntry()->boolVal;
+                $$.charVal = entry->getLexemeEntry()->charVal;
+                printf("%s \n" , "Function called successfully");
+        }   // no params
         | IDENTIFIER LPAREN {
                 SymbolTableEntry* entry = getIdEntry($1);
                 if(entry == NULL){
@@ -738,44 +760,7 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                 }
                 
                 
-                if(entry->getLexemeEntry()->type == ENUM_TYPE)
-                {     
-                        SymbolTableEntry* pointerToEnum = entry->getPointerToEnum();
-                        SymbolTableEntry* targetEnum = getIdEntry($3.stringRep);
-
-                if(pointerToEnum  == NULL )
-                {       
-                        printSemanticError("Undeclared ENUM TYPE",lineno);
-                        return 0;
-                }
-                if(targetEnum == NULL)
-                               { printSemanticError("Enumerator cannot be assigned this value",lineno);}
-
-
-                if(idExistsInEnum(pointerToEnum,$3.stringRep) == true || (targetEnum !=NULL && targetEnum->getLexemeEntry()->type == ENUM_TYPE && targetEnum->getIsInitialized() == true))
-                        {
-                                pointerToEnum->setIsUsed(true);
-
-                                entry->setIsInitialized(true);
-
-                                if(targetEnum != NULL)
-                                        entry->getLexemeEntry()->stringVal = targetEnum->getLexemeEntry()->stringVal;
-                                else
-                                        entry->getLexemeEntry()->stringVal = $3.stringRep;
-                        }
-                        else
-                        {
-                         if(targetEnum->getLexemeEntry()->type != ENUM_TYPE)
-                                printSemanticError("Type mismatch",lineno);
-                        else if (targetEnum->getIsInitialized() == false)
-                                printSemanticError("Use of Uninitialized Identifier",lineno);
-                        else if(idExistsInEnum(pointerToEnum,$3.stringRep) == false)
-                                printSemanticError("Enumerator does not contain this value",lineno);
-                        }
-
-                        return 0;
-                }
-             
+                
                 if(*entry->getKind() != VAR)
                 {
                         printSemanticError("Cannot assign value to a non variable type",lineno);
