@@ -10,7 +10,7 @@ x+=1;
 v=v/k;
 int ff = 4.5 / 2;
 ff += 5.5;
-void megz_function(int w = 99){
+void megz_function(int w){
     int x = w;
 }
 

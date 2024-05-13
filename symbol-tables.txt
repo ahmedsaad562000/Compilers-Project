@@ -13,7 +13,7 @@ k                 0           VAR      FLOAT_TYPE              5
 
     Identifier       Level        Kind        Type             Value
     ----------       -----        ----        ----              ----
-    x                 1           VAR        INT_TYPE             99
+    x                 1           VAR        INT_TYPE              0
     w                 1         PARAM        INT_TYPE
 
     Identifier       Level        Kind        Type             Value
