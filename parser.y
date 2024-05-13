@@ -818,7 +818,6 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                         printSemanticError("Variable not initialized",lineno);
                         return 0;
                 }
-                if ($3.floatVal == 0.0) printSemanticError("Division by zero", lineno), 0;
                 int type1 = (int)entry->getLexemeEntry()->type;
                 int type2 = $3.type;
                 if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
@@ -841,6 +840,8 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                         {       if ($3.intVal == 0) printSemanticError("Division by zero", lineno), 0;
                                 entry->getLexemeEntry()->intVal = entry->getLexemeEntry()->intVal / $3.intVal ;
                         }else{
+                                if ($3.floatVal == 0.0) printSemanticError("Division by zero", lineno), 0;
+
                                 entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal / $3.floatVal ;
                         }
                 }
