@@ -8,4 +8,40 @@ const int iam= 5;
 x=-99;
 x+=1;
 v=v/k;
+int ff = 4.5 / 2;
+ff += 5.5;
+void megz_function(int w = 99){
+    int x = w;
+}
 
+megz_function(99);
+
+
+int w = 100;
+while(v > 0)
+{
+    w++;
+}
+if(x > 3)
+{
+    w++;
+}
+
+repeat {
+    w--;
+}until(w > 10);
+
+for(int i = 0; i < 5; i++)
+{
+    w++;
+}
+
+switch(w)
+{
+    case 0:
+        int x = 10;
+        break;
+    default:
+        int y = 10;
+        break;
+}
