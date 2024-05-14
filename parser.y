@@ -1,8 +1,11 @@
 %{
     #include <stdio.h>
+    #include <math.h>
     #include <stdlib.h>
     #include <stdarg.h>
     #include "./SemanticAnalysis/SemanticAnalysis.cpp"
+    #include "./CodeGen/CodeGenerator.cpp"
+    
     extern FILE *yyin;
     extern int lineno; /* Line Number tacker from lexer */
     extern int yylex();
@@ -202,8 +205,8 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                 $$.stringRep = getCurrentCount();
                 LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                 LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
-                $$.boolVal = checkEQ_EQ(lex1,lex2);     
-    
+                $$.boolVal = checkEQ_EQ(lex1,lex2);
+                addQuad("==" , $$.stringRep, $1.stringRep ,$3.stringRep );
                 }
     
     }
@@ -219,6 +222,8 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkNE(lex1,lex2);
+                        addQuad("!=" , $$.stringRep, $1.stringRep ,$3.stringRep );
+
                 }
         }                   
     | expr GREATER arithmetic_expr              /* > */
@@ -234,6 +239,8 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkGT(lex1,lex2);
+                        addQuad(">" , $$.stringRep, $1.stringRep ,$3.stringRep );
+
                 }
         }
     | expr LESS arithmetic_expr                 /* < */
@@ -249,6 +256,8 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkLT(lex1,lex2);
+                        addQuad("<" , $$.stringRep, $1.stringRep ,$3.stringRep );
+
                 }
         }
     | expr GE arithmetic_expr                   /* >= */
@@ -264,6 +273,8 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkGE(lex1,lex2);
+                        addQuad(">=" , $$.stringRep, $1.stringRep ,$3.stringRep );
+
                 }
         }
     | expr LE arithmetic_expr                   /* <= */
@@ -279,6 +290,8 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkLE(lex1,lex2);
+                        addQuad("<=" , $$.stringRep, $1.stringRep ,$3.stringRep );
+
                 }
         }
     | expr AND expr                             /* && */
@@ -292,6 +305,7 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         $$.type = BOOL_TYPE;
                         $$.stringRep = getCurrentCount();
                         $$.boolVal = $1.boolVal && $3.boolVal;
+                        addQuad("AND" , $$.stringRep, $1.stringRep ,$3.stringRep );
                 }
     }
     | expr OR expr                              /* || */
@@ -305,6 +319,7 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         $$.type = BOOL_TYPE;
                         $$.stringRep = getCurrentCount();
                         $$.boolVal = $1.boolVal || $3.boolVal;
+                        addQuad("OR" , $$.stringRep, $1.stringRep ,$3.stringRep );
                 }
         } 
     | NOT expr
@@ -317,6 +332,7 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         $$.type = BOOL_TYPE;
                         $$.stringRep = getCurrentCount();
                         $$.boolVal = !$2.boolVal;
+                        addQuad("NOT" , $$.stringRep, $2.stringRep , "");
                   
                 }
         }
@@ -335,7 +351,6 @@ arithmetic_expr:binary_expr
 
 unary_expr: IDENTIFIER INC
         {
-                printf("HELLO \n");
                 SymbolTableEntry* entry = getIdEntry($1);
                 printf("%d \n" , (entry->getLexemeEntry()->intVal));
                 if(entry == NULL){
@@ -369,6 +384,7 @@ unary_expr: IDENTIFIER INC
                                 entry->getLexemeEntry()->floatVal = $$.floatVal;
                                 printf("%d \n" , (entry->getLexemeEntry()->intVal));
                         }
+                        addQuad("INC" , $$.stringRep, $1 , "");
                     
                 }
         }
@@ -403,6 +419,8 @@ unary_expr: IDENTIFIER INC
                                 $$.floatVal = entry->getLexemeEntry()->floatVal - 1;
                                 entry->getLexemeEntry()->floatVal = $$.floatVal;
                         }
+                        addQuad("DEC" , $$.stringRep, $1 , "");
+
                     
                 }
         }
@@ -439,6 +457,7 @@ binary_expr: term
                                 $$.type = INT_TYPE;
                                 $$.intVal = $1.intVal + $3.intVal;
                         }
+                        addQuad("ADD" , $$.stringRep, $1.stringRep , $3.stringRep );
                 
                 }
         } 
@@ -473,6 +492,7 @@ binary_expr: term
                                 $$.type = INT_TYPE;
                                 $$.intVal = $1.intVal - $3.intVal;
                         }
+                        addQuad("SUB" , $$.stringRep, $1.stringRep , $3.stringRep );
                 
                 }
         } 
@@ -508,6 +528,8 @@ term: negat
                                 $$.type = INT_TYPE;
                                 $$.intVal = $1.intVal * $3.intVal;
                         }
+
+                        addQuad("MUL" , $$.stringRep, $1.stringRep , $3.stringRep );
                 }
         } 
     | term DIV factor           
@@ -544,6 +566,7 @@ term: negat
                                 $$.type = INT_TYPE;
                                 $$.intVal = $1.intVal / $3.intVal;
                         }
+                        addQuad("DIV" , $$.stringRep, $1.stringRep , $3.stringRep );
                 }
         } 
     | term MOD factor      
@@ -559,27 +582,79 @@ term: negat
                 else{
                         $$.stringRep = getCurrentCount();
                         $$.type = INT_TYPE;
-                        $$.intVal = $1.intVal % $3.intVal;  
+                        $$.intVal = $1.intVal % $3.intVal;
+                        addQuad("MOD" , $$.stringRep, $1.stringRep , $3.stringRep );  
                 }
         }      
     ;
 negat: para
-     | MINUS para %prec UMINUS    {$$.type = $2.type;
-        if ($2.type == FLOAT_TYPE)
-                $$.floatVal = -$2.floatVal;
-        else
-                $$.intVal = -$2.intVal;
+     | MINUS para %prec UMINUS    {
+
+                
+                if ($2.type == FLOAT_TYPE)
+                {
+                        $$.stringRep = getCurrentCount();
+                        $$.type = $2.type;
+                        $$.floatVal = -$2.floatVal;
+                        addQuad("NEG" , $$.stringRep, $2.stringRep , "" );
+                }
+                else if ($2.type == INT_TYPE)
+                {
+                        $$.stringRep = getCurrentCount();
+                        $$.type = $2.type;
+                        $$.intVal = -$2.intVal;
+                        addQuad("NEG" , $$.stringRep, $2.stringRep , "");
+                }
+                else
+                {
+                        printSemanticError("Negation Operation should be on integer or float type",lineno);
+                }  
       }
 
 para: factor
         | LPAREN binary_expr RPAREN   {$$ = $2;}
-        
+        | para EXP para {
+                
+                int type1 = $1.type;
+                int type2 = $3.type;
+                
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Power operation must be between 2 numbers",lineno);
+                }else{
+                        $$.stringRep = getCurrentCount();
+                        if(type1 == FLOAT_TYPE && type2 == FLOAT_TYPE)
+                        {
+
+                                $$.type = FLOAT_TYPE;
+                                $$.floatVal = pow($1.floatVal, $3.floatVal);
+                        }
+                        else if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
+
+                                $$.type = FLOAT_TYPE;
+                                $$.floatVal = pow($1.intVal, $3.floatVal);
+                        }
+                        else if(type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
+
+                                $$.type = FLOAT_TYPE;
+                                $$.floatVal = pow($1.floatVal, $3.intVal);
+                        }
+                        else{
+
+                                $$.type = INT_TYPE;
+                                $$.intVal = pow($1.intVal, $3.intVal);
+                        }
+                        addQuad("POW" , $$.stringRep, $1.stringRep , $3.stringRep );
+                }
+
+        }
         ;
 
 factor: 
-        INT_VAL                 {$$.type = INT_TYPE;printf("INT_VAL_ASD\n");}
-        | FLOAT_VAL             {$$.type = FLOAT_TYPE;printf("INT_VAL_ASD\n");}        
-        | factor EXP factor     {printf("EXP\n");}
+        INT_VAL                 /*{$$.type = INT_TYPE;printf("INT_VAL_ASD\n");}*/
+        | FLOAT_VAL             /*{$$.type = FLOAT_TYPE;printf("FLOAT_VAL_ASD\n");}*/        
         | function_call         {printf("FUNCTION_CALL\n");}
         | IDENTIFIER            {
                 SymbolTableEntry* entry = getIdEntry($1);
@@ -741,6 +816,7 @@ const_dec_stmt:
                                 lexeme->charVal = $5.charVal;
                         }
                         addEntryToTable($3,lexeme,CONSTANT,true);
+                        addQuad("=" , $3, $5.stringRep , "");
                 }    
         }
         ;
@@ -791,6 +867,7 @@ var_dec_stmt:
                                 lexeme->charVal = $4.charVal;
                         }
                         addEntryToTable($2,lexeme,VAR,true);
+                        addQuad("=" , $2, $4.stringRep , "");
                 }
         }
         ;
@@ -960,6 +1037,7 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                         }else{
                                 entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal + $3.floatVal ;
                         }
+                        addQuad("+", $1, $1, $3.stringRep );
                 }
         } 
         

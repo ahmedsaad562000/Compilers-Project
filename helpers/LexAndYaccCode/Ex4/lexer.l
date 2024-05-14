@@ -171,5 +171,6 @@ int yywrap(void)
 /* This is called by our parser whenever there is a syntactical error. In other words something that does not suit the grammar. */
 void yyerror (string s) {
     printSyntaxError(s,yylineno);
+    
     exit(0);
 } 

@@ -58,6 +58,14 @@
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
     "new": "cpp",
-    "fstream": "cpp"
+    "fstream": "cpp",
+    "unordered_map": "cpp",
+    "xstring": "cpp",
+    "stack": "cpp",
+    "string": "cpp",
+    "xlocale": "cpp",
+    "xlocinfo": "cpp",
+    "quad.h": "c",
+    "iostream": "cpp"
   }
 }

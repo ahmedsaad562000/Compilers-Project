@@ -71,9 +71,12 @@
 #line 1 "parser.y"
 
     #include <stdio.h>
+    #include <math.h>
     #include <stdlib.h>
     #include <stdarg.h>
     #include "./SemanticAnalysis/SemanticAnalysis.cpp"
+    #include "./CodeGen/CodeGenerator.cpp"
+    
     extern FILE *yyin;
     extern int lineno; /* Line Number tacker from lexer */
     extern int yylex();
@@ -82,7 +85,7 @@
     
 
 /* Line 189 of yacc.c  */
-#line 86 "parser.tab.c"
+#line 89 "parser.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -176,7 +179,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 13 "parser.y"
+#line 16 "parser.y"
 
         int varType;
         struct Lexeme{
@@ -195,7 +198,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 199 "parser.tab.c"
+#line 202 "parser.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -207,7 +210,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 211 "parser.tab.c"
+#line 214 "parser.tab.c"
 
 #ifdef short
 # undef short
@@ -487,7 +490,7 @@ static const yytype_uint16 yyprhs[] =
       51,    53,    54,    56,    58,    60,    62,    64,    68,    72,
       76,    80,    84,    88,    92,    96,    99,   103,   105,   107,
      109,   111,   114,   117,   119,   123,   127,   129,   133,   137,
-     141,   143,   146,   148,   152,   154,   156,   160,   162,   164,
+     141,   143,   146,   148,   152,   156,   158,   160,   162,   164,
      165,   170,   171,   177,   181,   183,   185,   187,   189,   191,
      193,   195,   202,   206,   212,   217,   222,   227,   232,   237,
      238,   239,   249,   250,   251,   252,   264,   265,   271,   272,
@@ -515,7 +518,7 @@ static const yytype_int8 yyrhs[] =
       41,    71,    -1,    70,    40,    71,    -1,    72,    -1,    71,
       44,    74,    -1,    71,    43,    74,    -1,    71,    42,    74,
       -1,    73,    -1,    40,    73,    -1,    74,    -1,    20,    70,
-      21,    -1,     9,    -1,    10,    -1,    74,    45,    74,    -1,
+      21,    -1,    73,    45,    73,    -1,     9,    -1,    10,    -1,
       75,    -1,     8,    -1,    -1,     8,    20,    76,    21,    -1,
       -1,     8,    20,    77,    78,    21,    -1,    78,    17,    65,
       -1,    65,    -1,     9,    -1,    10,    -1,    12,    -1,    11,
@@ -545,19 +548,19 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   162,   162,   163,   166,   167,   167,   168,   169,   170,
-     171,   172,   173,   174,   175,   176,   177,   178,   179,   180,
-     183,   183,   185,   185,   185,   188,   189,   191,   210,   224,
-     239,   254,   269,   284,   297,   310,   323,   327,   328,   332,
-     333,   336,   375,   411,   412,   445,   481,   482,   513,   549,
-     566,   567,   574,   575,   580,   581,   582,   583,   584,   608,
-     608,   638,   638,   669,   685,   705,   706,   707,   708,   709,
-     710,   714,   748,   761,   800,   844,   889,   927,   966,  1007,
-    1007,  1007,  1012,  1014,  1014,  1012,  1017,  1017,  1018,  1023,
-    1023,  1023,  1023,  1027,  1027,  1030,  1030,  1031,  1031,  1035,
-    1035,  1039,  1040,  1043,  1044,  1050,  1050,  1050,  1050,  1050,
-    1052,  1055,  1055,  1068,  1068,  1080,  1080,  1093,  1093,  1108,
-    1109,  1112,  1125
+       0,   165,   165,   166,   169,   170,   170,   171,   172,   173,
+     174,   175,   176,   177,   178,   179,   180,   181,   182,   183,
+     186,   186,   188,   188,   188,   191,   192,   194,   213,   229,
+     246,   263,   280,   297,   311,   325,   339,   343,   344,   348,
+     349,   352,   391,   429,   430,   464,   501,   502,   535,   572,
+     590,   591,   614,   615,   616,   656,   657,   658,   659,   683,
+     683,   713,   713,   744,   760,   780,   781,   782,   783,   784,
+     785,   789,   824,   837,   877,   921,   966,  1004,  1044,  1085,
+    1085,  1085,  1090,  1092,  1092,  1090,  1095,  1095,  1096,  1101,
+    1101,  1101,  1101,  1105,  1105,  1108,  1108,  1109,  1109,  1113,
+    1113,  1117,  1118,  1121,  1122,  1128,  1128,  1128,  1128,  1128,
+    1130,  1133,  1133,  1146,  1146,  1158,  1158,  1171,  1171,  1186,
+    1187,  1190,  1203
 };
 #endif
 
@@ -608,7 +611,7 @@ static const yytype_uint8 yyr1[] =
       64,    64,    65,    65,    65,    66,    66,    67,    67,    67,
       67,    67,    67,    67,    67,    67,    67,    67,    67,    68,
       68,    69,    69,    70,    70,    70,    71,    71,    71,    71,
-      72,    72,    73,    73,    74,    74,    74,    74,    74,    76,
+      72,    72,    73,    73,    73,    74,    74,    74,    74,    76,
       75,    77,    75,    78,    78,    79,    79,    79,    79,    79,
       79,    80,    81,    81,    82,    82,    82,    82,    82,    84,
       85,    83,    87,    88,    89,    86,    91,    90,    90,    93,
@@ -626,7 +629,7 @@ static const yytype_uint8 yyr2[] =
        1,     0,     1,     1,     1,     1,     1,     3,     3,     3,
        3,     3,     3,     3,     3,     2,     3,     1,     1,     1,
        1,     2,     2,     1,     3,     3,     1,     3,     3,     3,
-       1,     2,     1,     3,     1,     1,     3,     1,     1,     0,
+       1,     2,     1,     3,     3,     1,     1,     1,     1,     0,
        4,     0,     5,     3,     1,     1,     1,     1,     1,     1,
        1,     6,     3,     5,     4,     4,     4,     4,     4,     0,
        0,     9,     0,     0,     0,    11,     0,     5,     0,     0,
@@ -641,7 +644,7 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,   105,   106,   107,   109,   108,    58,    54,    55,    37,
+       0,   105,   106,   107,   109,   108,    58,    55,    56,    37,
       38,     0,     5,     0,     0,     0,     0,    93,     0,     0,
        0,     0,     0,     0,    21,     0,     0,     3,     0,    25,
       26,    40,    39,    43,    46,    50,    52,    57,     7,     8,
@@ -654,7 +657,7 @@ static const yytype_uint8 yydefact[] =
        0,     0,     0,     0,     0,     0,     0,     0,     0,    36,
       53,    79,     0,    94,     0,    82,     0,     0,   111,    16,
        0,    32,    31,    28,    27,    30,    29,    34,    33,    45,
-      44,    49,    48,    47,    56,    72,   115,     0,     0,    60,
+      44,    49,    48,    47,    54,    72,   115,     0,     0,    60,
       64,     0,    74,    75,    77,    78,    76,     0,     6,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,   110,     0,    62,    65,    66,    68,    67,
@@ -685,41 +688,41 @@ static const yytype_int16 yydefgoto[] =
 static const yytype_int16 yypact[] =
 {
      728,   -57,   -57,   -57,   -57,   -57,    68,   -57,   -57,   -57,
-     -57,     6,   -57,    67,     1,     4,    15,   -57,    19,    22,
-      47,    44,    67,    65,    18,    58,   215,   -57,   118,   -57,
-     -57,   -57,     9,    13,   -57,   -57,    38,   -57,   -57,   -57,
-     -57,   -57,   -57,   -57,   -57,   -57,    83,   -57,    85,    80,
-      18,    18,    18,    18,    18,   -57,   -57,    97,   728,   -14,
-     102,    95,    -7,   -57,   -57,    67,    86,    67,    67,   -57,
-     112,    59,   -57,   -57,   113,   -57,   -57,   126,   -57,   102,
-      18,   -57,   -57,   -57,    84,    84,    84,    84,    84,    84,
-      67,    67,    59,    59,   101,   101,   101,   101,   -12,   728,
-     122,    18,   144,   145,   146,   150,   151,   120,   272,   -57,
-     -57,   102,   245,   -57,   142,   102,   728,    -7,   149,   -57,
-     154,   -57,   -57,   -57,   -57,   -57,   -57,   -57,   -57,    13,
-      13,    38,    38,    38,   -57,   -57,   161,    18,   329,   -57,
-     -57,    -2,   -57,   -57,   -57,   -57,   -57,   296,   -57,   162,
-      76,    67,    67,   163,   166,   169,   386,     6,   170,   177,
-       6,   173,   182,   -57,    18,   -57,   -57,   -57,   -57,   -57,
-     -57,   -57,   189,   188,   102,   102,   -13,   -57,   191,   -57,
-     202,    69,   -57,   -57,   -57,    79,   -57,   -57,   -57,   -57,
-     -57,   195,   196,    43,   -57,   181,   167,     6,   -57,   -57,
-     728,    67,    67,    18,   197,    70,   -57,   728,   207,   296,
-     -57,   443,   222,   279,   203,   728,   -57,   -57,   500,    67,
-     -57,   -57,   213,   216,   728,   728,   -57,   102,   728,   728,
-     728,   205,   221,   557,   614,   226,   -57,   230,   -57,   -57,
+     -57,   359,   -57,    67,     1,    23,    29,   -57,    44,    53,
+      50,    47,    67,    70,    18,    63,   215,   -57,   118,   -57,
+     -57,   -57,   -21,    83,   -57,    46,   -57,   -57,   -57,   -57,
+     -57,   -57,   -57,   -57,   -57,   -57,    81,   -57,    78,    82,
+      18,    18,    18,    18,    18,   -57,   -57,    98,   728,   -14,
+     102,    90,    12,   -57,   -57,    67,    96,    67,    67,   -57,
+     108,    84,    46,   -57,   112,   -57,   -57,    94,   -57,   102,
+      18,   -57,   -57,   -57,    89,    89,    89,    89,    89,    89,
+      67,    67,    84,    84,    26,    26,    26,    47,   -12,   728,
+     121,    18,   117,   127,   150,   151,   153,   122,   272,   -57,
+     -57,   102,     7,   -57,   142,   102,   728,    12,   149,   -57,
+     154,   -57,   -57,   -57,   -57,   -57,   -57,   -57,   -57,    83,
+      83,   -57,   -57,   -57,   -57,   -57,   161,    18,   329,   -57,
+     -57,    33,   -57,   -57,   -57,   -57,   -57,   239,   -57,   162,
+     321,    67,    67,   176,   172,   170,   386,   359,   173,   177,
+     359,   179,   182,   -57,    18,   -57,   -57,   -57,   -57,   -57,
+     -57,   -57,   185,   184,   102,   102,    -7,   -57,   187,   -57,
+     195,    48,   -57,   -57,   -57,    69,   -57,   -57,   -57,   -57,
+     -57,   190,   193,    43,   -57,   178,   163,   359,   -57,   -57,
+     728,    67,    67,    18,   181,    86,   -57,   728,   194,   239,
+     -57,   443,   222,   279,   197,   728,   -57,   -57,   500,    67,
+     -57,   -57,   198,   209,   728,   728,   -57,   102,   728,   728,
+     728,   200,   211,   557,   614,   216,   -57,   220,   -57,   -57,
      -57,   -57,   728,   671,   -57
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-     -57,   -56,   -26,   -57,   -57,   -29,    -6,   241,   278,   -57,
-      -8,    21,   -57,   243,   106,   -57,   -57,   -57,   -57,    53,
-     -57,   153,   155,   -57,   -57,   -57,   -57,   -57,   -57,   -57,
+     -57,   -56,   -26,   -57,   -57,   -29,    -6,   229,   221,   -57,
+      -8,     8,   -57,   -18,    66,   -57,   -57,   -57,   -57,    35,
+     -57,   134,   152,   -57,   -57,   -57,   -57,   -57,   -57,   -57,
      -57,   -57,   -57,   -57,   -57,   -57,   -57,   -57,   -57,   -57,
-     -57,   -57,   -57,   -57,    61,   -10,   -57,   -57,   -57,   -57,
-     -57,   -57,   110,    74
+     -57,   -57,   -57,   -57,    49,   -10,   -57,   -57,   -57,   -57,
+     -57,   -57,   105,    65
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -729,44 +732,44 @@ static const yytype_int16 yypgoto[] =
 #define YYTABLE_NINF -118
 static const yytype_int16 yytable[] =
 {
-      82,    57,   108,   135,   135,    62,    49,    60,   136,     1,
-       2,     3,     4,     5,   110,   164,    73,    63,    79,   165,
-      64,   102,   103,   104,   105,   106,    59,     7,     8,    75,
-      76,     9,    10,    92,    93,    65,   137,   137,    13,    67,
-      55,    56,    68,   138,    79,    79,    79,    79,    79,    92,
-      93,   120,    70,     7,     8,    94,    95,    96,    21,   111,
-     156,   114,   115,   117,    71,    69,    22,    70,     7,     8,
-     203,   204,   140,    74,    79,    59,     7,     8,    80,    71,
-       9,    10,    82,    97,   127,   128,   197,    13,    49,   216,
-     198,    98,    59,     7,     8,    79,   197,   203,   204,    21,
-     199,   -59,   153,    99,    71,   107,   112,    21,   162,    70,
-       7,     8,    82,   129,   130,    22,   109,    50,    51,    52,
-      53,    54,    55,    56,    21,    50,    51,    52,    53,    54,
-      82,    79,    49,   118,    83,   188,    84,    85,    86,    87,
-      88,    89,   119,   139,   211,   174,   175,   180,    90,    91,
+      82,    57,   108,    72,   135,    62,    49,    60,   136,   135,
+       1,     2,     3,     4,     5,   150,    73,    63,    79,    92,
+      93,   102,   103,   104,   105,   106,    59,     7,     8,    75,
+      76,     9,    10,   110,    70,     7,     8,   137,    13,    64,
+      55,    56,   137,   138,    79,    79,    79,    79,    79,    65,
+     164,   120,    92,    93,   165,    70,     7,     8,    21,   111,
+     156,   114,   115,   117,    67,   197,    22,    71,    69,   198,
+     203,   204,   140,    68,    79,    59,     7,     8,    74,   134,
+       9,    10,    82,    80,   127,   128,   197,    13,    49,    98,
+     199,    97,    70,     7,     8,    79,    99,    59,     7,     8,
+     129,   130,   153,   -59,    71,   216,   107,    21,   162,    71,
+     119,   109,    82,   203,   204,    22,   112,    50,    51,    52,
+      53,    54,    55,    56,    21,    94,    95,    96,    49,    21,
+      82,    79,   118,   142,    83,   188,    84,    85,    86,    87,
+      88,    89,   139,   143,   211,   174,   175,   180,    90,    91,
      180,   218,    84,    85,    86,    87,    88,    89,    79,   225,
-     142,   143,   144,   154,    90,    91,   145,   146,   230,   147,
-    -113,   176,   233,   234,   214,   159,    84,    85,    86,    87,
-      88,    89,  -117,   173,   177,    82,   243,   180,    90,    91,
-     178,   183,    82,   184,   186,   212,   213,    79,   187,    82,
-     131,   132,   133,   134,    82,   189,   190,    82,    82,   194,
-     196,   201,   202,   227,   208,    81,   209,    82,     1,     2,
-       3,     4,     5,     6,     7,     8,   215,   219,     9,    10,
-      11,   228,   224,    12,   229,    13,   235,    14,    15,    16,
-      17,    18,   237,   222,   240,    19,   241,    20,     1,     2,
-       3,     4,     5,   150,    61,    21,    84,    85,    86,    87,
-      88,    89,   220,    22,    72,   151,   217,   152,    90,    91,
-     185,   210,    23,    24,    25,     1,     2,     3,     4,     5,
+     131,   132,   133,   154,    90,    91,   144,   145,   230,   146,
+    -113,   147,   233,   234,   214,   159,    84,    85,    86,    87,
+      88,    89,  -117,   173,   176,    82,   243,   180,    90,    91,
+     177,   178,    82,   184,   183,   212,   213,    79,   187,    82,
+     186,   189,   190,   196,    82,   194,   201,    82,    82,   202,
+     215,   208,   209,   227,   219,    81,   228,    82,     1,     2,
+       3,     4,     5,     6,     7,     8,   224,   229,     9,    10,
+      11,   235,   237,    12,   240,    13,   241,    14,    15,    16,
+      17,    18,    61,   222,   220,    19,   151,    20,   166,   167,
+     168,   169,   170,   171,   217,    21,    84,    85,    86,    87,
+      88,    89,   210,    22,   152,   185,     0,     0,    90,    91,
+       0,     0,    23,    24,    25,     1,     2,     3,     4,     5,
        6,     7,     8,     0,     0,     9,    10,    11,     0,     0,
       12,   148,    13,     0,    14,    15,    16,    17,    18,     0,
-     223,     0,    19,     0,    20,   166,   167,   168,   169,   170,
-     171,     0,    21,    84,    85,    86,    87,    88,    89,     0,
+     223,     0,    19,     0,    20,   121,   122,   123,   124,   125,
+     126,     0,    21,    84,    85,    86,    87,    88,    89,     0,
       22,     0,     0,     0,     0,    90,    91,     0,     0,    23,
       24,    25,     1,     2,     3,     4,     5,     6,     7,     8,
        0,     0,     9,    10,    11,     0,     0,    12,   163,    13,
        0,    14,    15,    16,    17,    18,     0,     0,     0,    19,
-       0,    20,   121,   122,   123,   124,   125,   126,     0,    21,
-       0,     0,     0,     0,     0,     0,     0,    22,     0,     0,
+       0,    20,     1,     2,     3,     4,     5,     0,     0,    21,
+      50,    51,    52,    53,    54,     0,     0,    22,     0,     0,
        0,     0,     0,     0,     0,     0,    23,    24,    25,     1,
        2,     3,     4,     5,     6,     7,     8,     0,     0,     9,
       10,    11,     0,     0,    12,   179,    13,     0,    14,    15,
@@ -812,44 +815,44 @@ static const yytype_int16 yytable[] =
 
 static const yytype_int16 yycheck[] =
 {
-      26,    11,    58,    16,    16,    13,    20,    13,    20,     3,
-       4,     5,     6,     7,    21,    17,    22,    16,    24,    21,
-      16,    50,    51,    52,    53,    54,     8,     9,    10,    11,
-      12,    13,    14,    40,    41,    20,    49,    49,    20,    20,
-      54,    55,    20,    99,    50,    51,    52,    53,    54,    40,
-      41,    80,     8,     9,    10,    42,    43,    44,    40,    65,
-     116,    67,    68,    71,    20,    18,    48,     8,     9,    10,
-      27,    28,   101,     8,    80,     8,     9,    10,    20,    20,
-      13,    14,   108,    45,    90,    91,    17,    20,    20,    19,
-      21,     8,     8,     9,    10,   101,    17,    27,    28,    40,
-      21,    21,   112,    18,    20,     8,    20,    40,   137,     8,
-       9,    10,   138,    92,    93,    48,    21,    49,    50,    51,
-      52,    53,    54,    55,    40,    49,    50,    51,    52,    53,
-     156,   137,    20,    20,    16,   164,    34,    35,    36,    37,
-      38,    39,    16,    21,   200,   151,   152,   157,    46,    47,
+      26,    11,    58,    21,    16,    13,    20,    13,    20,    16,
+       3,     4,     5,     6,     7,     8,    22,    16,    24,    40,
+      41,    50,    51,    52,    53,    54,     8,     9,    10,    11,
+      12,    13,    14,    21,     8,     9,    10,    49,    20,    16,
+      54,    55,    49,    99,    50,    51,    52,    53,    54,    20,
+      17,    80,    40,    41,    21,     8,     9,    10,    40,    65,
+     116,    67,    68,    71,    20,    17,    48,    20,    18,    21,
+      27,    28,   101,    20,    80,     8,     9,    10,     8,    97,
+      13,    14,   108,    20,    90,    91,    17,    20,    20,     8,
+      21,    45,     8,     9,    10,   101,    18,     8,     9,    10,
+      92,    93,   112,    21,    20,    19,     8,    40,   137,    20,
+      16,    21,   138,    27,    28,    48,    20,    49,    50,    51,
+      52,    53,    54,    55,    40,    42,    43,    44,    20,    40,
+     156,   137,    20,    16,    16,   164,    34,    35,    36,    37,
+      38,    39,    21,    16,   200,   151,   152,   157,    46,    47,
      160,   207,    34,    35,    36,    37,    38,    39,   164,   215,
-      16,    16,    16,    21,    46,    47,    16,    16,   224,    49,
-      21,     8,   228,   229,   203,    21,    34,    35,    36,    37,
-      38,    39,    21,    21,    18,   211,   242,   197,    46,    47,
-      21,    21,   218,    16,    21,   201,   202,   203,    16,   225,
-      94,    95,    96,    97,   230,    16,    18,   233,   234,    18,
-       8,    16,    16,   219,    33,     0,    49,   243,     3,     4,
-       5,     6,     7,     8,     9,    10,    29,    20,    13,    14,
-      15,    18,    29,    18,    18,    20,    31,    22,    23,    24,
-      25,    26,    21,    21,    18,    30,    16,    32,     3,     4,
-       5,     6,     7,     8,    13,    40,    34,    35,    36,    37,
-      38,    39,   209,    48,    21,   112,   205,   112,    46,    47,
-     160,   197,    57,    58,    59,     3,     4,     5,     6,     7,
+      94,    95,    96,    21,    46,    47,    16,    16,   224,    16,
+      21,    49,   228,   229,   203,    21,    34,    35,    36,    37,
+      38,    39,    21,    21,     8,   211,   242,   197,    46,    47,
+      18,    21,   218,    16,    21,   201,   202,   203,    16,   225,
+      21,    16,    18,     8,   230,    18,    16,   233,   234,    16,
+      29,    33,    49,   219,    20,     0,    18,   243,     3,     4,
+       5,     6,     7,     8,     9,    10,    29,    18,    13,    14,
+      15,    31,    21,    18,    18,    20,    16,    22,    23,    24,
+      25,    26,    13,    21,   209,    30,   112,    32,     9,    10,
+      11,    12,    13,    14,   205,    40,    34,    35,    36,    37,
+      38,    39,   197,    48,   112,   160,    -1,    -1,    46,    47,
+      -1,    -1,    57,    58,    59,     3,     4,     5,     6,     7,
        8,     9,    10,    -1,    -1,    13,    14,    15,    -1,    -1,
       18,    19,    20,    -1,    22,    23,    24,    25,    26,    -1,
-      21,    -1,    30,    -1,    32,     9,    10,    11,    12,    13,
-      14,    -1,    40,    34,    35,    36,    37,    38,    39,    -1,
+      21,    -1,    30,    -1,    32,    84,    85,    86,    87,    88,
+      89,    -1,    40,    34,    35,    36,    37,    38,    39,    -1,
       48,    -1,    -1,    -1,    -1,    46,    47,    -1,    -1,    57,
       58,    59,     3,     4,     5,     6,     7,     8,     9,    10,
       -1,    -1,    13,    14,    15,    -1,    -1,    18,    19,    20,
       -1,    22,    23,    24,    25,    26,    -1,    -1,    -1,    30,
-      -1,    32,    84,    85,    86,    87,    88,    89,    -1,    40,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    48,    -1,    -1,
+      -1,    32,     3,     4,     5,     6,     7,    -1,    -1,    40,
+      49,    50,    51,    52,    53,    -1,    -1,    48,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    57,    58,    59,     3,
        4,     5,     6,     7,     8,     9,    10,    -1,    -1,    13,
       14,    15,    -1,    -1,    18,    19,    20,    -1,    22,    23,
@@ -910,7 +913,7 @@ static const yytype_uint8 yystos[] =
       76,    77,    65,    65,    65,    65,    65,     8,    61,    21,
       21,    66,    20,    98,    66,    66,    93,    70,    20,    16,
       65,    68,    68,    68,    68,    68,    68,    66,    66,    71,
-      71,    74,    74,    74,    74,    16,    20,    49,    61,    21,
+      71,    74,    74,    74,    73,    16,    20,    49,    61,    21,
       65,    78,    16,    16,    16,    16,    16,    49,    19,    84,
        8,    81,    82,   105,    21,    87,    61,   108,   109,    21,
      110,   111,    65,    19,    17,    21,     9,    10,    11,    12,
@@ -1735,28 +1738,28 @@ yyreduce:
         case 5:
 
 /* Line 1455 of yacc.c  */
-#line 167 "parser.y"
+#line 170 "parser.y"
     {createNewTable();;}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 167 "parser.y"
+#line 170 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 180 "parser.y"
+#line 183 "parser.y"
     {printf("-----------PRINT Statement------------\n");;}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 192 "parser.y"
+#line 195 "parser.y"
     {
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
                 int type2 = (yyvsp[(3) - (3)].lexeme).type;
@@ -1770,8 +1773,8 @@ yyreduce:
                 (yyval.lexeme).stringRep = getCurrentCount();
                 LexemeEntry* lex1 = convertLexemeToEntry((yyvsp[(1) - (3)].lexeme).type, (yyvsp[(1) - (3)].lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).intVal, (yyvsp[(1) - (3)].lexeme).floatVal, (yyvsp[(1) - (3)].lexeme).stringVal, (yyvsp[(1) - (3)].lexeme).boolVal, (yyvsp[(1) - (3)].lexeme).charVal);
                 LexemeEntry* lex2 = convertLexemeToEntry((yyvsp[(3) - (3)].lexeme).type, (yyvsp[(3) - (3)].lexeme).stringRep, (yyvsp[(3) - (3)].lexeme).intVal, (yyvsp[(3) - (3)].lexeme).floatVal, (yyvsp[(3) - (3)].lexeme).stringVal, (yyvsp[(3) - (3)].lexeme).boolVal, (yyvsp[(3) - (3)].lexeme).charVal);
-                (yyval.lexeme).boolVal = checkEQ_EQ(lex1,lex2);     
-    
+                (yyval.lexeme).boolVal = checkEQ_EQ(lex1,lex2);
+                addQuad("==" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep ,(yyvsp[(3) - (3)].lexeme).stringRep );
                 }
     
     ;}
@@ -1780,7 +1783,7 @@ yyreduce:
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 210 "parser.y"
+#line 213 "parser.y"
     {               /* != */
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
                 int type2 = (yyvsp[(3) - (3)].lexeme).type;
@@ -1793,6 +1796,8 @@ yyreduce:
                         LexemeEntry* lex1 = convertLexemeToEntry((yyvsp[(1) - (3)].lexeme).type, (yyvsp[(1) - (3)].lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).intVal, (yyvsp[(1) - (3)].lexeme).floatVal, (yyvsp[(1) - (3)].lexeme).stringVal, (yyvsp[(1) - (3)].lexeme).boolVal, (yyvsp[(1) - (3)].lexeme).charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry((yyvsp[(3) - (3)].lexeme).type, (yyvsp[(3) - (3)].lexeme).stringRep, (yyvsp[(3) - (3)].lexeme).intVal, (yyvsp[(3) - (3)].lexeme).floatVal, (yyvsp[(3) - (3)].lexeme).stringVal, (yyvsp[(3) - (3)].lexeme).boolVal, (yyvsp[(3) - (3)].lexeme).charVal);
                         (yyval.lexeme).boolVal = checkNE(lex1,lex2);
+                        addQuad("!=" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep ,(yyvsp[(3) - (3)].lexeme).stringRep );
+
                 }
         ;}
     break;
@@ -1800,7 +1805,7 @@ yyreduce:
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 225 "parser.y"
+#line 230 "parser.y"
     {
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
                 int type2 = (yyvsp[(3) - (3)].lexeme).type;
@@ -1813,6 +1818,8 @@ yyreduce:
                         LexemeEntry* lex1 = convertLexemeToEntry((yyvsp[(1) - (3)].lexeme).type, (yyvsp[(1) - (3)].lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).intVal, (yyvsp[(1) - (3)].lexeme).floatVal, (yyvsp[(1) - (3)].lexeme).stringVal, (yyvsp[(1) - (3)].lexeme).boolVal, (yyvsp[(1) - (3)].lexeme).charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry((yyvsp[(3) - (3)].lexeme).type, (yyvsp[(3) - (3)].lexeme).stringRep, (yyvsp[(3) - (3)].lexeme).intVal, (yyvsp[(3) - (3)].lexeme).floatVal, (yyvsp[(3) - (3)].lexeme).stringVal, (yyvsp[(3) - (3)].lexeme).boolVal, (yyvsp[(3) - (3)].lexeme).charVal);
                         (yyval.lexeme).boolVal = checkGT(lex1,lex2);
+                        addQuad(">" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep ,(yyvsp[(3) - (3)].lexeme).stringRep );
+
                 }
         ;}
     break;
@@ -1820,7 +1827,7 @@ yyreduce:
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 240 "parser.y"
+#line 247 "parser.y"
     {
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
                 int type2 = (yyvsp[(3) - (3)].lexeme).type;
@@ -1833,6 +1840,8 @@ yyreduce:
                         LexemeEntry* lex1 = convertLexemeToEntry((yyvsp[(1) - (3)].lexeme).type, (yyvsp[(1) - (3)].lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).intVal, (yyvsp[(1) - (3)].lexeme).floatVal, (yyvsp[(1) - (3)].lexeme).stringVal, (yyvsp[(1) - (3)].lexeme).boolVal, (yyvsp[(1) - (3)].lexeme).charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry((yyvsp[(3) - (3)].lexeme).type, (yyvsp[(3) - (3)].lexeme).stringRep, (yyvsp[(3) - (3)].lexeme).intVal, (yyvsp[(3) - (3)].lexeme).floatVal, (yyvsp[(3) - (3)].lexeme).stringVal, (yyvsp[(3) - (3)].lexeme).boolVal, (yyvsp[(3) - (3)].lexeme).charVal);
                         (yyval.lexeme).boolVal = checkLT(lex1,lex2);
+                        addQuad("<" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep ,(yyvsp[(3) - (3)].lexeme).stringRep );
+
                 }
         ;}
     break;
@@ -1840,7 +1849,7 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 255 "parser.y"
+#line 264 "parser.y"
     {
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
                 int type2 = (yyvsp[(3) - (3)].lexeme).type;
@@ -1853,6 +1862,8 @@ yyreduce:
                         LexemeEntry* lex1 = convertLexemeToEntry((yyvsp[(1) - (3)].lexeme).type, (yyvsp[(1) - (3)].lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).intVal, (yyvsp[(1) - (3)].lexeme).floatVal, (yyvsp[(1) - (3)].lexeme).stringVal, (yyvsp[(1) - (3)].lexeme).boolVal, (yyvsp[(1) - (3)].lexeme).charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry((yyvsp[(3) - (3)].lexeme).type, (yyvsp[(3) - (3)].lexeme).stringRep, (yyvsp[(3) - (3)].lexeme).intVal, (yyvsp[(3) - (3)].lexeme).floatVal, (yyvsp[(3) - (3)].lexeme).stringVal, (yyvsp[(3) - (3)].lexeme).boolVal, (yyvsp[(3) - (3)].lexeme).charVal);
                         (yyval.lexeme).boolVal = checkGE(lex1,lex2);
+                        addQuad(">=" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep ,(yyvsp[(3) - (3)].lexeme).stringRep );
+
                 }
         ;}
     break;
@@ -1860,7 +1871,7 @@ yyreduce:
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 270 "parser.y"
+#line 281 "parser.y"
     {
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
                 int type2 = (yyvsp[(3) - (3)].lexeme).type;
@@ -1873,6 +1884,8 @@ yyreduce:
                         LexemeEntry* lex1 = convertLexemeToEntry((yyvsp[(1) - (3)].lexeme).type, (yyvsp[(1) - (3)].lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).intVal, (yyvsp[(1) - (3)].lexeme).floatVal, (yyvsp[(1) - (3)].lexeme).stringVal, (yyvsp[(1) - (3)].lexeme).boolVal, (yyvsp[(1) - (3)].lexeme).charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry((yyvsp[(3) - (3)].lexeme).type, (yyvsp[(3) - (3)].lexeme).stringRep, (yyvsp[(3) - (3)].lexeme).intVal, (yyvsp[(3) - (3)].lexeme).floatVal, (yyvsp[(3) - (3)].lexeme).stringVal, (yyvsp[(3) - (3)].lexeme).boolVal, (yyvsp[(3) - (3)].lexeme).charVal);
                         (yyval.lexeme).boolVal = checkLE(lex1,lex2);
+                        addQuad("<=" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep ,(yyvsp[(3) - (3)].lexeme).stringRep );
+
                 }
         ;}
     break;
@@ -1880,7 +1893,7 @@ yyreduce:
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 285 "parser.y"
+#line 298 "parser.y"
     {
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
                 int type2 = (yyvsp[(3) - (3)].lexeme).type;
@@ -1891,6 +1904,7 @@ yyreduce:
                         (yyval.lexeme).type = BOOL_TYPE;
                         (yyval.lexeme).stringRep = getCurrentCount();
                         (yyval.lexeme).boolVal = (yyvsp[(1) - (3)].lexeme).boolVal && (yyvsp[(3) - (3)].lexeme).boolVal;
+                        addQuad("AND" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep ,(yyvsp[(3) - (3)].lexeme).stringRep );
                 }
     ;}
     break;
@@ -1898,7 +1912,7 @@ yyreduce:
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 298 "parser.y"
+#line 312 "parser.y"
     {
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
                 int type2 = (yyvsp[(3) - (3)].lexeme).type;
@@ -1909,6 +1923,7 @@ yyreduce:
                         (yyval.lexeme).type = BOOL_TYPE;
                         (yyval.lexeme).stringRep = getCurrentCount();
                         (yyval.lexeme).boolVal = (yyvsp[(1) - (3)].lexeme).boolVal || (yyvsp[(3) - (3)].lexeme).boolVal;
+                        addQuad("OR" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep ,(yyvsp[(3) - (3)].lexeme).stringRep );
                 }
         ;}
     break;
@@ -1916,7 +1931,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 311 "parser.y"
+#line 326 "parser.y"
     {                                       /* ! */ 
                 int type = (yyvsp[(2) - (2)].lexeme).type;
                 if(type != BOOL_TYPE)
@@ -1926,6 +1941,7 @@ yyreduce:
                         (yyval.lexeme).type = BOOL_TYPE;
                         (yyval.lexeme).stringRep = getCurrentCount();
                         (yyval.lexeme).boolVal = !(yyvsp[(2) - (2)].lexeme).boolVal;
+                        addQuad("NOT" , (yyval.lexeme).stringRep, (yyvsp[(2) - (2)].lexeme).stringRep , "");
                   
                 }
         ;}
@@ -1934,7 +1950,7 @@ yyreduce:
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 324 "parser.y"
+#line 340 "parser.y"
     {
                 (yyval.lexeme) = (yyvsp[(2) - (3)].lexeme);
      ;}
@@ -1943,9 +1959,8 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 337 "parser.y"
+#line 353 "parser.y"
     {
-                printf("HELLO \n");
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (2)].stringValue));
                 printf("%d \n" , (entry->getLexemeEntry()->intVal));
                 if(entry == NULL){
@@ -1979,6 +1994,7 @@ yyreduce:
                                 entry->getLexemeEntry()->floatVal = (yyval.lexeme).floatVal;
                                 printf("%d \n" , (entry->getLexemeEntry()->intVal));
                         }
+                        addQuad("INC" , (yyval.lexeme).stringRep, (yyvsp[(1) - (2)].stringValue) , "");
                     
                 }
         ;}
@@ -1987,7 +2003,7 @@ yyreduce:
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 376 "parser.y"
+#line 392 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (2)].stringValue));
                 if(entry == NULL){
@@ -2018,6 +2034,8 @@ yyreduce:
                                 (yyval.lexeme).floatVal = entry->getLexemeEntry()->floatVal - 1;
                                 entry->getLexemeEntry()->floatVal = (yyval.lexeme).floatVal;
                         }
+                        addQuad("DEC" , (yyval.lexeme).stringRep, (yyvsp[(1) - (2)].stringValue) , "");
+
                     
                 }
         ;}
@@ -2026,7 +2044,7 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 413 "parser.y"
+#line 431 "parser.y"
     {
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
                 int type2 = (yyvsp[(3) - (3)].lexeme).type;
@@ -2056,6 +2074,7 @@ yyreduce:
                                 (yyval.lexeme).type = INT_TYPE;
                                 (yyval.lexeme).intVal = (yyvsp[(1) - (3)].lexeme).intVal + (yyvsp[(3) - (3)].lexeme).intVal;
                         }
+                        addQuad("ADD" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep , (yyvsp[(3) - (3)].lexeme).stringRep );
                 
                 }
         ;}
@@ -2064,7 +2083,7 @@ yyreduce:
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 446 "parser.y"
+#line 465 "parser.y"
     {
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
                 int type2 = (yyvsp[(3) - (3)].lexeme).type;
@@ -2095,6 +2114,7 @@ yyreduce:
                                 (yyval.lexeme).type = INT_TYPE;
                                 (yyval.lexeme).intVal = (yyvsp[(1) - (3)].lexeme).intVal - (yyvsp[(3) - (3)].lexeme).intVal;
                         }
+                        addQuad("SUB" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep , (yyvsp[(3) - (3)].lexeme).stringRep );
                 
                 }
         ;}
@@ -2103,7 +2123,7 @@ yyreduce:
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 483 "parser.y"
+#line 503 "parser.y"
     {
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
                 int type2 = (yyvsp[(3) - (3)].lexeme).type;
@@ -2132,6 +2152,8 @@ yyreduce:
                                 (yyval.lexeme).type = INT_TYPE;
                                 (yyval.lexeme).intVal = (yyvsp[(1) - (3)].lexeme).intVal * (yyvsp[(3) - (3)].lexeme).intVal;
                         }
+
+                        addQuad("MUL" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep , (yyvsp[(3) - (3)].lexeme).stringRep );
                 }
         ;}
     break;
@@ -2139,7 +2161,7 @@ yyreduce:
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 514 "parser.y"
+#line 536 "parser.y"
     {
                
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
@@ -2173,6 +2195,7 @@ yyreduce:
                                 (yyval.lexeme).type = INT_TYPE;
                                 (yyval.lexeme).intVal = (yyvsp[(1) - (3)].lexeme).intVal / (yyvsp[(3) - (3)].lexeme).intVal;
                         }
+                        addQuad("DIV" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep , (yyvsp[(3) - (3)].lexeme).stringRep );
                 }
         ;}
     break;
@@ -2180,7 +2203,7 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 550 "parser.y"
+#line 573 "parser.y"
     {
                
                 int type1 = (yyvsp[(1) - (3)].lexeme).type;
@@ -2193,7 +2216,8 @@ yyreduce:
                 else{
                         (yyval.lexeme).stringRep = getCurrentCount();
                         (yyval.lexeme).type = INT_TYPE;
-                        (yyval.lexeme).intVal = (yyvsp[(1) - (3)].lexeme).intVal % (yyvsp[(3) - (3)].lexeme).intVal;  
+                        (yyval.lexeme).intVal = (yyvsp[(1) - (3)].lexeme).intVal % (yyvsp[(3) - (3)].lexeme).intVal;
+                        addQuad("MOD" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep , (yyvsp[(3) - (3)].lexeme).stringRep );  
                 }
         ;}
     break;
@@ -2201,54 +2225,92 @@ yyreduce:
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 567 "parser.y"
-    {(yyval.lexeme).type = (yyvsp[(2) - (2)].lexeme).type;
-        if ((yyvsp[(2) - (2)].lexeme).type == FLOAT_TYPE)
-                (yyval.lexeme).floatVal = -(yyvsp[(2) - (2)].lexeme).floatVal;
-        else
-                (yyval.lexeme).intVal = -(yyvsp[(2) - (2)].lexeme).intVal;
+#line 591 "parser.y"
+    {
+
+                
+                if ((yyvsp[(2) - (2)].lexeme).type == FLOAT_TYPE)
+                {
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        (yyval.lexeme).type = (yyvsp[(2) - (2)].lexeme).type;
+                        (yyval.lexeme).floatVal = -(yyvsp[(2) - (2)].lexeme).floatVal;
+                        addQuad("NEG" , (yyval.lexeme).stringRep, (yyvsp[(2) - (2)].lexeme).stringRep , "" );
+                }
+                else if ((yyvsp[(2) - (2)].lexeme).type == INT_TYPE)
+                {
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        (yyval.lexeme).type = (yyvsp[(2) - (2)].lexeme).type;
+                        (yyval.lexeme).intVal = -(yyvsp[(2) - (2)].lexeme).intVal;
+                        addQuad("NEG" , (yyval.lexeme).stringRep, (yyvsp[(2) - (2)].lexeme).stringRep , "");
+                }
+                else
+                {
+                        printSemanticError("Negation Operation should be on integer or float type",lineno);
+                }  
       ;}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 575 "parser.y"
+#line 615 "parser.y"
     {(yyval.lexeme) = (yyvsp[(2) - (3)].lexeme);;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 580 "parser.y"
-    {(yyval.lexeme).type = INT_TYPE;printf("INT_VAL_ASD\n");;}
-    break;
+#line 616 "parser.y"
+    {
+                
+                int type1 = (yyvsp[(1) - (3)].lexeme).type;
+                int type2 = (yyvsp[(3) - (3)].lexeme).type;
+                
+                if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
+                {
+                        printSemanticError("Power operation must be between 2 numbers",lineno);
+                }else{
+                        (yyval.lexeme).stringRep = getCurrentCount();
+                        if(type1 == FLOAT_TYPE && type2 == FLOAT_TYPE)
+                        {
 
-  case 55:
+                                (yyval.lexeme).type = FLOAT_TYPE;
+                                (yyval.lexeme).floatVal = pow((yyvsp[(1) - (3)].lexeme).floatVal, (yyvsp[(3) - (3)].lexeme).floatVal);
+                        }
+                        else if(type1 == INT_TYPE && type2 == FLOAT_TYPE)
+                        {
 
-/* Line 1455 of yacc.c  */
-#line 581 "parser.y"
-    {(yyval.lexeme).type = FLOAT_TYPE;printf("INT_VAL_ASD\n");;}
-    break;
+                                (yyval.lexeme).type = FLOAT_TYPE;
+                                (yyval.lexeme).floatVal = pow((yyvsp[(1) - (3)].lexeme).intVal, (yyvsp[(3) - (3)].lexeme).floatVal);
+                        }
+                        else if(type1 == FLOAT_TYPE && type2 == INT_TYPE)
+                        {
 
-  case 56:
+                                (yyval.lexeme).type = FLOAT_TYPE;
+                                (yyval.lexeme).floatVal = pow((yyvsp[(1) - (3)].lexeme).floatVal, (yyvsp[(3) - (3)].lexeme).intVal);
+                        }
+                        else{
 
-/* Line 1455 of yacc.c  */
-#line 582 "parser.y"
-    {printf("EXP\n");;}
+                                (yyval.lexeme).type = INT_TYPE;
+                                (yyval.lexeme).intVal = pow((yyvsp[(1) - (3)].lexeme).intVal, (yyvsp[(3) - (3)].lexeme).intVal);
+                        }
+                        addQuad("POW" , (yyval.lexeme).stringRep, (yyvsp[(1) - (3)].lexeme).stringRep , (yyvsp[(3) - (3)].lexeme).stringRep );
+                }
+
+        ;}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 583 "parser.y"
+#line 658 "parser.y"
     {printf("FUNCTION_CALL\n");;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 584 "parser.y"
+#line 659 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (1)].stringValue));
              
@@ -2275,7 +2337,7 @@ yyreduce:
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 608 "parser.y"
+#line 683 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (2)].stringValue));
                 if(entry == NULL){
@@ -2295,7 +2357,7 @@ yyreduce:
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 622 "parser.y"
+#line 697 "parser.y"
     {
                 if(functionParameters.size() != 0)
                 {
@@ -2317,7 +2379,7 @@ yyreduce:
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 638 "parser.y"
+#line 713 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (2)].stringValue));
                 if(entry == NULL){
@@ -2337,7 +2399,7 @@ yyreduce:
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 651 "parser.y"
+#line 726 "parser.y"
     {
                 if(functionParameters.size() != 0)
                 {
@@ -2358,7 +2420,7 @@ yyreduce:
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 669 "parser.y"
+#line 744 "parser.y"
     {
                 if(functionParameters.size() == 0)
                 {
@@ -2380,7 +2442,7 @@ yyreduce:
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 685 "parser.y"
+#line 760 "parser.y"
     {
                 if(functionParameters.size() == 0)
                 {
@@ -2401,7 +2463,7 @@ yyreduce:
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 715 "parser.y"
+#line 790 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(3) - (6)].stringValue));
                 if(entry){
@@ -2431,6 +2493,7 @@ yyreduce:
                                 lexeme->charVal = (yyvsp[(5) - (6)].lexeme).charVal;
                         }
                         addEntryToTable((yyvsp[(3) - (6)].stringValue),lexeme,CONSTANT,true);
+                        addQuad("=" , (yyvsp[(3) - (6)].stringValue), (yyvsp[(5) - (6)].lexeme).stringRep , "");
                 }    
         ;}
     break;
@@ -2438,7 +2501,7 @@ yyreduce:
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 748 "parser.y"
+#line 824 "parser.y"
     {
                 
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
@@ -2457,7 +2520,7 @@ yyreduce:
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 761 "parser.y"
+#line 837 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (5)].stringValue));
                 if(entry){
@@ -2491,6 +2554,7 @@ yyreduce:
                                 lexeme->charVal = (yyvsp[(4) - (5)].lexeme).charVal;
                         }
                         addEntryToTable((yyvsp[(2) - (5)].stringValue),lexeme,VAR,true);
+                        addQuad("=" , (yyvsp[(2) - (5)].stringValue), (yyvsp[(4) - (5)].lexeme).stringRep , "");
                 }
         ;}
     break;
@@ -2498,7 +2562,7 @@ yyreduce:
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 801 "parser.y"
+#line 878 "parser.y"
     {  
                 
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
@@ -2547,7 +2611,7 @@ yyreduce:
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 845 "parser.y"
+#line 922 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
                 if(entry == NULL){
@@ -2597,7 +2661,7 @@ yyreduce:
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 890 "parser.y"
+#line 967 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
                 if(entry == NULL){
@@ -2640,7 +2704,7 @@ yyreduce:
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 928 "parser.y"
+#line 1005 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
                 if(entry == NULL){
@@ -2676,6 +2740,7 @@ yyreduce:
                         }else{
                                 entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal + (yyvsp[(3) - (4)].lexeme).floatVal ;
                         }
+                        addQuad("+", (yyvsp[(1) - (4)].stringValue), (yyvsp[(1) - (4)].stringValue), (yyvsp[(3) - (4)].lexeme).stringRep );
                 }
         ;}
     break;
@@ -2683,7 +2748,7 @@ yyreduce:
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 967 "parser.y"
+#line 1045 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
                 if(entry == NULL){
@@ -2726,28 +2791,28 @@ yyreduce:
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 1007 "parser.y"
+#line 1085 "parser.y"
     { checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 1007 "parser.y"
+#line 1085 "parser.y"
     {createNewTable();;}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 1007 "parser.y"
+#line 1085 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 1012 "parser.y"
+#line 1090 "parser.y"
     {
                 checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);
         ;}
@@ -2756,133 +2821,133 @@ yyreduce:
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 1014 "parser.y"
+#line 1092 "parser.y"
     {createNewTable();;}
     break;
 
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 1014 "parser.y"
+#line 1092 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 1017 "parser.y"
+#line 1095 "parser.y"
     {createNewTable();;}
     break;
 
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 1017 "parser.y"
+#line 1095 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 89:
 
 /* Line 1455 of yacc.c  */
-#line 1023 "parser.y"
+#line 1101 "parser.y"
     {createNewTable();;}
     break;
 
   case 90:
 
 /* Line 1455 of yacc.c  */
-#line 1023 "parser.y"
+#line 1101 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 91:
 
 /* Line 1455 of yacc.c  */
-#line 1023 "parser.y"
+#line 1101 "parser.y"
     { checkIfLexemIsBool((yyvsp[(9) - (9)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 92:
 
 /* Line 1455 of yacc.c  */
-#line 1023 "parser.y"
+#line 1101 "parser.y"
     {printf("REPEAT UNTIL\n");;}
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 1027 "parser.y"
+#line 1105 "parser.y"
     {createNewTable();;}
     break;
 
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 1030 "parser.y"
+#line 1108 "parser.y"
     {checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno); ;}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 1030 "parser.y"
+#line 1108 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
-#line 1031 "parser.y"
+#line 1109 "parser.y"
     {checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 98:
 
 /* Line 1455 of yacc.c  */
-#line 1031 "parser.y"
+#line 1109 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 99:
 
 /* Line 1455 of yacc.c  */
-#line 1035 "parser.y"
+#line 1113 "parser.y"
     {createNewTable();;}
     break;
 
   case 100:
 
 /* Line 1455 of yacc.c  */
-#line 1035 "parser.y"
+#line 1113 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 103:
 
 /* Line 1455 of yacc.c  */
-#line 1043 "parser.y"
+#line 1121 "parser.y"
     {printf("CASE\n");;}
     break;
 
   case 104:
 
 /* Line 1455 of yacc.c  */
-#line 1044 "parser.y"
+#line 1122 "parser.y"
     {printf("DEFAULT\n");;}
     break;
 
   case 110:
 
 /* Line 1455 of yacc.c  */
-#line 1052 "parser.y"
+#line 1130 "parser.y"
     {exitCurrentScope(); currentFunction = nullptr;;}
     break;
 
   case 111:
 
 /* Line 1455 of yacc.c  */
-#line 1055 "parser.y"
+#line 1133 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2900,14 +2965,14 @@ yyreduce:
   case 112:
 
 /* Line 1455 of yacc.c  */
-#line 1067 "parser.y"
+#line 1145 "parser.y"
     {printf("Void function with parameters \n");;}
     break;
 
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 1068 "parser.y"
+#line 1146 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2925,14 +2990,14 @@ yyreduce:
   case 114:
 
 /* Line 1455 of yacc.c  */
-#line 1079 "parser.y"
+#line 1157 "parser.y"
     {printf("Void function without parameters \n");;}
     break;
 
   case 115:
 
 /* Line 1455 of yacc.c  */
-#line 1080 "parser.y"
+#line 1158 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2951,14 +3016,14 @@ yyreduce:
   case 116:
 
 /* Line 1455 of yacc.c  */
-#line 1092 "parser.y"
+#line 1170 "parser.y"
     {printf("Typed function with parameters \n");;}
     break;
 
   case 117:
 
 /* Line 1455 of yacc.c  */
-#line 1093 "parser.y"
+#line 1171 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -2977,21 +3042,21 @@ yyreduce:
   case 118:
 
 /* Line 1455 of yacc.c  */
-#line 1105 "parser.y"
+#line 1183 "parser.y"
     {printf("Typed function without parameters \n");;}
     break;
 
   case 120:
 
 /* Line 1455 of yacc.c  */
-#line 1109 "parser.y"
+#line 1187 "parser.y"
     {printf("Multiple PARAMS\n");;}
     break;
 
   case 121:
 
 /* Line 1455 of yacc.c  */
-#line 1112 "parser.y"
+#line 1190 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (2)].stringValue));
                 if(entry != NULL){
@@ -3010,7 +3075,7 @@ yyreduce:
   case 122:
 
 /* Line 1455 of yacc.c  */
-#line 1125 "parser.y"
+#line 1203 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (4)].stringValue));
                 if(entry != NULL){
@@ -3051,7 +3116,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 3055 "parser.tab.c"
+#line 3120 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -3263,7 +3328,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 1161 "parser.y"
+#line 1239 "parser.y"
 
 
 

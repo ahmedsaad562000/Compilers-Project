@@ -67,10 +67,10 @@ Grammar
 
    51 para: factor
    52     | LPAREN binary_expr RPAREN
+   53     | para EXP para
 
-   53 factor: INT_VAL
-   54       | FLOAT_VAL
-   55       | factor EXP factor
+   54 factor: INT_VAL
+   55       | FLOAT_VAL
    56       | function_call
    57       | IDENTIFIER
 
@@ -194,8 +194,8 @@ BOOL (261) 108
 STRING (262) 107
 IDENTIFIER (263) 40 41 57 59 61 70 71 72 73 74 75 76 77 111 113 115
     117 120 121
-INT_VAL (264) 53 64
-FLOAT_VAL (265) 54 65
+INT_VAL (264) 54 64
+FLOAT_VAL (265) 55 65
 CHAR_VAL (266) 23 67
 STRING_VAL (267) 22 66
 TRUE_VAL (268) 36 68
@@ -230,7 +230,7 @@ PLUS (296) 43
 MOD (297) 48
 DIV (298) 47
 MULT (299) 46
-EXP (300) 55
+EXP (300) 53
 OR (301) 33
 AND (302) 32
 NOT (303) 34
@@ -277,9 +277,9 @@ term (71)
 negat (72)
     on left: 49 50, on right: 45
 para (73)
-    on left: 51 52, on right: 49 50
+    on left: 51 52 53, on right: 49 50 53
 factor (74)
-    on left: 53 54 55 56 57, on right: 46 47 48 51 55
+    on left: 54 55 56 57, on right: 46 47 48 51
 function_call (75)
     on left: 59 61, on right: 56
 $@2 (76)
@@ -477,16 +477,16 @@ state 6
 
 state 7
 
-   53 factor: INT_VAL .
+   54 factor: INT_VAL .
 
-    $default  reduce using rule 53 (factor)
+    $default  reduce using rule 54 (factor)
 
 
 state 8
 
-   54 factor: FLOAT_VAL .
+   55 factor: FLOAT_VAL .
 
-    $default  reduce using rule 54 (factor)
+    $default  reduce using rule 55 (factor)
 
 
 state 9
@@ -830,6 +830,9 @@ state 34
 state 35
 
    49 negat: para .
+   53 para: para . EXP para
+
+    EXP  shift, and go to state 97
 
     $default  reduce using rule 49 (negat)
 
@@ -837,9 +840,6 @@ state 35
 state 36
 
    51 para: factor .
-   55 factor: factor . EXP factor
-
-    EXP  shift, and go to state 97
 
     $default  reduce using rule 51 (para)
 
@@ -1358,6 +1358,9 @@ state 71
 state 72
 
    50 negat: MINUS para .
+   53 para: para . EXP para
+
+    EXP  shift, and go to state 97
 
     $default  reduce using rule 50 (negat)
 
@@ -1728,13 +1731,15 @@ state 96
 
 state 97
 
-   55 factor: factor EXP . factor
+   53 para: para EXP . para
 
     IDENTIFIER  shift, and go to state 70
     INT_VAL     shift, and go to state 7
     FLOAT_VAL   shift, and go to state 8
+    LPAREN      shift, and go to state 71
 
-    factor         go to state 134
+    para           go to state 134
+    factor         go to state 36
     function_call  go to state 37
 
 
@@ -2247,9 +2252,6 @@ state 130
 state 131
 
    48 term: term MOD factor .
-   55 factor: factor . EXP factor
-
-    EXP  shift, and go to state 97
 
     $default  reduce using rule 48 (term)
 
@@ -2257,9 +2259,6 @@ state 131
 state 132
 
    47 term: term DIV factor .
-   55 factor: factor . EXP factor
-
-    EXP  shift, and go to state 97
 
     $default  reduce using rule 47 (term)
 
@@ -2267,19 +2266,16 @@ state 132
 state 133
 
    46 term: term MULT factor .
-   55 factor: factor . EXP factor
-
-    EXP  shift, and go to state 97
 
     $default  reduce using rule 46 (term)
 
 
 state 134
 
-   55 factor: factor . EXP factor
-   55       | factor EXP factor .
+   53 para: para . EXP para
+   53     | para EXP para .
 
-    $default  reduce using rule 55 (factor)
+    $default  reduce using rule 53 (para)
 
 
 state 135

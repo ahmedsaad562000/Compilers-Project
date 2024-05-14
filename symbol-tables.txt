@@ -1,15 +1,15 @@
 Identifier       Level        Kind        Type             Value
 ----------       -----        ----        ----              ----
 megz_function                 0          FUNC       VOID_TYPE
-ff                 0           VAR        INT_TYPE              7
 cc                 0           VAR       CHAR_TYPE              '
-v                 0           VAR        INT_TYPE              1
 w                 0           VAR        INT_TYPE            102
-x                 0           VAR        INT_TYPE            -98
+ff                 0           VAR        INT_TYPE              7
+v                 0           VAR        INT_TYPE              1
+k                 0           VAR      FLOAT_TYPE              5
+f                 0           VAR        INT_TYPE            -21
 y                 0           VAR        INT_TYPE              3
 iam                 0      CONSTANT        INT_TYPE              5
-f                 0           VAR        INT_TYPE            -21
-k                 0           VAR      FLOAT_TYPE              5
+x                 0           VAR        INT_TYPE            -98
 
     Identifier       Level        Kind        Type             Value
     ----------       -----        ----        ----              ----

@@ -2,6 +2,7 @@
 #include <fstream>
 #include "../SymbolTable/SymbolTable.h"
 #include "../SymbolTable/SymbolTableEntry.h"
+#include "../CodeGen/CodeGenerator.h"
 #include <stack>
 #include <iomanip>
 #include <string.h>
@@ -13,7 +14,6 @@ SymbolTableEntry *currentFunction = NULL;
 SymbolTableEntry *currentEnum = NULL;
 stack<VariableType> functionParameters;
 FILE *semanticFile = fopen("semantic-error.txt", "w");
-FILE *quadrupleFile = fopen("quadruple.txt", "w");
 FILE *syntaxFile = fopen("syntax-error.txt", "w");
 ofstream symbolTablesFile("symbol-tables.txt");
 int currentCount = 0;
@@ -237,8 +237,9 @@ void printSymbolTables()
     traverseSymbolTable(rootSymbolTable, 0, symbolTablesFile);
     symbolTablesFile.close();
     fclose(semanticFile);
-    fclose(quadrupleFile);
     fclose(syntaxFile);
+
+    closeQuadruplesFile();
 }
 
 void printSemanticError(string error, int lineNo)
@@ -282,6 +283,7 @@ char *getCurrentCount()
     char *temp = (char *)malloc(sizeof(char) * (strlen("t") + strlen(strCount) + 1)); // allocate space for the concatenated string
     strcpy(temp, "t");                                                                // copy the "t" character to the stringRep
     strcat(temp, strCount);
+    currentCount++;
     return temp;
 }
 
@@ -473,6 +475,9 @@ bool checkLT(LexemeEntry *lex1, LexemeEntry *lex2)
     else
         return false;
 }
+
+
+
 //----------------------------------------------------------------------//
 
 // int main(void)
