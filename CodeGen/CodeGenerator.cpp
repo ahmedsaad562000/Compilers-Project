@@ -1,8 +1,7 @@
 #include "CodeGenerator.h"
-#include "quad.cpp"
 
 
-
+FILE *quadrupleFile = fopen("quadruple.txt", "w");
 void addQuad(string op, string result, string arg1, string arg2)
 {
     Quad *quad = new Quad (op, arg1, arg2, result);

@@ -6,7 +6,9 @@
 #include "quad.h"
 
 
-FILE *quadrupleFile = fopen("quadruple.txt", "w"); 
+
+
+
 void addQuad(string op,string result, string arg1, string arg2);
 
 

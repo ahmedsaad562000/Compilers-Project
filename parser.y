@@ -4,7 +4,8 @@
     #include <stdlib.h>
     #include <stdarg.h>
     #include "./SemanticAnalysis/SemanticAnalysis.cpp"
-    #include "./CodeGen/CodeGenerator.cpp"
+    #include "./CodeGen/CodeGenerator.h"
+    #include "./CodeGen/quad.h"
     
     extern FILE *yyin;
     extern int lineno; /* Line Number tacker from lexer */
