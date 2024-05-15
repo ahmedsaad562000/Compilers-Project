@@ -1003,7 +1003,7 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                         }else{
                                 entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal * $3.floatVal ;
                         }
-                        addquad("MUL", $1, $1, $3.stringRep );
+                        addQuad("MUL", $1, $1, $3.stringRep );
                 }
         } 
         | IDENTIFIER PLUS_EQ value SEMICOLON
@@ -1082,7 +1082,7 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                         }else{
                                 entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal - $3.floatVal ;
                         }
-                addquad("SUB", $1, $1, $3.stringRep );
+                addQuad("SUB", $1, $1, $3.stringRep );
                 }
         } 
         ;
@@ -1239,7 +1239,7 @@ param:
                                 lexeme->charVal = $4.charVal;
                         }
                         addEntryToTable($2,lexeme,PARAMETER,true);
-                        addquad("=", $2, $4.stringRep , "");
+                        addQuad("=", $2, $4.stringRep , "");
                 }
         } /* param with default value */
         ;
