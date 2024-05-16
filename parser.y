@@ -50,6 +50,7 @@
 
 
 
+
 %token INT
 %token FLOAT
 %token CHAR
@@ -1133,7 +1134,7 @@ case_stmt:
 /* function return types */
 type:  INT | FLOAT | CHAR | STRING | BOOL;
 /* function */
-function : function_prototype LBRACE stmts RBRACE  {exitCurrentScope(); currentFunction = nullptr;}    
+function : function_prototype {} LBRACE stmts RBRACE  {exitCurrentScope(); currentFunction = nullptr;}    
         ;
 function_prototype:
         VOID IDENTIFIER LPAREN{
@@ -1146,7 +1147,7 @@ function_prototype:
                 lexeme->type = VOID_TYPE;
                 lexeme->stringRep = getCurrentCount();
                 addEntryToTable($2,lexeme,FUNC,false,NULL, VOID_TYPE);
-                createNewTable();
+                createNewTable($2);
         }
          params RPAREN  {printf("Void function with parameters \n");}  /* void function with params */
         |VOID IDENTIFIER LPAREN {
@@ -1159,7 +1160,7 @@ function_prototype:
                 lexeme->type = VOID_TYPE;
                 lexeme->stringRep = getCurrentCount();
                 addEntryToTable($2,lexeme,FUNC,false,NULL, VOID_TYPE);
-                createNewTable();    
+                createNewTable($2);
         } RPAREN {printf("Void function without parameters \n");}  /* void function without params */
         |type IDENTIFIER LPAREN {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
@@ -1172,7 +1173,7 @@ function_prototype:
                 lexeme->stringRep = getCurrentCount();
                 VariableType functionOutput = static_cast<VariableType>($1);
                 addEntryToTable($2,lexeme,FUNC,false,NULL, functionOutput);
-                createNewTable();
+                createNewTable($2);
         } params RPAREN  {printf("Typed function with parameters \n");}  /* type function with params */
         |type IDENTIFIER LPAREN {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
@@ -1185,12 +1186,12 @@ function_prototype:
                 lexeme->stringRep = getCurrentCount();
                 VariableType functionOutput = static_cast<VariableType>($1);
                 addEntryToTable($2,lexeme,FUNC,false,NULL, functionOutput);
-                createNewTable();
+                createNewTable($2);
         } RPAREN {printf("Typed function without parameters \n");} /* type function without params */
         ;
 params:
-        param                /* single param */
-        | params COMMA param     {printf("Multiple PARAMS\n");}  /* multiple params */
+        param                 /* single param */
+        | params COMMA param    /* multiple params */
         ;
 param:
         type IDENTIFIER {
@@ -1265,7 +1266,7 @@ int main (void)
     yyin = fopen("test.txt", "r+");
     if (yyin == NULL)
     {
-        printf("File Not Found\n");
+        printf(" Test File Not Found\n");
     }
     else
     {

@@ -1,8 +1,36 @@
 Identifier       Level        Kind        Type             Value
 ----------       -----        ----        ----              ----
-w                 0           VAR        INT_TYPE              0
-v                 0           VAR        INT_TYPE              5
+megz_function                 0          FUNC       VOID_TYPE
+cc                 0           VAR       CHAR_TYPE              '
+w                 0           VAR        INT_TYPE            102
+ff                 0           VAR        INT_TYPE              7
+v                 0           VAR        INT_TYPE              1
+k                 0           VAR      FLOAT_TYPE              5
+f                 0           VAR        INT_TYPE            -21
+y                 0           VAR        INT_TYPE              3
+iam                 0      CONSTANT        INT_TYPE              5
+x                 0           VAR        INT_TYPE            -98
 
     Identifier       Level        Kind        Type             Value
     ----------       -----        ----        ----              ----
+    x                 1           VAR        INT_TYPE              0
+    w                 1         PARAM        INT_TYPE
+
+    Identifier       Level        Kind        Type             Value
+    ----------       -----        ----        ----              ----
+
+    Identifier       Level        Kind        Type             Value
+    ----------       -----        ----        ----              ----
+
+    Identifier       Level        Kind        Type             Value
+    ----------       -----        ----        ----              ----
+
+    Identifier       Level        Kind        Type             Value
+    ----------       -----        ----        ----              ----
+    i                 1           VAR        INT_TYPE              1
+
+    Identifier       Level        Kind        Type             Value
+    ----------       -----        ----        ----              ----
+    y                 1           VAR        INT_TYPE             10
+    x                 1           VAR        INT_TYPE             10
 

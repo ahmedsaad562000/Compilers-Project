@@ -31,7 +31,7 @@ void Init()
     rootSymbolTable = currentSymbolTable;
 }
 
-void createNewTable()
+void createNewTable(string type = "")
 {
     SymbolTable *newSymbolTable = new SymbolTable();
     unordered_map<string, SymbolTableEntry *> map;
@@ -41,6 +41,9 @@ void createNewTable()
     newSymbolTable->setParent(currentSymbolTable);
     currentSymbolTable->addChild(newSymbolTable);
     currentSymbolTable = newSymbolTable;
+
+    addQuad( "+", type , "asd" , "adasd");
+    
 }
 
 void addEntryToTable(char *identifier, LexemeEntry *lexeme, Kind kind, bool isInit, SymbolTableEntry *pointerToEnum = NULL, VariableType functionOutput = VOID_TYPE)

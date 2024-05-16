@@ -14,5 +14,8 @@ void addQuad(string op,string result, string arg1, string arg2);
 
 void closeQuadruplesFile();
 
+//Setters
+string 
+
 
 #endif
