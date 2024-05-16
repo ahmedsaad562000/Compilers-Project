@@ -6,7 +6,7 @@
     #include "./SemanticAnalysis/SemanticAnalysis.cpp"
     #include "./CodeGen/CodeGenerator.h"
     #include "./CodeGen/quad.h"
-    
+    CodeGenerator generator;
     extern FILE *yyin;
     extern int lineno; /* Line Number tacker from lexer */
     extern int yylex();
@@ -169,7 +169,7 @@ stmts:
         ;
 stmt:
         expr SEMICOLON
-        | LBRACE{createNewTable();} stmts RBRACE{exitCurrentScope();} /* block */
+        | LBRACE{createNewTable(); generator.startScope();} stmts RBRACE{exitCurrentScope();} /* block */
         | const_dec_stmt        /* const dec */
         | var_dec_stmt        /* var dec */
         | assign_stmt        /* assign */
@@ -208,7 +208,7 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                 LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                 LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                 $$.boolVal = checkEQ_EQ(lex1,lex2);
-                addQuad("==" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                generator.addQuad("==" , $$.stringRep, $1.stringRep ,$3.stringRep );
                 }
     
     }
@@ -224,7 +224,7 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkNE(lex1,lex2);
-                        addQuad("!=" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        generator.addQuad("!=" , $$.stringRep, $1.stringRep ,$3.stringRep );
 
                 }
         }                   
@@ -241,7 +241,7 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkGT(lex1,lex2);
-                        addQuad(">" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        generator.addQuad(">" , $$.stringRep, $1.stringRep ,$3.stringRep );
 
                 }
         }
@@ -258,7 +258,7 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkLT(lex1,lex2);
-                        addQuad("<" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        generator.addQuad("<" , $$.stringRep, $1.stringRep ,$3.stringRep );
 
                 }
         }
@@ -275,7 +275,7 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkGE(lex1,lex2);
-                        addQuad(">=" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        generator.addQuad(">=" , $$.stringRep, $1.stringRep ,$3.stringRep );
 
                 }
         }
@@ -292,7 +292,7 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkLE(lex1,lex2);
-                        addQuad("<=" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        generator.addQuad("<=" , $$.stringRep, $1.stringRep ,$3.stringRep );
 
                 }
         }
@@ -307,7 +307,42 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         $$.type = BOOL_TYPE;
                         $$.stringRep = getCurrentCount();
                         $$.boolVal = $1.boolVal && $3.boolVal;
-                        addQuad("AND" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        
+                        // Code Gen
+                        char* name1 = $1.stringRep;
+                        char* name2 = $3.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        char* realname2 = generator.getTemp(name2);
+                        
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+
+                        if (strcmp(realname2 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                                realname2 = generator.getAssignment(entry);
+                                name2 = realname2;
+                        }
+                        
+                        char* name = generator.addTemp(realname1 , "&&" , realname2);
+                        $$.stringRep = name;
+                        
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $1.stringRep;
+                        }
+
+                        if (strcmp(name2 , "") == 0)
+                        {
+                                name2 = $3.stringRep;
+                        }
+                        generator.addQuad("AND", name1, name2, name);
                 }
     }
     | expr OR expr                              /* || */
@@ -321,7 +356,7 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         $$.type = BOOL_TYPE;
                         $$.stringRep = getCurrentCount();
                         $$.boolVal = $1.boolVal || $3.boolVal;
-                        addQuad("OR" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        generator.addQuad("OR" , $$.stringRep, $1.stringRep ,$3.stringRep );
                 }
         } 
     | NOT expr
@@ -334,7 +369,7 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         $$.type = BOOL_TYPE;
                         $$.stringRep = getCurrentCount();
                         $$.boolVal = !$2.boolVal;
-                        addQuad("NOT" , $$.stringRep, $2.stringRep , "");
+                        generator.addQuad("NOT" , $$.stringRep, $2.stringRep , "");
                   
                 }
         }
@@ -342,10 +377,11 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
      {
                 $$ = $2;
      }
-    |TRUE_VAL                                   /* true */
-    |FALSE_VAL                                  /* false */
+    |TRUE_VAL  {$$ = $1;}                                  /* true */
+    |FALSE_VAL {$$ = $1;}                                 /* false */
     ;
 
+    
 
 arithmetic_expr:binary_expr
                 | unary_expr
@@ -372,7 +408,6 @@ unary_expr: IDENTIFIER INC
                 }
                 else
                 {
-                        $$.stringRep = getCurrentCount();
                         if(type == INT_TYPE)
                         {
                                 $$.type = INT_TYPE;
@@ -386,7 +421,10 @@ unary_expr: IDENTIFIER INC
                                 entry->getLexemeEntry()->floatVal = $$.floatVal;
                                 printf("%d \n" , (entry->getLexemeEntry()->intVal));
                         }
-                        addQuad("INC" , $$.stringRep, $1 , "");
+                        // Code Gen
+                        SymbolTableEntry* entry = getIdEntry($1);
+                        const char* realname1 = generator.getAssignment(entry);
+                        generator.addQuad("ADD", realname1, "1", realname1); 
                     
                 }
         }
@@ -421,7 +459,10 @@ unary_expr: IDENTIFIER INC
                                 $$.floatVal = entry->getLexemeEntry()->floatVal - 1;
                                 entry->getLexemeEntry()->floatVal = $$.floatVal;
                         }
-                        addQuad("DEC" , $$.stringRep, $1 , "");
+                        // Code Gen
+                        SymbolTableEntry* entry = getIdEntry($1);
+                        const char* realname1 = generator.getAssignment(entry);
+                        generator.addQuad("SUB", realname1, "1", realname1); 
 
                     
                 }
@@ -430,7 +471,7 @@ unary_expr: IDENTIFIER INC
 
 binary_expr: term
     | binary_expr PLUS term        
-     {
+     {          
                 int type1 = $1.type;
                 int type2 = $3.type;
                 if((type1 != INT_TYPE && type1 != FLOAT_TYPE) || (type2 != INT_TYPE && type2 != FLOAT_TYPE))
@@ -439,7 +480,7 @@ binary_expr: term
                 }
                 else
                 {
-                        $$.stringRep = getCurrentCount();
+                        
                         if(type1 == FLOAT_TYPE && type2 == FLOAT_TYPE)
                         {
                                 $$.type = FLOAT_TYPE;
@@ -459,7 +500,43 @@ binary_expr: term
                                 $$.type = INT_TYPE;
                                 $$.intVal = $1.intVal + $3.intVal;
                         }
-                        addQuad("ADD" , $$.stringRep, $1.stringRep , $3.stringRep );
+
+                        // Code Gen
+                        char* name1 = $1.stringRep;
+                        char* name2 = $3.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        char* realname2 = generator.getTemp(name2);
+                        
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+
+                        if (strcmp(realname2 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                                realname2 = generator.getAssignment(entry);
+                                name2 = realname2;
+                        }
+                        
+                        char* name = generator.addTemp(realname1 , "+" , realname2);
+                        $$.stringRep = name;
+                        
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $1.stringRep;
+                        }
+
+                        if (strcmp(name2 , "") == 0)
+                        {
+                                name2 = $3.stringRep;
+                        }
+                        generator.addQuad("ADD", name1, name2, name);
+                        
                 
                 }
         } 
@@ -473,7 +550,6 @@ binary_expr: term
                 }
                 else
                 {
-                        $$.stringRep = getCurrentCount();
                         if(type1 == FLOAT_TYPE && type2 == FLOAT_TYPE)
                         {
                                 $$.type = FLOAT_TYPE;
@@ -494,7 +570,42 @@ binary_expr: term
                                 $$.type = INT_TYPE;
                                 $$.intVal = $1.intVal - $3.intVal;
                         }
-                        addQuad("SUB" , $$.stringRep, $1.stringRep , $3.stringRep );
+
+                        // Code Gen
+                        char* name1 = $1.stringRep;
+                        char* name2 = $3.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        char* realname2 = generator.getTemp(name2);
+
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+
+                        if (strcmp(realname2 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                                realname2 = generator.getAssignment(entry);
+                                name2 = realname2;
+                        }
+                        
+                        char* name = generator.addTemp(realname1 , "-" , realname2);
+                        $$.stringRep = name; 
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $1.stringRep;
+                        }
+
+                        if (strcmp(name2 , "") == 0)
+                        {
+                                name2 = $3.stringRep;
+                        }
+                        
+                        generator.addQuad("SUB", name1, name2, name);
                 
                 }
         } 
@@ -509,7 +620,6 @@ term: negat
                 {
                         printSemanticError("Multiplication operation must be between 2 numbers",lineno);
                 }else{
-                        $$.stringRep = getCurrentCount();
                         if(type1 == FLOAT_TYPE && type2 == FLOAT_TYPE)
                         {
                                 $$.type = FLOAT_TYPE;
@@ -531,7 +641,37 @@ term: negat
                                 $$.intVal = $1.intVal * $3.intVal;
                         }
 
-                        addQuad("MUL" , $$.stringRep, $1.stringRep , $3.stringRep );
+                        // Code Gen
+                        char* name1 = $1.stringRep;
+                        char* name2 = $3.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        char* realname2 = generator.getTemp(name2);
+
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                        }
+
+                        if (strcmp(realname2 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                                realname2 = generator.getAssignment(entry);
+                        }
+                        
+                        char* name = generator.addTemp(realname1 , "*" , realname2);
+                        $$.stringRep = name; 
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $1.stringRep;
+                        }
+
+                        if (strcmp(name2 , "") == 0)
+                        {
+                                name2 = $3.stringRep;
+                        }                        
+                        generator.addQuad("MUL", name1, name2, name);
                 }
         } 
     | term DIV factor           
@@ -544,7 +684,6 @@ term: negat
                 {
                         printSemanticError("Division operation must be between 2 numbers",lineno);
                 }else{
-                        $$.stringRep = getCurrentCount();
                         if(type1 == FLOAT_TYPE && type2 == FLOAT_TYPE)
                         {
                                 if ($3.floatVal == 0.0) printSemanticError("Division by zero", lineno), 0;
@@ -568,7 +707,43 @@ term: negat
                                 $$.type = INT_TYPE;
                                 $$.intVal = $1.intVal / $3.intVal;
                         }
-                        addQuad("DIV" , $$.stringRep, $1.stringRep , $3.stringRep );
+                        // Code Gen
+                        char* name1 = $1.stringRep;
+                        char* name2 = $3.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        char* realname2 = generator.getTemp(name2);
+
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+
+                        if (strcmp(realname2 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                                realname2 = generator.getAssignment(entry);
+                                name2 = realname2;
+                        }
+                        
+                        char* name = generator.addTemp(realname1 , "/" , realname2);
+                        $$.stringRep = name; 
+                        
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $1.stringRep;
+                        }
+
+                        if (strcmp(name2 , "") == 0)
+                        {
+                                name2 = $3.stringRep;
+                        } 
+
+
+
+                        generator.addQuad("DIV", name1, name2, name);
                 }
         } 
     | term MOD factor      
@@ -582,10 +757,46 @@ term: negat
                         printSemanticError("Mod operation must be between 2 Integers",lineno);
                 }
                 else{
-                        $$.stringRep = getCurrentCount();
                         $$.type = INT_TYPE;
                         $$.intVal = $1.intVal % $3.intVal;
-                        addQuad("MOD" , $$.stringRep, $1.stringRep , $3.stringRep );  
+                        // Code Gen
+                        char* name1 = $1.stringRep;
+                        char* name2 = $3.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        char* realname2 = generator.getTemp(name2);
+
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+
+                        if (strcmp(realname2 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                                realname2 = generator.getAssignment(entry);
+                                name2 = realname2;
+                        }
+                        
+                        char* name = generator.addTemp(realname1 , "%" , realname2);
+                        $$.stringRep = name; 
+                        
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $1.stringRep;
+                        }
+
+                        if (strcmp(name2 , "") == 0)
+                        {
+                                name2 = $3.stringRep;
+                        } 
+
+
+
+                        generator.addQuad("MOD", name1, name2, name); 
                 }
         }      
     ;
@@ -598,14 +809,56 @@ negat: para
                         $$.stringRep = getCurrentCount();
                         $$.type = $2.type;
                         $$.floatVal = -$2.floatVal;
-                        addQuad("NEG" , $$.stringRep, $2.stringRep , "" );
+                        // Code Gen
+                        char* name1 = $2.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($2.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+                        
+                        char* name = generator.addTemp("0" , "-" , realname1);
+                        $$.stringRep = name; 
+
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $2.stringRep;
+                        }
+                        
+                        generator.addQuad("NEG", name1, "", name); 
                 }
                 else if ($2.type == INT_TYPE)
                 {
                         $$.stringRep = getCurrentCount();
                         $$.type = $2.type;
                         $$.intVal = -$2.intVal;
-                        addQuad("NEG" , $$.stringRep, $2.stringRep , "");
+                        // Code Gen
+                        char* name1 = $2.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($2.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+                        
+                        char* name = generator.addTemp("0" , "-" , realname1);
+                        $$.stringRep = name;
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $2.stringRep;
+                        }
+
+                        
+                        generator.addQuad("NEG", name1, "", name); 
                 }
                 else
                 {
@@ -624,7 +877,6 @@ para: factor
                 {
                         printSemanticError("Power operation must be between 2 numbers",lineno);
                 }else{
-                        $$.stringRep = getCurrentCount();
                         if(type1 == FLOAT_TYPE && type2 == FLOAT_TYPE)
                         {
 
@@ -648,15 +900,51 @@ para: factor
                                 $$.type = INT_TYPE;
                                 $$.intVal = pow($1.intVal, $3.intVal);
                         }
-                        addQuad("POW" , $$.stringRep, $1.stringRep , $3.stringRep );
+
+                        // Code Gen
+                        char* name1 = $1.stringRep;
+                        char* name2 = $3.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        char* realname2 = generator.getTemp(name2);
+
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+
+                        if (strcmp(realname2 ,""))
+                        {
+                                SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                                realname2 = generator.getAssignment(entry);
+                                name2 = realname2;
+                        }
+                        
+                        char* name = generator.addTemp(realname1 , "^" , realname2);
+                        $$.stringRep = name; 
+
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $1.stringRep;
+                        }
+
+                        if (strcmp(name2 , "") == 0)
+                        {
+                                name2 = $3.stringRep;
+                        } 
+                        
+                        generator.addQuad("EXP", name1, name2, name);
                 }
 
         }
         ;
 
 factor: 
-        INT_VAL                 /*{$$.type = INT_TYPE;printf("INT_VAL_ASD\n");}*/
-        | FLOAT_VAL             /*{$$.type = FLOAT_TYPE;printf("FLOAT_VAL_ASD\n");}*/        
+        INT_VAL                 {$$ = $1;}
+        | FLOAT_VAL             {$$ = $1;}       
         | function_call         {printf("FUNCTION_CALL\n");}
         | IDENTIFIER            {
                 SymbolTableEntry* entry = getIdEntry($1);
@@ -678,6 +966,7 @@ factor:
                 $$.stringVal = entry->getLexemeEntry()->stringVal;
                 $$.boolVal = entry->getLexemeEntry()->boolVal;
                 $$.charVal = entry->getLexemeEntry()->charVal;
+                
         } ;
 
 /*===============================              TODO            ===============================*/
@@ -818,8 +1107,12 @@ const_dec_stmt:
                                 lexeme->boolVal = $5.boolVal;
                                 lexeme->charVal = $5.charVal;
                         }
-                        addEntryToTable($3,lexeme,CONSTANT,true);
-                        addQuad("=" , $3, $5.stringRep , "");
+                        entry = addEntryToTable($3,lexeme,CONSTANT,true);
+                        
+                        // Code Gen
+                        const char* name = generator.addAssignment(entry);
+                        generator.addQuad("ALLOC",$3,"",name);
+                        generator.addQuad("ASSIGN",$5.stringRep,"",name);
                 }    
         }
         ;
@@ -831,10 +1124,15 @@ var_dec_stmt:
                         printSemanticError("Variable already declared",lineno);
                         return 0;
                 }
-                 LexemeEntry* lexeme = new LexemeEntry;
+                LexemeEntry* lexeme = new LexemeEntry;
                 lexeme->type = static_cast<VariableType>($1);
                 lexeme->stringRep = getCurrentCount();
-                addEntryToTable($2,lexeme,VAR,false);
+                entry = addEntryToTable($2,lexeme,VAR,false);
+
+                // Code Gen
+                const char* name = generator.addAssignment(entry);
+                generator.addQuad("ALLOC",$2,"",name);
+
               
          }
         | type IDENTIFIER ASSIGN value SEMICOLON {
@@ -869,8 +1167,24 @@ var_dec_stmt:
                                 lexeme->boolVal = $4.boolVal;
                                 lexeme->charVal = $4.charVal;
                         }
-                        addEntryToTable($2,lexeme,VAR,true);
-                        addQuad("=" , $2, $4.stringRep , "");
+                        entry = addEntryToTable($2,lexeme,VAR,true);
+                        
+                        // Code Gen
+                        const char* name = generator.addAssignment(entry);
+                        generator.addQuad("ALLOC",$2,"",name);
+                        
+                        char* name1 = $4.stringRep;
+
+                        // if value is  an identifier
+
+                        SymbolTableEntry* entry1 = getIdEntry(name1);
+                        if (entry1 != NULL)
+                        {
+                                // is an identifier
+                                name1 = generator.getAssignment(entry1);
+                        }
+                        generator.addQuad("ASSIGN",name1,"",name);
+                        generator.clearTemps();
                 }
         }
         ;
@@ -919,7 +1233,22 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                         }else{
                                 entry->setLexemeEntry(convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal));
                         }
-                        addQuad("=" , $1, $3.stringRep , "");
+                        // Code Gen
+                        const char* name = generator.getAssignment(entry);
+                        
+                        char* name1 = $3.stringRep;
+
+                        // if value is  an identifier
+
+                        SymbolTableEntry* entry1 = getIdEntry(name1);
+                        if (entry1 != NULL)
+                        {
+                                // is an identifier
+                                name1 = generator.getAssignment(entry1);
+                        }
+                        generator.addQuad("ASSIGN",name1,"",name);
+                        generator.clearTemps();
+                        
                 }
         } 
         | IDENTIFIER DIV_EQ value SEMICOLON
@@ -965,7 +1294,21 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
 
                                 entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal / $3.floatVal ;
                         }
-                        addQuad("DIV" , $1, $1, $3.stringRep );
+                        // Code Gen
+                        const char* name = generator.getAssignment(entry);
+                        
+                        char* name1 = $3.stringRep;
+
+                        // if value is  an identifier
+
+                        SymbolTableEntry* entry1 = getIdEntry(name1);
+                        if (entry1 != NULL)
+                        {
+                                // is an identifier
+                                name1 = generator.getAssignment(entry1);
+                        }
+                        generator.addQuad("DIV",name,name1,name);
+                        generator.clearTemps();
                 }
         } 
         | IDENTIFIER MULT_EQ value SEMICOLON
@@ -1004,7 +1347,22 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                         }else{
                                 entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal * $3.floatVal ;
                         }
-                        addQuad("MUL", $1, $1, $3.stringRep );
+                        
+                        // Code Gen
+                        const char* name = generator.getAssignment(entry);
+                        
+                        char* name1 = $3.stringRep;
+
+                        // if value is  an identifier
+
+                        SymbolTableEntry* entry1 = getIdEntry(name1);
+                        if (entry1 != NULL)
+                        {
+                                // is an identifier
+                                name1 = generator.getAssignment(entry1);
+                        }
+                        generator.addQuad("MUL",name,name1,name);
+                        generator.clearTemps();
                 }
         } 
         | IDENTIFIER PLUS_EQ value SEMICOLON
@@ -1043,7 +1401,22 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                         }else{
                                 entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal + $3.floatVal ;
                         }
-                        addQuad("ADD", $1, $1, $3.stringRep );
+
+                        // Code Gen
+                        const char* name = generator.getAssignment(entry);
+                        
+                        char* name1 = $3.stringRep;
+
+                        // if value is  an identifier
+
+                        SymbolTableEntry* entry1 = getIdEntry(name1);
+                        if (entry1 != NULL)
+                        {
+                                // is an identifier
+                                name1 = generator.getAssignment(entry1);
+                        }
+                        generator.addQuad("ADD",name,name1,name);
+                        generator.clearTemps();
                 }
         } 
         
@@ -1083,33 +1456,47 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                         }else{
                                 entry->getLexemeEntry()->floatVal = entry->getLexemeEntry()->floatVal - $3.floatVal ;
                         }
-                addQuad("SUB", $1, $1, $3.stringRep );
+                        // Code Gen
+                        const char* name = generator.getAssignment(entry);
+                        
+                        char* name1 = $3.stringRep;
+
+                        // if value is  an identifier
+
+                        SymbolTableEntry* entry1 = getIdEntry(name1);
+                        if (entry1 != NULL)
+                        {
+                                // is an identifier
+                                name1 = generator.getAssignment(entry1);
+                        }
+                        generator.addQuad("SUB",name,name1,name);
+                        generator.clearTemps();
                 }
         } 
         ;
 /* while statement */        
 while_stmt:
-        WHILE LPAREN expr { checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);} RPAREN LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();}
+        WHILE LPAREN expr { checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);} RPAREN LBRACE {createNewTable();generator.startScope();} stmts RBRACE {exitCurrentScope();}
         ;
 
 /* if statement */
 if_stmt:
         IF LPAREN expr {
                 checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);
-        } RPAREN LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();}  if_expression_stmt   /* if-then */
+        } RPAREN LBRACE {createNewTable();generator.startScope();} stmts RBRACE {exitCurrentScope();}  if_expression_stmt   /* if-then */
         ;
 if_expression_stmt:
-        ELSE LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();} /* if-then-else */
+        ELSE LBRACE {createNewTable();generator.startScope();} stmts RBRACE {exitCurrentScope();} /* if-then-else */
         |
         ;
 
 /* repeat until */
 repeat_until_stmt:
-        REPEAT LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();} UNTIL LPAREN expr { checkIfLexemIsBool($9.type != BOOL_TYPE,lineno);} RPAREN SEMICOLON  {printf("REPEAT UNTIL\n");}
+        REPEAT LBRACE {createNewTable();generator.startScope();} stmts RBRACE {exitCurrentScope();} UNTIL LPAREN expr { checkIfLexemIsBool($9.type != BOOL_TYPE,lineno);} RPAREN SEMICOLON  {printf("REPEAT UNTIL\n");}
         ;
 /* for loop */
 for_stmt:
-        FOR {createNewTable();} for_expression_stmt
+        FOR {createNewTable();generator.startScope();} for_expression_stmt
         ;
 for_expression_stmt:
         LPAREN var_dec_stmt expr {checkIfLexemIsBool($3.type != BOOL_TYPE,lineno); } SEMICOLON expr RPAREN LBRACE stmts RBRACE {exitCurrentScope();}
@@ -1117,7 +1504,7 @@ for_expression_stmt:
         ;
 /* switch case */
 switch_stmt:
-        SWITCH LPAREN expr RPAREN LBRACE {createNewTable();} case_stmts RBRACE {exitCurrentScope();}
+        SWITCH LPAREN expr RPAREN LBRACE {createNewTable();generator.startScope();} case_stmts RBRACE {exitCurrentScope();}
         ;
 
 case_stmts:
@@ -1148,6 +1535,7 @@ function_prototype:
                 lexeme->stringRep = getCurrentCount();
                 addEntryToTable($2,lexeme,FUNC,false,NULL, VOID_TYPE);
                 createNewTable($2);
+                generator.startScope();
         }
          params RPAREN  {printf("Void function with parameters \n");}  /* void function with params */
         |VOID IDENTIFIER LPAREN {
@@ -1161,6 +1549,7 @@ function_prototype:
                 lexeme->stringRep = getCurrentCount();
                 addEntryToTable($2,lexeme,FUNC,false,NULL, VOID_TYPE);
                 createNewTable($2);
+                generator.startScope();
         } RPAREN {printf("Void function without parameters \n");}  /* void function without params */
         |type IDENTIFIER LPAREN {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
@@ -1174,6 +1563,7 @@ function_prototype:
                 VariableType functionOutput = static_cast<VariableType>($1);
                 addEntryToTable($2,lexeme,FUNC,false,NULL, functionOutput);
                 createNewTable($2);
+                generator.startScope();
         } params RPAREN  {printf("Typed function with parameters \n");}  /* type function with params */
         |type IDENTIFIER LPAREN {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
@@ -1187,6 +1577,7 @@ function_prototype:
                 VariableType functionOutput = static_cast<VariableType>($1);
                 addEntryToTable($2,lexeme,FUNC,false,NULL, functionOutput);
                 createNewTable($2);
+                generator.startScope();
         } RPAREN {printf("Typed function without parameters \n");} /* type function without params */
         ;
 params:
@@ -1240,7 +1631,7 @@ param:
                                 lexeme->charVal = $4.charVal;
                         }
                         addEntryToTable($2,lexeme,PARAMETER,true);
-                        addQuad("=", $2, $4.stringRep , "");
+                        generator.addQuad("=", $2, $4.stringRep , "");
                 }
         } /* param with default value */
         ;
@@ -1290,6 +1681,7 @@ int main (void)
             printf("Parsing Failed\n");
         }
         printSymbolTables();
+        generator.printQuadsToFile("quadruples.txt");
     }
     fclose(yyin);
    

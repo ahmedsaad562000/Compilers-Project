@@ -1,26 +1,26 @@
 #include "quad.h"
 
-Quad::Quad(string op, string arg1, string arg2, string result)
+Quad::Quad(string op, string arg1, string arg2, string dest)
 {
     this->op = op;
     this->arg1 = arg1;
     this->arg2 = arg2;
-    this->result = result;
+    this->dest = dest;
 }
 
-string Quad::toString()
-{
-    if (op == "=")
-    {
-        // result := arg1
-        return result + " := " + arg1;
-    }
-    else if (arg2 == "")
-    {
-        return result + " := " + op + " " + arg1;
-    }
-    return result + " := " + arg1 + " " + op + " " + arg2;
-}
+// string Quad::toString()
+// {
+//     if (op == "=")
+//     {
+//         // dest := arg1
+//         return dest + " := " + arg1;
+//     }
+//     else if (arg2 == "")
+//     {
+//         return dest + " := " + op + " " + arg1;
+//     }
+//     return dest + " := " + arg1 + " " + op + " " + arg2;
+// }
 
 // Setters
 string Quad::getOp()
@@ -35,9 +35,9 @@ string Quad::getArg2()
 {
     return arg2;
 }
-string Quad::getResult()
+string Quad::getDest()
 {
-    return result;
+    return dest;
 }
 
 // Getters
@@ -53,7 +53,7 @@ void Quad::setArg2(string arg2)
 {
     this->arg2 = arg2;
 }
-void Quad::setResult(string result)
+void Quad::setDest(string dest)
 {
-    this->result = result;
+    this->dest = dest;
 }

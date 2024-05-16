@@ -1,47 +1,20 @@
-int x=-10;
-int y=3;
+float x=5+3+6+8.5;
+int y = 5+8;
+y = 6+8;
+
 int f = (x+y)+(x-y)+(x%y);
 float k=5;
 int v=5;
-char cc='c';
+char cc='f';
 const int iam = 5;
-x=-99;
-x+=1;
-v=v/k;
 int ff = 4.5 / 2;
 ff += 5.5;
-void megz_function(int w){
-    int x = w;
-}
+v-=y;
+k*=x;
+ff/=9;
 
-megz_function(99);
+x--;
+y++;
 
 
-int w = 100;
-while(v > 0)
-{
-    w++;
-}
-if(x > 3)
-{
-    w++;
-}
-
-repeat {
-    w--;
-}until(w > 10);
-
-for(int i = 0; i < 5; i++)
-{
-    w++;
-}
-
-switch(w)
-{
-    case 0:
-        int x = 10;
-        break;
-    default:
-        int y = 10;
-        break;
-}
+bool blblb = true && true;

@@ -42,11 +42,10 @@ void createNewTable(string type = "")
     currentSymbolTable->addChild(newSymbolTable);
     currentSymbolTable = newSymbolTable;
 
-    addQuad( "+", type , "asd" , "adasd");
     
 }
 
-void addEntryToTable(char *identifier, LexemeEntry *lexeme, Kind kind, bool isInit, SymbolTableEntry *pointerToEnum = NULL, VariableType functionOutput = VOID_TYPE)
+SymbolTableEntry* addEntryToTable(char *identifier, LexemeEntry *lexeme, Kind kind, bool isInit, SymbolTableEntry *pointerToEnum = NULL, VariableType functionOutput = VOID_TYPE)
 {
     SymbolTableEntry *entry = new SymbolTableEntry();
     vector<VariableType> types;
@@ -64,6 +63,8 @@ void addEntryToTable(char *identifier, LexemeEntry *lexeme, Kind kind, bool isIn
     if (kind == ENUM)
         currentEnum = entry;
     currentSymbolTable->addEntry(id, entry);
+
+    return entry;
 }
 
 bool idExistsInEnum(SymbolTableEntry *pointerToEnum, char *identifier)
@@ -242,7 +243,7 @@ void printSymbolTables()
     fclose(semanticFile);
     fclose(syntaxFile);
 
-    closeQuadruplesFile();
+    // closeQuadruplesFile();
 }
 
 void printSemanticError(string error, int lineNo)
