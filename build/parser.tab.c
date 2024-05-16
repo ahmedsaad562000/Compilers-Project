@@ -2847,7 +2847,7 @@ yyreduce:
                                 name1 = realname1;
                         }
 
-                        if (strcmp(realname2 ,""))
+                        if (strcmp(realname2 ,"") == 0)
                         {
                                 SymbolTableEntry* entry = getIdEntry((yyvsp[(3) - (3)].lexeme).stringRep);
                                 realname2 = generator.getAssignment(entry);

@@ -4,10 +4,10 @@ fs                 0           VAR     STRING_TYPE     "asdsadas"
 cc                 0           VAR       CHAR_TYPE              '
 blblb                 0           VAR       BOOL_TYPE              0
 ff                 0           VAR        INT_TYPE              0
-v                 0           VAR        INT_TYPE             21
+v                 0           VAR        INT_TYPE    -2147483648
 k                 0           VAR      FLOAT_TYPE          112.5
 f                 0           VAR        INT_TYPE             45
 y                 0           VAR        INT_TYPE             15
 iam                 0      CONSTANT        INT_TYPE              5
-x                 0           VAR      FLOAT_TYPE           21.5
+x                 0           VAR      FLOAT_TYPE           22.5
 

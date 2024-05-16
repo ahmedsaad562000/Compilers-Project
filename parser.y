@@ -1186,7 +1186,7 @@ para: factor
                                 name1 = realname1;
                         }
 
-                        if (strcmp(realname2 ,""))
+                        if (strcmp(realname2 ,"") == 0)
                         {
                                 SymbolTableEntry* entry = getIdEntry($3.stringRep);
                                 realname2 = generator.getAssignment(entry);

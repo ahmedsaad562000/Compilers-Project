@@ -34,8 +34,8 @@ ADD                 R9    5.5   R9
 SUB                 R5    R2    R5    
 MUL                 R4    R1    R4    
 DIV                 R9    9     R9    
-DEC                 R1          R1    
-ASSIGN              R1          R5    
+EXP                 R1    R2    T2    
+ASSIGN              T2          R5    
 INC                 R2          R2    
 GREATER             R1    R2    T2    
 ALLOC               blblb       R10   
