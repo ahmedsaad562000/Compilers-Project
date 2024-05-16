@@ -6,6 +6,7 @@ int f = (x+y)+(x-y)+(x%y);
 float k=5;
 int v=5;
 char cc='f';
+string fs = "asdsadas";
 const int iam = 5;
 int ff = 4.5 / 2;
 ff += 5.5;
@@ -13,8 +14,13 @@ v-=y;
 k*=x;
 ff/=9;
 
-x--;
+v = x--;
 y++;
 
 
-bool blblb = true && true;
+bool blblb = x>y;
+blblb = y>=x;
+blblb = ff<=9;
+blblb = ff<y;
+blblb =  blblb && blblb;
+blblb = !blblb;

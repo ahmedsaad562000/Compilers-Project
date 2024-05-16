@@ -208,8 +208,43 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                 LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                 LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                 $$.boolVal = checkEQ_EQ(lex1,lex2);
-                generator.addQuad("==" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                
+                // Code Gen
+                char* name1 = $1.stringRep;
+                char* name2 = $3.stringRep;
+
+                char* realname1 = generator.getTemp(name1);
+                char* realname2 = generator.getTemp(name2);
+                
+                if (strcmp(realname1 ,"") == 0)
+                {
+                        SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                        realname1 = generator.getAssignment(entry);
+                        name1 = realname1;
                 }
+
+                if (strcmp(realname2 ,"") == 0)
+                {
+                        SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                        realname2 = generator.getAssignment(entry);
+                        name2 = realname2;
+                }
+                
+                char* name = generator.addTemp(realname1 , "==" , realname2);
+                $$.stringRep = name;
+                
+
+                if (strcmp(name1 , "") == 0)
+                {
+                        name1 = $1.stringRep;
+                }
+
+                if (strcmp(name2 , "") == 0)
+                {
+                        name2 = $3.stringRep;
+                }
+                generator.addQuad("EQ_EQ", name1, name2, name);
+        }
     
     }
     | expr NE arithmetic_expr  {               /* != */
@@ -224,7 +259,42 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkNE(lex1,lex2);
-                        generator.addQuad("!=" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        
+                // Code Gen
+                char* name1 = $1.stringRep;
+                char* name2 = $3.stringRep;
+
+                char* realname1 = generator.getTemp(name1);
+                char* realname2 = generator.getTemp(name2);
+                
+                if (strcmp(realname1 ,"") == 0)
+                {
+                        SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                        realname1 = generator.getAssignment(entry);
+                        name1 = realname1;
+                }
+
+                if (strcmp(realname2 ,"") == 0)
+                {
+                        SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                        realname2 = generator.getAssignment(entry);
+                        name2 = realname2;
+                }
+                
+                char* name = generator.addTemp(realname1 , "!=" , realname2);
+                $$.stringRep = name;
+                
+
+                if (strcmp(name1 , "") == 0)
+                {
+                        name1 = $1.stringRep;
+                }
+
+                if (strcmp(name2 , "") == 0)
+                {
+                        name2 = $3.stringRep;
+                }
+                generator.addQuad("NOT_EQ", name1, name2, name);
 
                 }
         }                   
@@ -241,7 +311,42 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkGT(lex1,lex2);
-                        generator.addQuad(">" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        
+                        // Code Gen
+                        char* name1 = $1.stringRep;
+                        char* name2 = $3.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        char* realname2 = generator.getTemp(name2);
+                        
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+
+                        if (strcmp(realname2 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                                realname2 = generator.getAssignment(entry);
+                                name2 = realname2;
+                        }
+                        
+                        char* name = generator.addTemp(realname1 , ">" , realname2);
+                        $$.stringRep = name;
+                        
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $1.stringRep;
+                        }
+
+                        if (strcmp(name2 , "") == 0)
+                        {
+                                name2 = $3.stringRep;
+                        }
+                        generator.addQuad("GREATER", name1, name2, name);
 
                 }
         }
@@ -258,7 +363,42 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkLT(lex1,lex2);
-                        generator.addQuad("<" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        
+                        // Code Gen
+                        char* name1 = $1.stringRep;
+                        char* name2 = $3.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        char* realname2 = generator.getTemp(name2);
+                        
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+
+                        if (strcmp(realname2 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                                realname2 = generator.getAssignment(entry);
+                                name2 = realname2;
+                        }
+                        
+                        char* name = generator.addTemp(realname1 , "<" , realname2);
+                        $$.stringRep = name;
+                        
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $1.stringRep;
+                        }
+
+                        if (strcmp(name2 , "") == 0)
+                        {
+                                name2 = $3.stringRep;
+                        }
+                        generator.addQuad("LESS", name1, name2, name);
 
                 }
         }
@@ -275,7 +415,42 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkGE(lex1,lex2);
-                        generator.addQuad(">=" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        
+                        // Code Gen
+                        char* name1 = $1.stringRep;
+                        char* name2 = $3.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        char* realname2 = generator.getTemp(name2);
+                        
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+
+                        if (strcmp(realname2 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                                realname2 = generator.getAssignment(entry);
+                                name2 = realname2;
+                        }
+                        
+                        char* name = generator.addTemp(realname1 , ">=" , realname2);
+                        $$.stringRep = name;
+                        
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $1.stringRep;
+                        }
+
+                        if (strcmp(name2 , "") == 0)
+                        {
+                                name2 = $3.stringRep;
+                        }
+                        generator.addQuad("GE", name1, name2, name);
 
                 }
         }
@@ -292,7 +467,43 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         LexemeEntry* lex1 = convertLexemeToEntry($1.type, $1.stringRep, $1.intVal, $1.floatVal, $1.stringVal, $1.boolVal, $1.charVal);
                         LexemeEntry* lex2 = convertLexemeToEntry($3.type, $3.stringRep, $3.intVal, $3.floatVal, $3.stringVal, $3.boolVal, $3.charVal);
                         $$.boolVal = checkLE(lex1,lex2);
-                        generator.addQuad("<=" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        
+                        
+                        // Code Gen
+                        char* name1 = $1.stringRep;
+                        char* name2 = $3.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        char* realname2 = generator.getTemp(name2);
+                        
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+
+                        if (strcmp(realname2 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                                realname2 = generator.getAssignment(entry);
+                                name2 = realname2;
+                        }
+                        
+                        char* name = generator.addTemp(realname1 , "<=" , realname2);
+                        $$.stringRep = name;
+                        
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $1.stringRep;
+                        }
+
+                        if (strcmp(name2 , "") == 0)
+                        {
+                                name2 = $3.stringRep;
+                        }
+                        generator.addQuad("LE", name1, name2, name);
 
                 }
         }
@@ -356,7 +567,43 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         $$.type = BOOL_TYPE;
                         $$.stringRep = getCurrentCount();
                         $$.boolVal = $1.boolVal || $3.boolVal;
-                        generator.addQuad("OR" , $$.stringRep, $1.stringRep ,$3.stringRep );
+                        
+                        
+                        // Code Gen
+                        char* name1 = $1.stringRep;
+                        char* name2 = $3.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        char* realname2 = generator.getTemp(name2);
+                        
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($1.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+
+                        if (strcmp(realname2 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                                realname2 = generator.getAssignment(entry);
+                                name2 = realname2;
+                        }
+                        
+                        char* name = generator.addTemp(realname1 , "||" , realname2);
+                        $$.stringRep = name;
+                        
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $1.stringRep;
+                        }
+
+                        if (strcmp(name2 , "") == 0)
+                        {
+                                name2 = $3.stringRep;
+                        }
+                        generator.addQuad("OR", name1, name2, name);
                 }
         } 
     | NOT expr
@@ -369,7 +616,28 @@ bool_expr: expr EQUAL arithmetic_expr           /* == */
                         $$.type = BOOL_TYPE;
                         $$.stringRep = getCurrentCount();
                         $$.boolVal = !$2.boolVal;
-                        generator.addQuad("NOT" , $$.stringRep, $2.stringRep , "");
+                        
+                        // Code Gen
+                        char* name1 = $2.stringRep;
+
+                        char* realname1 = generator.getTemp(name1);
+                        
+                        if (strcmp(realname1 ,"") == 0)
+                        {
+                                SymbolTableEntry* entry = getIdEntry($2.stringRep);
+                                realname1 = generator.getAssignment(entry);
+                                name1 = realname1;
+                        }
+                        
+                        char* name = generator.addTemp("!" , realname1 , "");
+                        $$.stringRep = name;
+                        
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $2.stringRep;
+                        }
+                        generator.addQuad("NOT", name1, "", name);
                   
                 }
         }
@@ -424,7 +692,8 @@ unary_expr: IDENTIFIER INC
                         // Code Gen
                         SymbolTableEntry* entry = getIdEntry($1);
                         const char* realname1 = generator.getAssignment(entry);
-                        generator.addQuad("ADD", realname1, "1", realname1); 
+                        generator.addQuad("INC", realname1, "", realname1); 
+                        $$.stringRep = $1;
                     
                 }
         }
@@ -447,7 +716,7 @@ unary_expr: IDENTIFIER INC
                 }
                 else
                 {
-                        $$.stringRep = getCurrentCount();
+                        
                         if(type == INT_TYPE)
                         {
                                 $$.type = INT_TYPE;
@@ -462,7 +731,9 @@ unary_expr: IDENTIFIER INC
                         // Code Gen
                         SymbolTableEntry* entry = getIdEntry($1);
                         const char* realname1 = generator.getAssignment(entry);
-                        generator.addQuad("SUB", realname1, "1", realname1); 
+                        generator.addQuad("DEC", realname1, "", realname1); 
+
+                        $$.stringRep = $1;
 
                     
                 }

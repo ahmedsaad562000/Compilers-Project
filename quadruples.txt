@@ -23,17 +23,30 @@ ALLOC               v           R5
 ASSIGN              5           R5    
 ALLOC               cc          R6    
 ASSIGN              'f'         R6    
-ALLOC               iam         R7    
-ASSIGN              5           R7    
+ALLOC               fs          R7    
+ASSIGN              "asdsadas"      R7    
+ALLOC               iam         R8    
+ASSIGN              5           R8    
 DIV                 4.5   2     T2    
-ALLOC               ff          R8    
-ASSIGN              T2          R8    
-ADD                 R8    5.5   R8    
+ALLOC               ff          R9    
+ASSIGN              T2          R9    
+ADD                 R9    5.5   R9    
 SUB                 R5    R2    R5    
 MUL                 R4    R1    R4    
-DIV                 R8    9     R8    
-SUB                 R1    1     R1    
-ADD                 R2    1     R2    
-AND                 true  true  T1    
-ALLOC               blblb       R9    
-ASSIGN              T1          R9    
+DIV                 R9    9     R9    
+DEC                 R1          R1    
+ASSIGN              R1          R5    
+INC                 R2          R2    
+GREATER             R1    R2    T2    
+ALLOC               blblb       R10   
+ASSIGN              T2          R10   
+GE                  R2    R1    T2    
+ASSIGN              T2          R10   
+LE                  R9    9     T2    
+ASSIGN              T2          R10   
+LESS                R9    R2    T2    
+ASSIGN              T2          R10   
+AND                 R10   R10   T1    
+ASSIGN              T1          R10   
+NOT                 R10         T1    
+ASSIGN              T1          R10   

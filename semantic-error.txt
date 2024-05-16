@@ -1,6 +1,5 @@
+Warning: fs is declared but not used
 Warning: cc is declared but not used
-Warning: blblb is declared but not used
-Warning: ff is declared but not used
 Warning: v is declared but not used
 Warning: k is declared but not used
 Warning: f is declared but not used
