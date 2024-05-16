@@ -1,0 +1,52 @@
+START main
+
+ADD                 5     3     T2    
+ADD                 T2    6     T4    
+ADD                 T4    8.5   T6    
+ALLOC               x           R1    
+ASSIGN              T6          R1    
+ADD                 5     8     T2    
+ALLOC               y           R2    
+ASSIGN              T2          R2    
+ADD                 6     8     T2    
+ASSIGN              T2          R2    
+ADD                 R1    R2    T2    
+SUB                 R1    R2    T3    
+ADD                 T2    T3    T4    
+MOD                 R1    R2    T5    
+ADD                 T4    T5    T6    
+ALLOC               f           R3    
+ASSIGN              T6          R3    
+ALLOC               k           R4    
+ASSIGN              5           R4    
+ALLOC               v           R5    
+ASSIGN              5           R5    
+ALLOC               cc          R6    
+ASSIGN              'f'         R6    
+ALLOC               fs          R7    
+ASSIGN              "asdsadas"      R7    
+ALLOC               iam         R8    
+ASSIGN              5           R8    
+DIV                 4.5   2     T2    
+ALLOC               ff          R9    
+ASSIGN              T2          R9    
+ADD                 R9    5.5   R9    
+SUB                 R5    R2    R5    
+MUL                 R4    R1    R4    
+DIV                 R9    9     R9    
+EXP                 R1    R2    T2    
+ASSIGN              T2          R5    
+INC                 R2          R2    
+GREATER             R1    R2    T2    
+ALLOC               blblb       R10   
+ASSIGN              T2          R10   
+GE                  R2    R1    T2    
+ASSIGN              T2          R10   
+LE                  R9    9     T2    
+ASSIGN              T2          R10   
+LESS                R9    R2    T2    
+ASSIGN              T2          R10   
+AND                 R10   R10   T1    
+ASSIGN              T1          R10   
+NOT                 R10         T1    
+ASSIGN              T1          R10   
