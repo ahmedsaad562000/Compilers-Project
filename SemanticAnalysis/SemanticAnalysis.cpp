@@ -180,7 +180,7 @@ void traverseSymbolTable(SymbolTable *table, int level, ofstream &outputFile)
             break;
         }
         outputFile << std::endl;
-        if (entry.second->getIsUsed() == false)
+        if (entry.second->getIsUsed() == false && *symbolEntry->getKind() != FUNC)
             fprintf(semanticFile, "Warning: %s is declared but not used\n", entry.first.c_str());
     }
 

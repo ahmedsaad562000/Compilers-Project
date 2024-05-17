@@ -52,15 +52,25 @@ def generate_file(code,quadraples_editor, semantic_error_editor, Symbol_Table_co
         if block.isValid():
             lineText = block.text()
             # get last character in line
-            lastChar = lineText[-1]
-            #convert to int
-            lastChar = int(lastChar) -1
-            highlightLine(code, lastChar)            
+            if len(lineText) == 0:
+                return
+            words = lineText.split()
+            # Check if there are words in the line
+            if words:
+                # Get the last word
+                last_word = words[-1]
+                
+                last_word = int(last_word)-3
+                
+                
+                highlightLine(code, last_word)
+                
+                      
 
     
 
 def compile_code():
-    subprocess.run(["make all", "-f", "Makefile"])
+    subprocess.run(["make run", "-f", "Makefile"])
 
 def window():
     app = QApplication(sys.argv)
@@ -91,6 +101,11 @@ def window():
     semantic_error_editor = QTextEdit()
     Symbol_Table_code_editor = QTextEdit()
     Syntax_Error_editor = QTextEdit()
+    
+    quadraples_editor.setReadOnly(True)
+    semantic_error_editor.setReadOnly(True)
+    Symbol_Table_code_editor.setReadOnly(True)
+    Syntax_Error_editor.setReadOnly(True)
     
     
     tab_widget.addTab(semantic_error_editor, "Semantic Errors")

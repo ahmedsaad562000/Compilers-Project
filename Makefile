@@ -1,3 +1,6 @@
+run:
+	./combo.exe
+all: lex yacc run
 lex:
 	flex lexer.l
 
@@ -20,4 +23,4 @@ run:
 test:
 	./compiler < test.c
 
-all: clean lex yacc move run
+
