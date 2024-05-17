@@ -9,6 +9,8 @@ CodeGenerator::CodeGenerator()
     quads = new vector<Quad*>();
     scopes.push(quads);
 }
+
+
 void CodeGenerator::startScope()
 {
 
@@ -33,97 +35,164 @@ void CodeGenerator::endScope(std::string type)
     }
     else if (type == "else")
     {
+        if (LoopLabelsStack.empty())
+        {
+            std::cout << "Loop label stack empty" << std::endl;
+        }
+        LC* lc = LoopLabelsStack.top();
+        LoopLabelsStack.pop();
+
+
         parentList->insert(parentList->end(),closedList->begin(),closedList->end());
+
+        addQuad("L"+to_string(lc->label)+":","" , "" , "" ); ;
     }
     else if (type == "for")
     {
-        /*ADD SCOPE TYPE SPECIFIC QUADS*/
-        addQuad(type,"__________","__________","__________");
+
+        if (LoopLabelsStack.empty())
+        {
+            std::cout << "Loop label stack empty" << std::endl;
+        }
+        LC* lc = LoopLabelsStack.top();
+        LoopLabelsStack.pop();
+
+        
+
+
+        std::string startLabel = "L"+to_string(lc->label);
+        std::string endLabel = "L"+to_string(lc->label+1);
+        addQuad(startLabel + ":","","","");
 
         /*ADD CLOSED SCOPE QUADS TO PARENT LIST*/
         parentList->insert(parentList->end(),closedList->begin(),closedList->end());
 
         /*ADD SCOPE TYPE SPECIFIC QUADS*/
-        addQuad(type,"__________","__________","__________");
-
-        /*INCREASE COUNT OF LABELS*/
-        labelCount++;
+        addQuad("JMP","","",startLabel);
+        addQuad(endLabel+":","","","");
     }
     else if (type == "while")
     {
-        string startLabel = "L"+to_string(labelCount);
-        labelCount++;
-        string endLabel = "L"+to_string(labelCount);
-        labelCount++;
 
-        auto it = parentList->rbegin();
-        while((*it)->getDest() != "T0")
+        if (LoopLabelsStack.empty())
         {
-            ++it;
+            std::cout << "Loop label stack empty" << std::endl;
         }
-        ++it;
-        parentList->insert(it.base(),new Quad(startLabel+":","","",""));
-        addQuad("JF",parentList->back()->getDest(),"",endLabel);
+        LC* lc = LoopLabelsStack.top();
+        LoopLabelsStack.pop();
 
+        
+
+
+        std::string startLabel = "L"+to_string(lc->label);
+        std::string endLabel = "L"+to_string(lc->label+1);
+        addQuad(startLabel + ":","","","");
+
+        /*ADD CLOSED SCOPE QUADS TO PARENT LIST*/
         parentList->insert(parentList->end(),closedList->begin(),closedList->end());
 
+        /*ADD SCOPE TYPE SPECIFIC QUADS*/
         addQuad("JMP","","",startLabel);
         addQuad(endLabel+":","","","");
     }
     else if (type == "repeat")
     {
-        /*ADD SCOPE TYPE SPECIFIC QUADS*/
-        addQuad(type,"__________","__________","__________");
+
+        if (LoopLabelsStack.empty())
+        {
+            std::cout << "Loop label stack empty" << std::endl;
+        }
+        LC* lc = LoopLabelsStack.top();
+        LoopLabelsStack.pop();
+
+        
+
+
+        std::string startLabel = "L"+to_string(lc->label);
+        std::string endLabel = "L"+to_string(lc->label+1);
+        addQuad(startLabel + ":","","","");
 
         /*ADD CLOSED SCOPE QUADS TO PARENT LIST*/
         parentList->insert(parentList->end(),closedList->begin(),closedList->end());
 
         /*ADD SCOPE TYPE SPECIFIC QUADS*/
-        addQuad(type,"__________","__________","__________");
-
-        /*INCREASE COUNT OF LABELS*/
-        labelCount++;
+        addQuad("JMP","","",startLabel);
+        addQuad(endLabel+":","","","");
     }
     else if (type == "switch")
     {
-        /*ADD SCOPE TYPE SPECIFIC QUADS*/
-        addQuad(type,"__________","__________","__________");
+
+        if (LoopLabelsStack.empty())
+        {
+            std::cout << "Loop label stack empty" << std::endl;
+        }
+        LC* lc = LoopLabelsStack.top();
+        LoopLabelsStack.pop();
+        switch_value.pop();
+
+        std::string startLabel = "L"+to_string(lc->label);
+        std::string endLabel = "L"+to_string(lc->label+1);
+        addQuad(startLabel + ":","","","");
 
         /*ADD CLOSED SCOPE QUADS TO PARENT LIST*/
         parentList->insert(parentList->end(),closedList->begin(),closedList->end());
 
         /*ADD SCOPE TYPE SPECIFIC QUADS*/
-        addQuad(type,"__________","__________","__________");
-
-        /*INCREASE COUNT OF LABELS*/
-        labelCount++;
+        addQuad(endLabel+":","","","");
     }
     else if (type == "case")
     {
-        /*ADD SCOPE TYPE SPECIFIC QUADS*/
-        addQuad(type,"__________","__________","__________");
+
 
         /*ADD CLOSED SCOPE QUADS TO PARENT LIST*/
         parentList->insert(parentList->end(),closedList->begin(),closedList->end());
 
-        /*ADD SCOPE TYPE SPECIFIC QUADS*/
-        addQuad(type,"__________","__________","__________");
 
-        /*INCREASE COUNT OF LABELS*/
-        labelCount++;
+        
+        if (LoopLabelsStack.empty())
+        {
+            std::cout << "Loop label stack empty" << std::endl;
+        }
+        LC* lc = LoopLabelsStack.top();
+        LoopLabelsStack.pop();
+
+        std::string caseLabel = "L"+to_string(lc->label);
+
+        addQuad(caseLabel+":","","","");
+
     }
-    else if (type == "enum")
+    else if (type == "caseBreak")
     {
+
+
+        /*ADD CLOSED SCOPE QUADS TO PARENT LIST*/
         parentList->insert(parentList->end(),closedList->begin(),closedList->end());
 
+        
+        if (LoopLabelsStack.empty())
+        {
+            std::cout << "Loop label stack empty" << std::endl;
+        }
+        LC* lc1 = LoopLabelsStack.top();
+        LoopLabelsStack.pop();
+        LC* lc2 = LoopLabelsStack.top();
+
+
+        std::string caseLabel = "L"+to_string(lc1->label);
+        std::string breakLabel = "L"+to_string(lc2->label+1);
+        addQuad("JMP","","",breakLabel);
+        addQuad(caseLabel+":","","","");
+
+    }
+    else if (type == "")
+    {
+        parentList->insert(parentList->end(),closedList->begin(),closedList->end());
     }
     else
     {
         addQuad(type+":","","","");
         parentList->insert(parentList->end(),closedList->begin(),closedList->end());
-        addQuad("RET","T"+to_string(temps.size()),"","");
-
-        labelCount++;
+        function_names.pop();
     }
 
     clearTemps();
@@ -200,15 +269,57 @@ void CodeGenerator::printQuadsToFile(std::string filename)
         return;
     }
 
-    outputFile << "START main" << endl << endl;
+    outputFile << left << setw(20) << "operation" << setw(20) << "operand1" << setw(20) << "operand2" << setw(20) << "destination" << endl;
+
 
     // Write the quadruples to the file
     for (int i = 0; i < quads->size(); i++)
     {
-        outputFile << left << setw(20) << (*quads)[i]->getOp() << setw(6) << (*quads)[i] -> getArg1() << setw(6) << (*quads)[i] -> getArg2() << setw(6) << (*quads)[i] -> getDest() << endl;
+        outputFile << left << setw(20) << (*quads)[i]->getOp() << setw(20) << (*quads)[i] -> getArg1() << setw(20) << (*quads)[i] -> getArg2() << setw(20) << (*quads)[i] -> getDest() << endl;
     }
 
     // Close the file
     outputFile.close();
 }
+
+
+    char* CodeGenerator::addLC(std::string condition, int numberofLabels)
+    {
+        LoopLabelsStack.push(new LC(labelCount,condition));
+        labelCount+=numberofLabels;
+        std::string str_value = "L"+to_string(labelCount-1);
+        char *cstr_value = new char[str_value.length() + 1];
+        str_value.copy(cstr_value, str_value.length());
+        cstr_value[str_value.length()] = '\0';
+        return cstr_value;
+
+    }
+
+    void CodeGenerator::setSwitchValue(std::string value)
+    {
+        switch_value.push(value);
+    }
+
+    char* CodeGenerator::getSwitchValue()
+    {
+        std::string str_value = switch_value.top();
+        char *cstr_value = new char[str_value.length() + 1];
+        str_value.copy(cstr_value, str_value.length());
+        cstr_value[str_value.length()] = '\0';
+        return cstr_value;
+    }
+
+    void CodeGenerator::setFunctionName(std::string name)
+    {
+        function_names.push(name);
+    }
+
+    char* CodeGenerator::getFunctionName()
+    {
+        std::string str_value = function_names.top();
+        char *cstr_value = new char[str_value.length() + 1];
+        str_value.copy(cstr_value, str_value.length());
+        cstr_value[str_value.length()] = '\0';
+        return cstr_value;
+    }
 

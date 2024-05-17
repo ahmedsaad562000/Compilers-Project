@@ -15,8 +15,6 @@ private:
     bool isInitialized;
     VariableType functionOutputType;
     vector<VariableType> functionInputsType;
-    SymbolTableEntry *pointerToEnum;
-    vector<char *> enumValues;
 
 public:
     SymbolTableEntry();
@@ -31,10 +29,6 @@ public:
     void setFunctionInputsType(vector<VariableType> &types);
     void addFunctionInputsType(VariableType type);
     vector<VariableType> getFunctionInputsType() const;
-    void setEnumValues(vector<char *> &values);
-    vector<char *> getEnumValues() const;
-    void setPointerToEnum(SymbolTableEntry *ptr_enum);
-    SymbolTableEntry *getPointerToEnum() const;
     void setLexemeEntry(LexemeEntry *entry);
     LexemeEntry *getLexemeEntry() const;
 };

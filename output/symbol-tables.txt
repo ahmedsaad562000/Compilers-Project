@@ -1,0 +1,8 @@
+Identifier       Level        Kind        Type             Value
+----------       -----        ----        ----              ----
+sda                 0          FUNC        INT_TYPE
+
+    Identifier       Level        Kind        Type             Value
+    ----------       -----        ----        ----              ----
+    y                 1         PARAM        INT_TYPE
+

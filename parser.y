@@ -32,6 +32,7 @@
 
 %type<varType> type
 %type<lexeme> value
+%type<lexeme> ret_val
 %type<lexeme> constant
 %type<lexeme> expr
 %type<lexeme> bool_expr
@@ -169,7 +170,7 @@ stmts:
         ;
 stmt:
         expr SEMICOLON
-        | LBRACE{createNewTable(); generator.startScope();} stmts RBRACE{exitCurrentScope();} /* block */
+        | LBRACE{createNewTable(); generator.startScope();} stmts RBRACE{exitCurrentScope();generator.endScope("");} /* block */
         | const_dec_stmt        /* const dec */
         | var_dec_stmt        /* var dec */
         | assign_stmt        /* assign */
@@ -179,13 +180,13 @@ stmt:
         | for_stmt       /* for loop */
         | switch_stmt       /* switch */
         | function         /* function */
-        | RETURN ret_val SEMICOLON                   /* return */
-        | BREAK SEMICOLON  /* break */
-        | CONTINUE SEMICOLON  /* continue */
-        | PRINT LPAREN value RPAREN SEMICOLON {printf("-----------PRINT Statement------------\n");}  /* print */
+        /*| RETURN ret_val SEMICOLON                   /* return */
+        /*| BREAK SEMICOLON  /* break */
+        /*| CONTINUE SEMICOLON  /* continue */
+        /*| PRINT LPAREN value RPAREN SEMICOLON {printf("-----------PRINT Statement------------\n");}  /* print */
         ;
 
-ret_val: value | ;
+ret_val: value {$$ = $1;} | { $$.type = VOID_TYPE; } ;
 
 value: expr | STRING_VAL | CHAR_VAL;
 
@@ -1216,7 +1217,14 @@ para: factor
 factor: 
         INT_VAL                 {$$ = $1;}
         | FLOAT_VAL             {$$ = $1;}       
-        | function_call         {printf("FUNCTION_CALL\n");}
+        | function_call         {
+                
+                generator.addQuad("CALL","","",$1.stringRep);
+                
+                $$ = $1;
+
+        
+        }
         | IDENTIFIER            {
                 SymbolTableEntry* entry = getIdEntry($1);
              
@@ -1237,7 +1245,6 @@ factor:
                 $$.stringVal = entry->getLexemeEntry()->stringVal;
                 $$.boolVal = entry->getLexemeEntry()->boolVal;
                 $$.charVal = entry->getLexemeEntry()->charVal;
-                
         } ;
 
 /*===============================              TODO            ===============================*/
@@ -1300,6 +1307,8 @@ function_call:
                 $$.stringVal = entry->getLexemeEntry()->stringVal;
                 $$.boolVal = entry->getLexemeEntry()->boolVal;
                 $$.charVal = entry->getLexemeEntry()->charVal;
+
+                
         } // with params
         ;
 
@@ -1382,8 +1391,14 @@ const_dec_stmt:
                         
                         // Code Gen
                         const char* name = generator.addAssignment(entry);
+
                         generator.addQuad("ALLOC",$3,"",name);
-                        generator.addQuad("ASSIGN",$5.stringRep,"",name);
+                        
+                        char* name1 = $5.stringRep;
+
+                        generator.addQuad("ASSIGN",name1,"",name);
+
+                        generator.clearTemps();
                 }    
         }
         ;
@@ -1454,6 +1469,10 @@ var_dec_stmt:
                                 // is an identifier
                                 name1 = generator.getAssignment(entry1);
                         }
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $4.stringRep;
+                        }
                         generator.addQuad("ASSIGN",name1,"",name);
                         generator.clearTemps();
                 }
@@ -1517,6 +1536,11 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                                 // is an identifier
                                 name1 = generator.getAssignment(entry1);
                         }
+
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $3.stringRep;
+                        }
                         generator.addQuad("ASSIGN",name1,"",name);
                         generator.clearTemps();
                         
@@ -1578,6 +1602,10 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                                 // is an identifier
                                 name1 = generator.getAssignment(entry1);
                         }
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $3.stringRep;
+                        }
                         generator.addQuad("DIV",name,name1,name);
                         generator.clearTemps();
                 }
@@ -1631,6 +1659,10 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                         {
                                 // is an identifier
                                 name1 = generator.getAssignment(entry1);
+                        }
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $3.stringRep;
                         }
                         generator.addQuad("MUL",name,name1,name);
                         generator.clearTemps();
@@ -1686,6 +1718,10 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                                 // is an identifier
                                 name1 = generator.getAssignment(entry1);
                         }
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $3.stringRep;
+                        }
                         generator.addQuad("ADD",name,name1,name);
                         generator.clearTemps();
                 }
@@ -1740,6 +1776,11 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
                                 // is an identifier
                                 name1 = generator.getAssignment(entry1);
                         }
+                        if (strcmp(name1 , "") == 0)
+                        {
+                                name1 = $3.stringRep;
+                        }
+
                         generator.addQuad("SUB",name,name1,name);
                         generator.clearTemps();
                 }
@@ -1747,35 +1788,151 @@ assign_stmt:IDENTIFIER ASSIGN value SEMICOLON
         ;
 /* while statement */        
 while_stmt:
-        WHILE LPAREN expr { checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);} RPAREN LBRACE {createNewTable();generator.startScope();} stmts RBRACE {exitCurrentScope();}
+        WHILE LPAREN{generator.startScope();} bool_expr { 
+                
+                checkIfLexemIsBool($4.type != BOOL_TYPE,lineno);
+                char* name = $4.stringRep;
+                char* realname1 = generator.getTemp(name);
+
+                if (strcmp(realname1 ,"") == 0)
+                {
+                        SymbolTableEntry* entry = getIdEntry($4.stringRep);
+                        realname1 = generator.getAssignment(entry);
+                        name = realname1;
+                }
+                if (strcmp(name ,"") == 0)
+                {
+                        name = $4.stringRep;
+                }
+                char* endLabel =  generator.addLC(name , 2);
+                generator.addQuad("JF",name,"",endLabel);
+                
+        
+        } RPAREN LBRACE {createNewTable();} stmts RBRACE {exitCurrentScope();generator.endScope("while");}
         ;
 
 /* if statement */
 if_stmt:
-        IF LPAREN expr {
-                checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);
-        } RPAREN LBRACE {createNewTable();generator.startScope();} stmts RBRACE {exitCurrentScope();}  if_expression_stmt   /* if-then */
-        ;
-if_expression_stmt:
-        ELSE LBRACE {createNewTable();generator.startScope();} stmts RBRACE {exitCurrentScope();} /* if-then-else */
-        |
+        IF LPAREN expr {checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);} RPAREN LBRACE {createNewTable();generator.startScope();} stmts RBRACE if_body 
         ;
 
+        if_body : {
+                
+        
+        char* endLabel = generator.addLC("" , 1);
+
+        generator.addQuad("JMP","","",endLabel);
+
+        
+
+        
+        
+        }  ELSE {        
+        exitCurrentScope();
+        
+        generator.endScope("if");
+
+        } LBRACE {createNewTable();generator.startScope();} stmts RBRACE {exitCurrentScope();generator.endScope("else");}   /* if-then-else */
+        | {exitCurrentScope();generator.endScope("if");}  /* if-then */
+        ;
 /* repeat until */
 repeat_until_stmt:
-        REPEAT LBRACE {createNewTable();generator.startScope();} stmts RBRACE {exitCurrentScope();} UNTIL LPAREN expr { checkIfLexemIsBool($9.type != BOOL_TYPE,lineno);} RPAREN SEMICOLON  {printf("REPEAT UNTIL\n");}
+        REPEAT LBRACE {createNewTable();generator.startScope();} stmts RBRACE {exitCurrentScope();} UNTIL LPAREN bool_expr { 
+                checkIfLexemIsBool($9.type != BOOL_TYPE,lineno);
+                char* name = $9.stringRep;
+                char* realname1 = generator.getTemp(name);
+
+                if (strcmp(realname1 ,"") == 0)
+                {
+                        SymbolTableEntry* entry = getIdEntry($9.stringRep);
+                        realname1 = generator.getAssignment(entry);
+                        name = realname1;
+                }
+                if (strcmp(name ,"") == 0)
+                {
+                        name = $9.stringRep;
+                }
+                char* endLabel =  generator.addLC(name , 2);
+                generator.addQuad("JT",name,"",endLabel);
+                
+                
+                
+                
+                
+                
+                
+                
+                } RPAREN SEMICOLON  {printf("REPEAT UNTIL\n");generator.endScope("repeat");}
         ;
 /* for loop */
 for_stmt:
-        FOR {createNewTable();generator.startScope();} for_expression_stmt
+        FOR {createNewTable();} for_expression_stmt
         ;
 for_expression_stmt:
-        LPAREN var_dec_stmt expr {checkIfLexemIsBool($3.type != BOOL_TYPE,lineno); } SEMICOLON expr RPAREN LBRACE stmts RBRACE {exitCurrentScope();}
-        | LPAREN assign_stmt expr {checkIfLexemIsBool($3.type != BOOL_TYPE,lineno);} SEMICOLON expr RPAREN LBRACE stmts RBRACE {exitCurrentScope();}
+        LPAREN var_dec_stmt {generator.startScope();} bool_expr {
+                checkIfLexemIsBool($4.type != BOOL_TYPE,lineno); 
+                char* name = $4.stringRep;
+                char* realname1 = generator.getTemp(name);
+
+                if (strcmp(realname1 ,"") == 0)
+                {
+                        SymbolTableEntry* entry = getIdEntry($4.stringRep);
+                        realname1 = generator.getAssignment(entry);
+                        name = realname1;
+                }
+                if (strcmp(name ,"") == 0)
+                {
+                        name = $4.stringRep;
+                }
+                char* endLabel =  generator.addLC(name , 2);
+                generator.addQuad("JF",name,"",endLabel);
+                
+                
+                 } SEMICOLON expr RPAREN LBRACE stmts RBRACE {exitCurrentScope();generator.endScope("for");}
+        | LPAREN assign_stmt {generator.startScope();} bool_expr {
+                
+                checkIfLexemIsBool($4.type != BOOL_TYPE,lineno); 
+                char* name = $4.stringRep;
+                char* realname1 = generator.getTemp(name);
+
+                if (strcmp(realname1 ,"") == 0)
+                {
+                        SymbolTableEntry* entry = getIdEntry($4.stringRep);
+                        realname1 = generator.getAssignment(entry);
+                        name = realname1;
+                }
+                if (strcmp(name ,"") == 0)
+                {
+                        name = $4.stringRep;
+                }
+                char* endLabel =  generator.addLC(name , 2);
+                generator.addQuad("JF",name,"",endLabel);
+
+                } SEMICOLON expr RPAREN LBRACE stmts RBRACE {exitCurrentScope();generator.endScope("for");}
         ;
 /* switch case */
 switch_stmt:
-        SWITCH LPAREN expr RPAREN LBRACE {createNewTable();generator.startScope();} case_stmts RBRACE {exitCurrentScope();}
+        SWITCH LPAREN expr {
+                char* name = $3.stringRep;
+                char* realname1 = generator.getTemp(name);
+
+                if (strcmp(realname1 ,"") == 0)
+                {
+                        SymbolTableEntry* entry = getIdEntry($3.stringRep);
+                        realname1 = generator.getAssignment(entry);
+                        name = realname1;
+                }
+                if (strcmp(name ,"") == 0)
+                {
+                        name = $3.stringRep;
+                }
+                
+                generator.setSwitchValue(name);
+
+                // getting the label
+                generator.addLC("" , 2);
+
+                } RPAREN LBRACE {createNewTable();generator.startScope();} case_stmts RBRACE {exitCurrentScope();generator.endScope("switch"); }
         ;
 
 case_stmts:
@@ -1783,16 +1940,72 @@ case_stmts:
         | case_stmt
         ;
 case_stmt:
-        CASE value COLON stmts  {printf("CASE\n");}
-        | DEFAULT COLON stmts    {printf("DEFAULT\n");}
-        ;
+        CASE constant COLON {
+                
+                createNewTable();
+                generator.startScope();
+                // Code Gen
+                char* switchValue = generator.getSwitchValue();
+                char* constName = $2.stringRep;
+                char* Temp = generator.addTemp(switchValue , "==" , constName);
 
+                generator.addQuad("EQ_EQ", switchValue, constName, Temp);
+                
+                
+                // getting the label
+                char* label = generator.addLC(Temp , 1);
+                generator.addQuad("JF",Temp,"",label);
+        
+        
+        } case_in_scope_stmts case_end
+        | DEFAULT COLON {createNewTable();generator.startScope();} case_in_scope_stmts default_case_end
+        ;
+case_in_scope_stmts: stmts
+        |
+        ;
+case_end:BREAK SEMICOLON {generator.endScope("caseBreak");exitCurrentScope();}
+        | {generator.endScope("case");exitCurrentScope();}
+        ;
+default_case_end:BREAK SEMICOLON {generator.endScope("");exitCurrentScope();}
+        | {generator.endScope("");exitCurrentScope();}
+        ;
 
 
 /* function return types */
 type:  INT | FLOAT | CHAR | STRING | BOOL;
 /* function */
-function : function_prototype {} LBRACE stmts RBRACE  {exitCurrentScope(); currentFunction = nullptr;}    
+function : function_prototype  LBRACE stmts ret_stmt RBRACE  {
+        
+        char* funcName = generator.getFunctionName();
+        
+        generator.endScope(funcName);
+        exitCurrentScope(); 
+        currentFunction = nullptr;
+        
+        }    
+        ;
+ret_stmt : RETURN ret_val SEMICOLON {
+        if ($2.type == VOID_TYPE){
+                generator.addQuad("RET", "", "", "");
+        }
+        else{
+                char* name = $2.stringRep;
+                char* realname1 = generator.getTemp(name);
+                if (strcmp(realname1 ,"") == 0)
+                {
+                        SymbolTableEntry* entry = getIdEntry($2.stringRep);
+                        realname1 = generator.getAssignment(entry);
+                        name = realname1;
+                }
+                if (strcmp(name ,"") == 0)
+                {
+                        name = $2.stringRep;
+                }
+                generator.addQuad("ASSIGN", name, "", generator.getFunctionName());
+                generator.addQuad("RET", generator.getFunctionName(), "", "");
+        }
+}
+        |    {generator.addQuad("RET", "", "", "");}                /* return */
         ;
 function_prototype:
         VOID IDENTIFIER LPAREN{
@@ -1804,9 +2017,10 @@ function_prototype:
                 LexemeEntry* lexeme = new LexemeEntry;
                 lexeme->type = VOID_TYPE;
                 lexeme->stringRep = getCurrentCount();
-                addEntryToTable($2,lexeme,FUNC,false,NULL, VOID_TYPE);
+                addEntryToTable($2,lexeme,FUNC,false, VOID_TYPE);
                 createNewTable($2);
                 generator.startScope();
+                generator.setFunctionName($2);
         }
          params RPAREN  {printf("Void function with parameters \n");}  /* void function with params */
         |VOID IDENTIFIER LPAREN {
@@ -1818,9 +2032,10 @@ function_prototype:
                 LexemeEntry* lexeme = new LexemeEntry;
                 lexeme->type = VOID_TYPE;
                 lexeme->stringRep = getCurrentCount();
-                addEntryToTable($2,lexeme,FUNC,false,NULL, VOID_TYPE);
+                addEntryToTable($2,lexeme,FUNC,false, VOID_TYPE);
                 createNewTable($2);
                 generator.startScope();
+                generator.setFunctionName($2);
         } RPAREN {printf("Void function without parameters \n");}  /* void function without params */
         |type IDENTIFIER LPAREN {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
@@ -1832,9 +2047,10 @@ function_prototype:
                 lexeme->type = static_cast<VariableType>($1);
                 lexeme->stringRep = getCurrentCount();
                 VariableType functionOutput = static_cast<VariableType>($1);
-                addEntryToTable($2,lexeme,FUNC,false,NULL, functionOutput);
+                addEntryToTable($2,lexeme,FUNC,false, functionOutput);
                 createNewTable($2);
                 generator.startScope();
+                generator.setFunctionName($2);
         } params RPAREN  {printf("Typed function with parameters \n");}  /* type function with params */
         |type IDENTIFIER LPAREN {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
@@ -1846,9 +2062,12 @@ function_prototype:
                 lexeme->type = static_cast<VariableType>($1);
                 lexeme->stringRep = getCurrentCount();
                 VariableType functionOutput = static_cast<VariableType>($1);
-                addEntryToTable($2,lexeme,FUNC,false,NULL, functionOutput);
+                addEntryToTable($2,lexeme,FUNC,false, functionOutput);
                 createNewTable($2);
                 generator.startScope();
+                generator.setFunctionName($2);
+                
+
         } RPAREN {printf("Typed function without parameters \n");} /* type function without params */
         ;
 params:
@@ -1867,7 +2086,11 @@ param:
                 lexeme->type = t;
                 currentFunction->addFunctionInputsType(t);
                 lexeme->stringRep = getCurrentCount();
-                addEntryToTable($2,lexeme,PARAMETER,true);
+                entry = addEntryToTable($2,lexeme,PARAMETER,true);
+
+                // Code Gen
+                const char* name = generator.addAssignment(entry);
+                generator.addQuad("ALLOC",$2,"",name);
         }   /* param without default value */
         |type IDENTIFIER ASSIGN constant {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope($2);
@@ -1901,8 +2124,17 @@ param:
                                 lexeme->boolVal = $4.boolVal;
                                 lexeme->charVal = $4.charVal;
                         }
-                        addEntryToTable($2,lexeme,PARAMETER,true);
-                        generator.addQuad("=", $2, $4.stringRep , "");
+                        entry = addEntryToTable($2,lexeme,PARAMETER,true);
+                        
+                        // Code Gen
+                        const char* name = generator.addAssignment(entry);
+
+                        generator.addQuad("ALLOC",$2,"",name);
+                        
+                        char* name1 = $4.stringRep;
+
+                        generator.addQuad("ASSIGN",name1,"",name);
+
                 }
         } /* param with default value */
         ;
@@ -1916,8 +2148,8 @@ param:
 
 void yyerror(char* s)
 {
-    fprintf(stderr, "\n ERROR AT LINE %d :\n %s \n", lineno, s);
-    exit(1);
+printSyntaxError( s, lineno );
+    exit(0);
 }
 
 
@@ -1925,7 +2157,7 @@ int main (void)
 {
     Init();
 
-    yyin = fopen("test.txt", "r+");
+    yyin = fopen("test2.txt", "r+");
     if (yyin == NULL)
     {
         printf(" Test File Not Found\n");
@@ -1934,7 +2166,7 @@ int main (void)
     {
         printf("====== Test File =====\n\n");
         FILE* testFile; char ch;
-        testFile = fopen("test.txt","r");
+        testFile = fopen("test2.txt","r");
         while((ch=fgetc(testFile))!=EOF)
         {
             printf("%c",ch);
@@ -1952,7 +2184,7 @@ int main (void)
             printf("Parsing Failed\n");
         }
         printSymbolTables();
-        generator.printQuadsToFile("quadruples.txt");
+        generator.printQuadsToFile("output/quadruples.txt");
     }
     fclose(yyin);
    
