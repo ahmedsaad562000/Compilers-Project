@@ -2157,7 +2157,7 @@ int main (void)
 {
     Init();
 
-    yyin = fopen("test2.txt", "r+");
+    yyin = fopen("test.txt", "r+");
     if (yyin == NULL)
     {
         printf(" Test File Not Found\n");
@@ -2166,7 +2166,7 @@ int main (void)
     {
         printf("====== Test File =====\n\n");
         FILE* testFile; char ch;
-        testFile = fopen("test2.txt","r");
+        testFile = fopen("test.txt","r");
         while((ch=fgetc(testFile))!=EOF)
         {
             printf("%c",ch);
