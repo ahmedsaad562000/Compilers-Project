@@ -1245,7 +1245,6 @@ factor:
                 $$.stringVal = entry->getLexemeEntry()->stringVal;
                 $$.boolVal = entry->getLexemeEntry()->boolVal;
                 $$.charVal = entry->getLexemeEntry()->charVal;
-                
         } ;
 
 /*===============================              TODO            ===============================*/
@@ -2018,7 +2017,7 @@ function_prototype:
                 LexemeEntry* lexeme = new LexemeEntry;
                 lexeme->type = VOID_TYPE;
                 lexeme->stringRep = getCurrentCount();
-                addEntryToTable($2,lexeme,FUNC,false,NULL, VOID_TYPE);
+                addEntryToTable($2,lexeme,FUNC,false, VOID_TYPE);
                 createNewTable($2);
                 generator.startScope();
                 generator.setFunctionName($2);
@@ -2033,7 +2032,7 @@ function_prototype:
                 LexemeEntry* lexeme = new LexemeEntry;
                 lexeme->type = VOID_TYPE;
                 lexeme->stringRep = getCurrentCount();
-                addEntryToTable($2,lexeme,FUNC,false,NULL, VOID_TYPE);
+                addEntryToTable($2,lexeme,FUNC,false, VOID_TYPE);
                 createNewTable($2);
                 generator.startScope();
                 generator.setFunctionName($2);
@@ -2048,7 +2047,7 @@ function_prototype:
                 lexeme->type = static_cast<VariableType>($1);
                 lexeme->stringRep = getCurrentCount();
                 VariableType functionOutput = static_cast<VariableType>($1);
-                addEntryToTable($2,lexeme,FUNC,false,NULL, functionOutput);
+                addEntryToTable($2,lexeme,FUNC,false, functionOutput);
                 createNewTable($2);
                 generator.startScope();
                 generator.setFunctionName($2);
@@ -2063,7 +2062,7 @@ function_prototype:
                 lexeme->type = static_cast<VariableType>($1);
                 lexeme->stringRep = getCurrentCount();
                 VariableType functionOutput = static_cast<VariableType>($1);
-                addEntryToTable($2,lexeme,FUNC,false,NULL, functionOutput);
+                addEntryToTable($2,lexeme,FUNC,false, functionOutput);
                 createNewTable($2);
                 generator.startScope();
                 generator.setFunctionName($2);

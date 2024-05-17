@@ -7,15 +7,13 @@ typedef enum
     CHAR_TYPE,
     STRING_TYPE,
     VOID_TYPE,
-    BOOL_TYPE,
-    ENUM_TYPE
+    BOOL_TYPE
 } VariableType;
 typedef enum
 {
     CONSTANT,
     VAR,
     FUNC,
-    ENUM,
     PARAMETER
 } Kind;
 #endif // COMPILERSPROJECT_ENUMS_H
