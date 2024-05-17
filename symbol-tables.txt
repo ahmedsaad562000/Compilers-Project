@@ -1,13 +1,58 @@
 Identifier       Level        Kind        Type             Value
 ----------       -----        ----        ----              ----
-fs                 0           VAR     STRING_TYPE     "asdsadas"
-cc                 0           VAR       CHAR_TYPE              '
-blblb                 0           VAR       BOOL_TYPE              0
-ff                 0           VAR        INT_TYPE              0
-v                 0           VAR        INT_TYPE    -2147483648
-k                 0           VAR      FLOAT_TYPE          112.5
-f                 0           VAR        INT_TYPE             45
-y                 0           VAR        INT_TYPE             15
-iam                 0      CONSTANT        INT_TYPE              5
-x                 0           VAR      FLOAT_TYPE           22.5
+main                 0          FUNC        INT_TYPE
+sda                 0          FUNC        INT_TYPE
+
+    Identifier       Level        Kind        Type             Value
+    ----------       -----        ----        ----              ----
+    x                 1           VAR        INT_TYPE     -616448027
+    y                 1         PARAM        INT_TYPE
+
+    Identifier       Level        Kind        Type             Value
+    ----------       -----        ----        ----              ----
+    x                 1           VAR        INT_TYPE             40
+
+        Identifier       Level        Kind        Type             Value
+        ----------       -----        ----        ----              ----
+        looper                 2           VAR        INT_TYPE              7
+
+            Identifier       Level        Kind        Type             Value
+            ----------       -----        ----        ----              ----
+            looper2                 3           VAR        INT_TYPE              7
+
+                Identifier       Level        Kind        Type             Value
+                ----------       -----        ----        ----              ----
+                MYSTRING                 4           VAR     STRING_TYPE     "MYSTRING"
+
+                Identifier       Level        Kind        Type             Value
+                ----------       -----        ----        ----              ----
+
+                    Identifier       Level        Kind        Type             Value
+                    ----------       -----        ----        ----              ----
+                    MYSTRING                 5           VAR     STRING_TYPE   "MYSTRING33"
+
+                    Identifier       Level        Kind        Type             Value
+                    ----------       -----        ----        ----              ----
+                    MYSTRING                 5           VAR     STRING_TYPE   "MYSTRING22"
+
+        Identifier       Level        Kind        Type             Value
+        ----------       -----        ----        ----              ----
+
+            Identifier       Level        Kind        Type             Value
+            ----------       -----        ----        ----              ----
+
+        Identifier       Level        Kind        Type             Value
+        ----------       -----        ----        ----              ----
+
+            Identifier       Level        Kind        Type             Value
+            ----------       -----        ----        ----              ----
+            y                 3           VAR        INT_TYPE             15
+
+            Identifier       Level        Kind        Type             Value
+            ----------       -----        ----        ----              ----
+            f                 3           VAR        INT_TYPE     -616448032
+            x                 3           VAR        INT_TYPE             58
+
+            Identifier       Level        Kind        Type             Value
+            ----------       -----        ----        ----              ----
 

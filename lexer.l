@@ -144,7 +144,7 @@ int lineno = 1;  /* Line Number */
 [ \t\r]               { ;}
 
 "\n"                 { lineno++; }
-        /* [//].*                 { ; } */
+[//].*                 { ; }
 .               { return *yytext; }
 
 %%

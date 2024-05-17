@@ -1,52 +1,71 @@
-START main
-
-ADD                 5     3     T2    
-ADD                 T2    6     T4    
-ADD                 T4    8.5   T6    
-ALLOC               x           R1    
-ASSIGN              T6          R1    
-ADD                 5     8     T2    
-ALLOC               y           R2    
-ASSIGN              T2          R2    
-ADD                 6     8     T2    
-ASSIGN              T2          R2    
-ADD                 R1    R2    T2    
-SUB                 R1    R2    T3    
-ADD                 T2    T3    T4    
-MOD                 R1    R2    T5    
-ADD                 T4    T5    T6    
-ALLOC               f           R3    
-ASSIGN              T6          R3    
-ALLOC               k           R4    
-ASSIGN              5           R4    
-ALLOC               v           R5    
-ASSIGN              5           R5    
-ALLOC               cc          R6    
-ASSIGN              'f'         R6    
-ALLOC               fs          R7    
-ASSIGN              "asdsadas"      R7    
-ALLOC               iam         R8    
-ASSIGN              5           R8    
-DIV                 4.5   2     T2    
-ALLOC               ff          R9    
-ASSIGN              T2          R9    
-ADD                 R9    5.5   R9    
-SUB                 R5    R2    R5    
-MUL                 R4    R1    R4    
-DIV                 R9    9     R9    
-EXP                 R1    R2    T2    
-ASSIGN              T2          R5    
-INC                 R2          R2    
-GREATER             R1    R2    T2    
-ALLOC               blblb       R10   
-ASSIGN              T2          R10   
-GE                  R2    R1    T2    
-ASSIGN              T2          R10   
-LE                  R9    9     T2    
-ASSIGN              T2          R10   
-LESS                R9    R2    T2    
-ASSIGN              T2          R10   
-AND                 R10   R10   T1    
-ASSIGN              T1          R10   
-NOT                 R10         T1    
-ASSIGN              T1          R10   
+operation           operand1            operand2            destination         
+sda:                                                                            
+ALLOC               y                                       R0                  
+ALLOC               x                                       R1                  
+ASSIGN              5                                       R1                  
+ADD                 R1                  R0                  R1                  
+ASSIGN              R0                                      sda                 
+RET                 sda                                                         
+main:                                                                           
+ALLOC               looper                                  R2                  
+ASSIGN              6                                       R2                  
+L0:                                                                             
+LESS                R2                  10                  T2                  
+JF                  T2                                      L1                  
+INC                 R2                                      R2                  
+ALLOC               looper2                                 R4                  
+ASSIGN              6                                       R4                  
+L2:                                                                             
+LESS                R4                  10                  T2                  
+JF                  T2                                      L3                  
+INC                 R4                                      R4                  
+GREATER             R2                  8                   T5                  
+JF                  T5                                      L5                  
+ALLOC               MYSTRING                                R5                  
+ASSIGN              "MYSTRING"                              R5                  
+JMP                                                         L4                  
+L5:                                                                             
+GREATER             R2                  2                   T2                  
+JF                  T2                                      L7                  
+ALLOC               MYSTRING                                R6                  
+ASSIGN              "MYSTRING33"                            R6                  
+JMP                                                         L6                  
+L7:                                                                             
+ALLOC               MYSTRING                                R7                  
+ASSIGN              "MYSTRING22"                            R7                  
+L6:                                                                             
+L4:                                                                             
+JMP                                                         L2                  
+L3:                                                                             
+JMP                                                         L0                  
+L1:                                                                             
+ALLOC               x                                       R8                  
+ASSIGN              50                                      R8                  
+L10:                                                                            
+L8:                                                                             
+SUB                 R8                  10                  R8                  
+GREATER             R8                  6                   T2                  
+JT                  T2                                      L9                  
+JMP                                                         L8                  
+L9:                                                                             
+GREATER             R8                  6                   T2                  
+JT                  T2                                      L11                 
+JMP                                                         L10                 
+L11:                                                                            
+L12:                                                                            
+EQ_EQ               R8                  1                   T1                  
+JF                  T1                                      L14                 
+ALLOC               y                                       R9                  
+ASSIGN              15                                      R9                  
+L14:                                                                            
+EQ_EQ               R8                  2                   T0                  
+JF                  T0                                      L15                 
+ALLOC               x                                       R10                 
+ASSIGN              58                                      R10                 
+CALL                                                        sda                 
+ALLOC               f                                       R11                 
+ASSIGN              sda                                     R11                 
+JMP                                                         L13                 
+L15:                                                                            
+L13:                                                                            
+RET                                                                             
