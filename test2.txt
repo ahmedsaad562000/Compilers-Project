@@ -2,7 +2,7 @@
 
 int sda(int y)
 {
-  int x = 5;
+  int x = 5
   x+=y;
 
 return y;

@@ -557,15 +557,15 @@ static const yytype_uint16 yyrline[] =
      191,   194,   195,   197,   251,   302,   354,   406,   458,   511,
      560,   610,   645,   649,   650,   655,   656,   659,   701,   744,
      745,   815,   886,   887,   949,  1021,  1075,  1076,  1141,  1142,
-    1143,  1218,  1219,  1220,  1228,  1254,  1254,  1284,  1284,  1317,
-    1333,  1353,  1354,  1355,  1356,  1357,  1358,  1362,  1407,  1425,
-    1485,  1550,  1614,  1672,  1731,  1792,  1792,  1812,  1792,  1817,
-    1817,  1817,  1820,  1831,  1836,  1820,  1837,  1841,  1841,  1841,
-    1841,  1870,  1870,  1873,  1873,  1873,  1893,  1893,  1893,  1916,
-    1936,  1916,  1940,  1941,  1944,  1944,  1962,  1962,  1964,  1965,
-    1967,  1968,  1970,  1971,  1976,  1976,  1976,  1976,  1976,  1978,
-    1988,  2009,  2012,  2012,  2027,  2027,  2041,  2041,  2056,  2056,
-    2075,  2076,  2079,  2096
+    1143,  1218,  1219,  1220,  1228,  1253,  1253,  1283,  1283,  1316,
+    1332,  1352,  1353,  1354,  1355,  1356,  1357,  1361,  1406,  1424,
+    1484,  1549,  1613,  1671,  1730,  1791,  1791,  1811,  1791,  1816,
+    1816,  1816,  1819,  1830,  1835,  1819,  1836,  1840,  1840,  1840,
+    1840,  1869,  1869,  1872,  1872,  1872,  1892,  1892,  1892,  1915,
+    1935,  1915,  1939,  1940,  1943,  1943,  1961,  1961,  1963,  1964,
+    1966,  1967,  1969,  1970,  1975,  1975,  1975,  1975,  1975,  1977,
+    1987,  2008,  2011,  2011,  2026,  2026,  2040,  2040,  2055,  2055,
+    2074,  2075,  2078,  2095
 };
 #endif
 
@@ -2929,14 +2929,13 @@ yyreduce:
                 (yyval.lexeme).stringVal = entry->getLexemeEntry()->stringVal;
                 (yyval.lexeme).boolVal = entry->getLexemeEntry()->boolVal;
                 (yyval.lexeme).charVal = entry->getLexemeEntry()->charVal;
-                
         ;}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 1254 "parser.y"
+#line 1253 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (2)].stringValue));
                 if(entry == NULL){
@@ -2956,7 +2955,7 @@ yyreduce:
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 1268 "parser.y"
+#line 1267 "parser.y"
     {
                 if(functionParameters.size() != 0)
                 {
@@ -2978,7 +2977,7 @@ yyreduce:
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 1284 "parser.y"
+#line 1283 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (2)].stringValue));
                 if(entry == NULL){
@@ -2998,7 +2997,7 @@ yyreduce:
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 1297 "parser.y"
+#line 1296 "parser.y"
     {
                 if(functionParameters.size() != 0)
                 {
@@ -3021,7 +3020,7 @@ yyreduce:
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 1317 "parser.y"
+#line 1316 "parser.y"
     {
                 if(functionParameters.size() == 0)
                 {
@@ -3043,7 +3042,7 @@ yyreduce:
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 1333 "parser.y"
+#line 1332 "parser.y"
     {
                 if(functionParameters.size() == 0)
                 {
@@ -3064,7 +3063,7 @@ yyreduce:
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 1363 "parser.y"
+#line 1362 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(3) - (6)].stringValue));
                 if(entry){
@@ -3112,7 +3111,7 @@ yyreduce:
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 1407 "parser.y"
+#line 1406 "parser.y"
     {
                 
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
@@ -3136,7 +3135,7 @@ yyreduce:
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 1425 "parser.y"
+#line 1424 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (5)].stringValue));
                 if(entry){
@@ -3198,7 +3197,7 @@ yyreduce:
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 1486 "parser.y"
+#line 1485 "parser.y"
     {  
                 
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
@@ -3268,7 +3267,7 @@ yyreduce:
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 1551 "parser.y"
+#line 1550 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
                 if(entry == NULL){
@@ -3337,7 +3336,7 @@ yyreduce:
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 1615 "parser.y"
+#line 1614 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
                 if(entry == NULL){
@@ -3400,7 +3399,7 @@ yyreduce:
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 1673 "parser.y"
+#line 1672 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
                 if(entry == NULL){
@@ -3463,7 +3462,7 @@ yyreduce:
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 1732 "parser.y"
+#line 1731 "parser.y"
     {
                 SymbolTableEntry* entry = getIdEntry((yyvsp[(1) - (4)].stringValue));
                 if(entry == NULL){
@@ -3526,14 +3525,14 @@ yyreduce:
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 1792 "parser.y"
+#line 1791 "parser.y"
     {generator.startScope();;}
     break;
 
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 1792 "parser.y"
+#line 1791 "parser.y"
     { 
                 
                 checkIfLexemIsBool((yyvsp[(4) - (4)].lexeme).type != BOOL_TYPE,lineno);
@@ -3560,35 +3559,35 @@ yyreduce:
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 1812 "parser.y"
+#line 1811 "parser.y"
     {createNewTable();;}
     break;
 
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 1812 "parser.y"
+#line 1811 "parser.y"
     {exitCurrentScope();generator.endScope("while");;}
     break;
 
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 1817 "parser.y"
+#line 1816 "parser.y"
     {checkIfLexemIsBool((yyvsp[(3) - (3)].lexeme).type != BOOL_TYPE,lineno);;}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 1817 "parser.y"
+#line 1816 "parser.y"
     {createNewTable();generator.startScope();;}
     break;
 
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 1820 "parser.y"
+#line 1819 "parser.y"
     {
                 
         
@@ -3606,7 +3605,7 @@ yyreduce:
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 1831 "parser.y"
+#line 1830 "parser.y"
     {        
         exitCurrentScope();
         
@@ -3618,42 +3617,42 @@ yyreduce:
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 1836 "parser.y"
+#line 1835 "parser.y"
     {createNewTable();generator.startScope();;}
     break;
 
   case 85:
 
 /* Line 1455 of yacc.c  */
-#line 1836 "parser.y"
+#line 1835 "parser.y"
     {exitCurrentScope();generator.endScope("else");;}
     break;
 
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 1837 "parser.y"
+#line 1836 "parser.y"
     {exitCurrentScope();generator.endScope("if");;}
     break;
 
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 1841 "parser.y"
+#line 1840 "parser.y"
     {createNewTable();generator.startScope();;}
     break;
 
   case 88:
 
 /* Line 1455 of yacc.c  */
-#line 1841 "parser.y"
+#line 1840 "parser.y"
     {exitCurrentScope();;}
     break;
 
   case 89:
 
 /* Line 1455 of yacc.c  */
-#line 1841 "parser.y"
+#line 1840 "parser.y"
     { 
                 checkIfLexemIsBool((yyvsp[(9) - (9)].lexeme).type != BOOL_TYPE,lineno);
                 char* name = (yyvsp[(9) - (9)].lexeme).stringRep;
@@ -3685,28 +3684,28 @@ yyreduce:
   case 90:
 
 /* Line 1455 of yacc.c  */
-#line 1866 "parser.y"
+#line 1865 "parser.y"
     {printf("REPEAT UNTIL\n");generator.endScope("repeat");;}
     break;
 
   case 91:
 
 /* Line 1455 of yacc.c  */
-#line 1870 "parser.y"
+#line 1869 "parser.y"
     {createNewTable();;}
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 1873 "parser.y"
+#line 1872 "parser.y"
     {generator.startScope();;}
     break;
 
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 1873 "parser.y"
+#line 1872 "parser.y"
     {
                 checkIfLexemIsBool((yyvsp[(4) - (4)].lexeme).type != BOOL_TYPE,lineno); 
                 char* name = (yyvsp[(4) - (4)].lexeme).stringRep;
@@ -3732,21 +3731,21 @@ yyreduce:
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 1892 "parser.y"
+#line 1891 "parser.y"
     {exitCurrentScope();generator.endScope("for");;}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 1893 "parser.y"
+#line 1892 "parser.y"
     {generator.startScope();;}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
-#line 1893 "parser.y"
+#line 1892 "parser.y"
     {
                 
                 checkIfLexemIsBool((yyvsp[(4) - (4)].lexeme).type != BOOL_TYPE,lineno); 
@@ -3772,14 +3771,14 @@ yyreduce:
   case 98:
 
 /* Line 1455 of yacc.c  */
-#line 1912 "parser.y"
+#line 1911 "parser.y"
     {exitCurrentScope();generator.endScope("for");;}
     break;
 
   case 99:
 
 /* Line 1455 of yacc.c  */
-#line 1916 "parser.y"
+#line 1915 "parser.y"
     {
                 char* name = (yyvsp[(3) - (3)].lexeme).stringRep;
                 char* realname1 = generator.getTemp(name);
@@ -3806,21 +3805,21 @@ yyreduce:
   case 100:
 
 /* Line 1455 of yacc.c  */
-#line 1936 "parser.y"
+#line 1935 "parser.y"
     {createNewTable();generator.startScope();;}
     break;
 
   case 101:
 
 /* Line 1455 of yacc.c  */
-#line 1936 "parser.y"
+#line 1935 "parser.y"
     {exitCurrentScope();generator.endScope("switch"); ;}
     break;
 
   case 104:
 
 /* Line 1455 of yacc.c  */
-#line 1944 "parser.y"
+#line 1943 "parser.y"
     {
                 
                 createNewTable();
@@ -3844,42 +3843,42 @@ yyreduce:
   case 106:
 
 /* Line 1455 of yacc.c  */
-#line 1962 "parser.y"
+#line 1961 "parser.y"
     {createNewTable();generator.startScope();;}
     break;
 
   case 110:
 
 /* Line 1455 of yacc.c  */
-#line 1967 "parser.y"
+#line 1966 "parser.y"
     {generator.endScope("caseBreak");exitCurrentScope();;}
     break;
 
   case 111:
 
 /* Line 1455 of yacc.c  */
-#line 1968 "parser.y"
+#line 1967 "parser.y"
     {generator.endScope("case");exitCurrentScope();;}
     break;
 
   case 112:
 
 /* Line 1455 of yacc.c  */
-#line 1970 "parser.y"
+#line 1969 "parser.y"
     {generator.endScope("");exitCurrentScope();;}
     break;
 
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 1971 "parser.y"
+#line 1970 "parser.y"
     {generator.endScope("");exitCurrentScope();;}
     break;
 
   case 119:
 
 /* Line 1455 of yacc.c  */
-#line 1978 "parser.y"
+#line 1977 "parser.y"
     {
         
         char* funcName = generator.getFunctionName();
@@ -3894,7 +3893,7 @@ yyreduce:
   case 120:
 
 /* Line 1455 of yacc.c  */
-#line 1988 "parser.y"
+#line 1987 "parser.y"
     {
         if ((yyvsp[(2) - (3)].lexeme).type == VOID_TYPE){
                 generator.addQuad("RET", "", "", "");
@@ -3921,14 +3920,14 @@ yyreduce:
   case 121:
 
 /* Line 1455 of yacc.c  */
-#line 2009 "parser.y"
+#line 2008 "parser.y"
     {generator.addQuad("RET", "", "", "");;}
     break;
 
   case 122:
 
 /* Line 1455 of yacc.c  */
-#line 2012 "parser.y"
+#line 2011 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -3938,7 +3937,7 @@ yyreduce:
                 LexemeEntry* lexeme = new LexemeEntry;
                 lexeme->type = VOID_TYPE;
                 lexeme->stringRep = getCurrentCount();
-                addEntryToTable((yyvsp[(2) - (3)].stringValue),lexeme,FUNC,false,NULL, VOID_TYPE);
+                addEntryToTable((yyvsp[(2) - (3)].stringValue),lexeme,FUNC,false, VOID_TYPE);
                 createNewTable((yyvsp[(2) - (3)].stringValue));
                 generator.startScope();
                 generator.setFunctionName((yyvsp[(2) - (3)].stringValue));
@@ -3948,14 +3947,14 @@ yyreduce:
   case 123:
 
 /* Line 1455 of yacc.c  */
-#line 2026 "parser.y"
+#line 2025 "parser.y"
     {printf("Void function with parameters \n");;}
     break;
 
   case 124:
 
 /* Line 1455 of yacc.c  */
-#line 2027 "parser.y"
+#line 2026 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -3965,7 +3964,7 @@ yyreduce:
                 LexemeEntry* lexeme = new LexemeEntry;
                 lexeme->type = VOID_TYPE;
                 lexeme->stringRep = getCurrentCount();
-                addEntryToTable((yyvsp[(2) - (3)].stringValue),lexeme,FUNC,false,NULL, VOID_TYPE);
+                addEntryToTable((yyvsp[(2) - (3)].stringValue),lexeme,FUNC,false, VOID_TYPE);
                 createNewTable((yyvsp[(2) - (3)].stringValue));
                 generator.startScope();
                 generator.setFunctionName((yyvsp[(2) - (3)].stringValue));
@@ -3975,14 +3974,14 @@ yyreduce:
   case 125:
 
 /* Line 1455 of yacc.c  */
-#line 2040 "parser.y"
+#line 2039 "parser.y"
     {printf("Void function without parameters \n");;}
     break;
 
   case 126:
 
 /* Line 1455 of yacc.c  */
-#line 2041 "parser.y"
+#line 2040 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -3993,7 +3992,7 @@ yyreduce:
                 lexeme->type = static_cast<VariableType>((yyvsp[(1) - (3)].varType));
                 lexeme->stringRep = getCurrentCount();
                 VariableType functionOutput = static_cast<VariableType>((yyvsp[(1) - (3)].varType));
-                addEntryToTable((yyvsp[(2) - (3)].stringValue),lexeme,FUNC,false,NULL, functionOutput);
+                addEntryToTable((yyvsp[(2) - (3)].stringValue),lexeme,FUNC,false, functionOutput);
                 createNewTable((yyvsp[(2) - (3)].stringValue));
                 generator.startScope();
                 generator.setFunctionName((yyvsp[(2) - (3)].stringValue));
@@ -4003,14 +4002,14 @@ yyreduce:
   case 127:
 
 /* Line 1455 of yacc.c  */
-#line 2055 "parser.y"
+#line 2054 "parser.y"
     {printf("Typed function with parameters \n");;}
     break;
 
   case 128:
 
 /* Line 1455 of yacc.c  */
-#line 2056 "parser.y"
+#line 2055 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (3)].stringValue));
                 if(entry != NULL){
@@ -4021,7 +4020,7 @@ yyreduce:
                 lexeme->type = static_cast<VariableType>((yyvsp[(1) - (3)].varType));
                 lexeme->stringRep = getCurrentCount();
                 VariableType functionOutput = static_cast<VariableType>((yyvsp[(1) - (3)].varType));
-                addEntryToTable((yyvsp[(2) - (3)].stringValue),lexeme,FUNC,false,NULL, functionOutput);
+                addEntryToTable((yyvsp[(2) - (3)].stringValue),lexeme,FUNC,false, functionOutput);
                 createNewTable((yyvsp[(2) - (3)].stringValue));
                 generator.startScope();
                 generator.setFunctionName((yyvsp[(2) - (3)].stringValue));
@@ -4033,14 +4032,14 @@ yyreduce:
   case 129:
 
 /* Line 1455 of yacc.c  */
-#line 2072 "parser.y"
+#line 2071 "parser.y"
     {printf("Typed function without parameters \n");;}
     break;
 
   case 132:
 
 /* Line 1455 of yacc.c  */
-#line 2079 "parser.y"
+#line 2078 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (2)].stringValue));
                 if(entry != NULL){
@@ -4063,7 +4062,7 @@ yyreduce:
   case 133:
 
 /* Line 1455 of yacc.c  */
-#line 2096 "parser.y"
+#line 2095 "parser.y"
     {
                 SymbolTableEntry* entry = checkIfIdExistsInCurrentScope((yyvsp[(2) - (4)].stringValue));
                 if(entry != NULL){
@@ -4114,7 +4113,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 4118 "parser.tab.c"
+#line 4117 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -4326,7 +4325,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 2142 "parser.y"
+#line 2141 "parser.y"
 
 
 
@@ -4337,8 +4336,8 @@ yyreturn:
 
 void yyerror(char* s)
 {
-    fprintf(stderr, "\n ERROR AT LINE %d :\n %s \n", lineno, s);
-    exit(1);
+        printSyntaxError( s, lineno );
+    exit(0);
 }
 
 
@@ -4373,7 +4372,7 @@ int main (void)
             printf("Parsing Failed\n");
         }
         printSymbolTables();
-        generator.printQuadsToFile("quadruples.txt");
+        generator.printQuadsToFile("output/quadruples.txt");
     }
     fclose(yyin);
    

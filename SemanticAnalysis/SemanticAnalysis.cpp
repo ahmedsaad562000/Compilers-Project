@@ -12,9 +12,9 @@ SymbolTable *currentSymbolTable;
 SymbolTable *rootSymbolTable;
 SymbolTableEntry *currentFunction = NULL;
 stack<VariableType> functionParameters;
-FILE *semanticFile = fopen("semantic-error.txt", "w");
-FILE *syntaxFile = fopen("syntax-error.txt", "w");
-ofstream symbolTablesFile("symbol-tables.txt");
+FILE *semanticFile = fopen("output/semantic-error.txt", "w");
+FILE *syntaxFile = fopen("output/syntax-error.txt", "w");
+ofstream symbolTablesFile("output/symbol-tables.txt");
 int currentCount = 0;
 //----------------------------------------------------------------//
 

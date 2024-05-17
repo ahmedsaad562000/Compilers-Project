@@ -2148,8 +2148,8 @@ param:
 
 void yyerror(char* s)
 {
-    fprintf(stderr, "\n ERROR AT LINE %d :\n %s \n", lineno, s);
-    exit(1);
+printSyntaxError( s, lineno );
+    exit(0);
 }
 
 
@@ -2184,7 +2184,7 @@ int main (void)
             printf("Parsing Failed\n");
         }
         printSymbolTables();
-        generator.printQuadsToFile("quadruples.txt");
+        generator.printQuadsToFile("output/quadruples.txt");
     }
     fclose(yyin);
    

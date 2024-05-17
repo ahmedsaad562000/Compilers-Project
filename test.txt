@@ -1,28 +1,75 @@
-float x=5+3+6+8.5;
-int y = 5+8;
-y = 6+8;
+
+
+int sda(int y)
 {
-int f = (x+y)+(x-y)+(x%y);
-float k=5;
-int v=5;
-char cc='f';
-string fs = "asdsadas";
-const int iam = 5;
-int ff = 4.5 / 2;
-ff += 5.5;
-v-=y;
-v = y+6;
-k*=x;
-ff/=9;
+  int x = 5
+  x+=y;
 
-v = x^y;
-y++;
-
-
-bool blblb = x>y;
-blblb = y>=x;
-blblb = ff<=9;
-blblb = ff<y;
-blblb =  blblb && blblb;
-blblb = !blblb;
+return y;
 }
+
+
+
+int main()
+{
+  for (int looper = 6; looper < 10; looper++) {
+    for (int looper2 = 6; looper2 < 10; looper2++)
+    {
+    if (looper > 8) {
+      string MYSTRING = "MYSTRING";
+    }
+    else
+    {
+      if (looper > 2)
+    {
+        string MYSTRING = "MYSTRING33";
+    }
+    else
+    {
+      string MYSTRING = "MYSTRING22";
+    }
+    }
+
+    }
+ 
+  }
+
+  int x = 50;
+
+  repeat
+  {
+
+  repeat
+  {
+
+    x-=10;
+
+  }
+  until(x>6);
+
+  }
+  until(x>6);
+
+
+  switch(x)
+  {
+    case 1:
+    int y = 15;
+
+
+    case 2:
+    int x = 58;
+    int f = sda(9);
+    break;
+
+    default:
+    break;
+
+    
+  }
+
+}
+
+
+
+
