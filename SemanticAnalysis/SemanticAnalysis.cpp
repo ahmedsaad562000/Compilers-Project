@@ -11,7 +11,6 @@ using namespace std;
 SymbolTable *currentSymbolTable;
 SymbolTable *rootSymbolTable;
 SymbolTableEntry *currentFunction = NULL;
-SymbolTableEntry *currentEnum = NULL;
 stack<VariableType> functionParameters;
 FILE *semanticFile = fopen("semantic-error.txt", "w");
 FILE *syntaxFile = fopen("syntax-error.txt", "w");
@@ -41,11 +40,9 @@ void createNewTable(string type = "")
     newSymbolTable->setParent(currentSymbolTable);
     currentSymbolTable->addChild(newSymbolTable);
     currentSymbolTable = newSymbolTable;
-
-    
 }
 
-SymbolTableEntry* addEntryToTable(char *identifier, LexemeEntry *lexeme, Kind kind, bool isInit, SymbolTableEntry *pointerToEnum = NULL, VariableType functionOutput = VOID_TYPE)
+SymbolTableEntry* addEntryToTable(char *identifier, LexemeEntry *lexeme, Kind kind, bool isInit, VariableType functionOutput = VOID_TYPE)
 {
     SymbolTableEntry *entry = new SymbolTableEntry();
     vector<VariableType> types;
@@ -53,26 +50,14 @@ SymbolTableEntry* addEntryToTable(char *identifier, LexemeEntry *lexeme, Kind ki
     entry->setLexemeEntry(lexeme);
     entry->setKind(kind);
     entry->setIsInitialized(isInit);
-    entry->setPointerToEnum(pointerToEnum);
     entry->setFunctionOutputType(functionOutput);
     entry->setFunctionInputsType(types);
-    entry->setEnumValues(values);
     string id(identifier);
     if (kind == FUNC)
         currentFunction = entry;
-    if (kind == ENUM)
-        currentEnum = entry;
     currentSymbolTable->addEntry(id, entry);
 
     return entry;
-}
-
-bool idExistsInEnum(SymbolTableEntry *pointerToEnum, char *identifier)
-{
-    for (int i = 0; i < pointerToEnum->getEnumValues().size(); i++)
-        if (strcmp(pointerToEnum->getEnumValues()[i], identifier) == 0)
-            return true;
-    return false;
 }
 
 SymbolTableEntry *getIdEntry(char *identifier)
@@ -126,28 +111,6 @@ void convertFunctionParamsToStack(SymbolTableEntry *currentFunc)
         functionParameters.push(currentFunc->getFunctionInputsType()[i]);
 }
 
-bool idExistsInAnEnum(SymbolTable *table, char *id)
-{
-    for (auto entry : table->getEntries())
-    {
-        if (*entry.second->getKind() == ENUM)
-        {
-            if (idExistsInEnum(entry.second, id))
-            {
-                return true;
-            }
-        }
-    }
-    for (auto child : table->getChildren())
-    {
-        if (idExistsInAnEnum(child, id))
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 void traverseSymbolTable(SymbolTable *table, int level, ofstream &outputFile)
 {
     outputFile << setw(level * 4) << ""
@@ -180,9 +143,6 @@ void traverseSymbolTable(SymbolTable *table, int level, ofstream &outputFile)
             break;
         case FUNC:
             outputFile << std::setw(14) << "FUNC";
-            break;
-        case ENUM:
-            outputFile << std::setw(14) << "ENUMERATOR";
             break;
         case PARAMETER:
             outputFile << std::setw(14) << "PARAM";
@@ -217,11 +177,6 @@ void traverseSymbolTable(SymbolTable *table, int level, ofstream &outputFile)
             break;
         case VOID_TYPE:
             outputFile << std::setw(16) << "VOID_TYPE";
-            break;
-        case ENUM_TYPE:
-            outputFile << std::setw(16) << "ENUM_TYPE";
-            if (*symbolEntry->getKind() == VAR || *symbolEntry->getKind() == CONSTANT)
-                outputFile << std::setw(15) << lexeme->stringVal;
             break;
         }
         outputFile << std::endl;
@@ -288,14 +243,6 @@ char *getCurrentCount()
     strcpy(temp, "t");                                                                // copy the "t" character to the stringRep
     strcat(temp, strCount);
     currentCount++;
-    return temp;
-}
-
-char *concatStrings(char *str1, char *str2)
-{
-    char *temp = (char *)malloc(sizeof(char) * (strlen(str1) + strlen(str2) + 1)); // allocate space for the concatenated string
-    strcpy(temp, str1);                                                            // copy the "t" character to the stringRep
-    strcat(temp, str2);
     return temp;
 }
 
@@ -479,42 +426,3 @@ bool checkLT(LexemeEntry *lex1, LexemeEntry *lex2)
     else
         return false;
 }
-
-
-
-//----------------------------------------------------------------------//
-
-// int main(void)
-// {
-//     Init();
-//     LexemeEntry *entry = convertLexemeToEntry(0, "ta", 3, 0.0, "kk", false, 'k');
-//     addEntryToTable("megz_x" , entry, VAR, true, nullptr, VOID_TYPE);
-//     SymbolTableEntry* Symbolentry = getIdEntry("megz_x");
-//     addEntryToTable("megz_y" , entry, VAR, true, nullptr, VOID_TYPE);
-//     createNewTable();
-//     addEntryToTable("megz_z" , entry, VAR, true, nullptr, VOID_TYPE);
-//     exitCurrentScope();
-//     addEntryToTable("megz_w" , entry, VAR, true, nullptr, VOID_TYPE);
-
-//     LexemeEntry* enumEntry = convertLexemeToEntry(6 , "ka", 2 , 0.0, "ka" , false, 't');
-//     addEntryToTable("megz_enum" , enumEntry, ENUM, true, nullptr, VOID_TYPE);
-//     SymbolTableEntry* entry_enum = getIdEntry("megz_enum");
-//     vector<char*> entries = {"RED" , "YELLOW" , "GREEN"};
-//     entry_enum->setEnumValues(entries);
-
-//     bool isExist = idExistsInAnEnum(rootSymbolTable, "BLUE");
-//     if(isExist) {cout << "Variable exist in enum" << endl;}
-//     else {cout << "Variable doesn't exist in enum" << endl;}
-
-//     LexemeEntry* veriableEnum = convertLexemeToEntry(6 , "ka", 2 , 0.0, "RED" , false, 't');
-//     addEntryToTable("megz_enum_variable", veriableEnum, VAR, true, entry_enum, VOID_TYPE);
-
-//     printSymbolTables();
-
-//     SymbolTableEntry* checkScope = checkIfIdExistsInCurrentScope("megz_z");
-//     if(checkScope) {cout << "Variable exist in current scope" << endl;}
-//     else {cout << "Variable doesn't exist in current scope" << endl;}    
-//     cout << Symbolentry->getLexemeEntry()->type << endl;
-//     cout << "hello" << endl;
-//     return 0;
-// }

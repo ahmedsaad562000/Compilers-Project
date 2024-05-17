@@ -42,11 +42,3 @@ ALLOC               blblb       R10
 ASSIGN              T2          R10   
 GE                  R2    R1    T2    
 ASSIGN              T2          R10   
-LE                  R9    9     T2    
-ASSIGN              T2          R10   
-LESS                R9    R2    T2    
-ASSIGN              T2          R10   
-AND                 R10   R10   T1    
-ASSIGN              T1          R10   
-NOT                 R10         T1    
-ASSIGN              T1          R10   
