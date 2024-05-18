@@ -1,4 +1,4 @@
-# GNC Compiler
+# Compilers Project
 
 
 ## Project Overview
