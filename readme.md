@@ -6,7 +6,7 @@ This project involves the development of a compiler consisting of a lexical anal
 
 ## Demo Video
 
-![Demo Video](demo.mp4)
+![Demo Video](https://github.com/ahmedsaad562000/CompilersProject/assets/76961547/cf5ceaf0-3d32-48b4-92e3-e924ed587b6e)
 
 
 
