@@ -1,75 +1,15 @@
-
-
-int sda(int y)
-{
-  int x = 5;
-  x+=y;
-
-return y;
-}
-
-
-
 int main()
 {
-  for (int looper = 6; looper < 10; looper++) {
-    for (int looper2 = 6; looper2 < 10; looper2++)
-    {
-    if (looper > 8) {
-      string MYSTRING = "MYSTRING";
-    }
-    else
-    {
-      if (looper > 2)
-    {
-        string MYSTRING = "MYSTRING33";
-    }
-    else
-    {
-      string MYSTRING = "MYSTRING22";
-    }
-    }
 
-    }
- 
-  }
-
-  int x = 50
-
-  repeat
-  {
-
-  repeat
-  {
-
-    x-=10;
-
-  }
-  until(x>6);
-
-  }
-  until(x>6);
+z= 5;
 
 
-  switch(x)
-  {
-    case 1:
-    int y = 15;
+int x = 'f';
+{
 
-
-    case 2:
-    int x = 58;
-    int f = sda(9);
-    break;
-
-    default:
-    break;
-
-    
-  }
-
+x = 3;
+int y = 3;
 }
 
 
-
-
+}

@@ -23,6 +23,7 @@ def compile_button_clicked(code_editor, quadraples_editor, semantic_error_editor
     generate_button.setStyleSheet(" background-color: #4CAF50; color: white; border: none; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 20px; margin: 4px 2px; cursor: pointer; width: 2px;")
     QtWidgets.QApplication.processEvents()
     #generate_button.setEnabled(True)
+    
 
 
 def highlightLine(textEdit, lineNumber):

@@ -1,4 +1,1 @@
-Warning: x is declared but not used
-Warning: MYSTRING is declared but not used
-Warning: MYSTRING is declared but not used
-Warning: MYSTRING is declared but not used
+Undeclared Variable At Line Number 4
